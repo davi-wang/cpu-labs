@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 
+
 // jump control signal
 `define JUMP_SEQ        2'd0     // PC + 4
 `define JUMP_J          2'd1     // {PC[31:28], instr_index, 2'b00}

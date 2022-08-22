@@ -21,6 +21,7 @@ module control_unit(
             output wire[1:0] jump
        );
 
+
 // R
 assign r_ins = (operation == 6'd0) ? 1 : 0;
 assign ins_sll = (r_ins && func == 6'b000000) ? 1 : 0;
