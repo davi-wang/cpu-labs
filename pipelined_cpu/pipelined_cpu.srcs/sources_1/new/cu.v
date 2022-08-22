@@ -2,178 +2,126 @@
 `include "header.v"
 
 module control_unit(
-           input wire                         rst,
+            input wire rst,
 
-           input wire instruction,
-           input wire[5:0] opcode, // Instruction opcode
-           input wire[4:0] sa,     // Shift operation operand
-           input wire[5:0] func,   // R-Type instruction function
-           input wire zero,
+            input wire[5:0] operation,
+            input wire[4:0] rt,
+            input wire[4:0] s,
+            input wire[5:0] func,
 
-           output wire en_reg_write,
-           output wire en_mem_write,
-           output wire en_lw,
+            output wire en_wt_reg,
+            output wire en_wt_mem,
+            output wire en_load,
 
-           output wire cu_alu_src,
-           output wire[3:0] alu_ctrl,
-           output wire[1:0] extend_ctrl,
-           output wire[1:0] cu_reg_src,
-           output wire[1:0] cu_reg_dst,
-           output wire[`NPC_OP_LENGTH  - 1:0] cu_npc_op
+            output wire alu_reg_imm,
+            output wire[3:0] alu_ctrl,
+            output wire[1:0] extend_ctrl,
+            output wire[1:0] data_src,
+            output wire[1:0] wt_reg,
+            output wire[1:0] jump
        );
 
-// Init instruction signals
-wire type_r, inst_add, inst_addu, inst_sub, inst_subu, inst_slt;
-wire inst_sltu, inst_and, inst_or, inst_nor, inst_xor, inst_sll;
-wire inst_srl, inst_sra, inst_sllv, inst_srlv, inst_srav, inst_jr;
-wire inst_jalr, inst_addi, inst_addiu, inst_sltiu;
-wire inst_andi, inst_ori, inst_xori, inst_lui, inst_lw, inst_sw;
-wire inst_beq, inst_bne, inst_j, inst_jal;
+// R
+assign r_ins = (operation == 6'd0) ? 1 : 0;
+assign ins_sll = (r_ins && func == 6'b000000) ? 1 : 0;
+assign ins_srl = (r_ins && func == 6'b000010) ? 1 : 0;
+assign ins_sra = (r_ins && func == 6'b000011) ? 1 : 0;
+assign ins_sllv = (r_ins && func == 6'b000100) ? 1 : 0;
+assign ins_srlv = (r_ins && func == 6'b000110) ? 1 : 0;
+assign ins_srav = (r_ins && func == 6'b000111) ? 1 : 0;
+assign ins_jr = (r_ins && func == 6'b001000) ? 1 : 0;
+assign ins_jalr = (r_ins && func == 6'b001001) ? 1 : 0;
+assign ins_add = (r_ins && func == 6'b100000) ? 1 : 0;
+assign ins_addu = (r_ins && func == 6'b100001) ? 1 : 0;
+assign ins_sub = (r_ins && func == 6'b100010) ? 1 : 0;
+assign ins_subu = (r_ins && func == 6'b100011) ? 1 : 0;
+assign ins_and = (r_ins && func == 6'b100100) ? 1 : 0;
+assign ins_xor = (r_ins && func == 6'b100110) ? 1 : 0;
+assign ins_nor = (r_ins && func == 6'b100111) ? 1 : 0;
+assign ins_or = (r_ins && func == 6'b100101) ? 1 : 0;
+assign ins_slt = (r_ins && func == 6'b101010) ? 1 : 0;
+assign ins_sltu = (r_ins && func == 6'b101011 ) ? 1 : 0;
 
-/* --- Decode instructions --- */
+// I
+assign ins_addi = (operation == 6'b001000) ? 1 : 0;
+assign ins_addiu = (operation == 6'b001001) ? 1 : 0;
+assign ins_slti = (operation == 6'b001010) ? 1 : 0;
+assign ins_sltiu = (operation == 6'b001011) ? 1 : 0;
+assign ins_andi = (operation == 6'b001100) ? 1 : 0;
+assign ins_ori = (operation == 6'b001101) ? 1 : 0;
+assign ins_xori = (operation == 6'b001110) ? 1 : 0;
+assign ins_lui = (operation == 6'b001111) ? 1 : 0;
+assign ins_lb = (operation == 6'b100000) ? 1 : 0;
+assign ins_lh = (operation == 6'b100001) ? 1 : 0;
+assign ins_lw = (operation == 6'b100011) ? 1 : 0;
+assign ins_lbu = (operation == 6'b100100) ? 1 : 0;
+assign ins_lhu = (operation == 6'b100101) ? 1 : 0;
+assign ins_sb = (operation == 6'b101000) ? 1 : 0;
+assign ins_sh = (operation == 6'b101001) ? 1 : 0;
+assign ins_sw = (operation == 6'b101011) ? 1 : 0;
+assign ins_beq = (operation == 6'b000100) ? 1 : 0;
+assign ins_bne = (operation == 6'b000101) ? 1 : 0;
+assign ins_blez = (operation == 6'b000110) ? 1 : 0;
+assign ins_bgtz = (operation == 6'b000111) ? 1 : 0;
+assign ins_bgez = (operation == 6'b000001 && rt == 5'd1) ? 1 : 0;
+assign ins_bltz = (operation == 6'b000001 && rt == 5'd0) ? 1 : 0;
 
-// Whether instruction is R-Type
-assign type_r         = (opcode == `INST_R_TYPE       ) ? 1 : 0;
-// R-Type instructions
-assign inst_add       = (type_r && func == `FUNC_ADD  ) ? 1 : 0;
-assign inst_addu      = (type_r && func == `FUNC_ADDU ) ? 1 : 0;
-assign inst_sub       = (type_r && func == `FUNC_SUB  ) ? 1 : 0;
-assign inst_subu      = (type_r && func == `FUNC_SUBU ) ? 1 : 0;
-assign inst_slt       = (type_r && func == `FUNC_SLT  ) ? 1 : 0;
-assign inst_sltu      = (type_r && func == `FUNC_SLTU ) ? 1 : 0;
-assign inst_and       = (type_r && func == `FUNC_AND  ) ? 1 : 0;
-assign inst_or        = (type_r && func == `FUNC_OR   ) ? 1 : 0;
-assign inst_nor       = (type_r && func == `FUNC_NOR  ) ? 1 : 0;
-assign inst_xor       = (type_r && func == `FUNC_XOR  ) ? 1 : 0;
-assign inst_sll       = (type_r && func == `FUNC_SLL  ) ? 1 : 0;
-assign inst_srl       = (type_r && func == `FUNC_SRL  ) ? 1 : 0;
-assign inst_sra       = (type_r && func == `FUNC_SRA  ) ? 1 : 0;
-assign inst_sllv      = (type_r && func == `FUNC_SLLV ) ? 1 : 0;
-assign inst_srlv      = (type_r && func == `FUNC_SRLV ) ? 1 : 0;
-assign inst_srav      = (type_r && func == `FUNC_SRAV ) ? 1 : 0;
-assign inst_jr        = (type_r && func == `FUNC_JR   ) ? 1 : 0;
-assign inst_jalr      = (type_r && func == `FUNC_JALR ) ? 1 : 0;
+// J
+assign ins_j = (operation == 6'b000010) ? 1 : 0;
+assign ins_jal = (operation == 6'b000011) ? 1 : 0;
 
-// I-Type Instructions
-assign inst_addi      = (opcode == `INST_ADDI  ) ? 1 : 0;
-assign inst_addiu     = (opcode == `INST_ADDIU ) ? 1 : 0;
-assign inst_sltiu     = (opcode == `INST_SLTIU ) ? 1 : 0;
-assign inst_andi      = (opcode == `INST_ANDI  ) ? 1 : 0;
-assign inst_ori       = (opcode == `INST_ORI   ) ? 1 : 0;
-assign inst_xori      = (opcode == `INST_XORI  ) ? 1 : 0;
-assign inst_lui       = (opcode == `INST_LUI   ) ? 1 : 0;
-assign inst_lw        = (opcode == `INST_LW    ) ? 1 : 0;
-assign inst_sw        = (opcode == `INST_SW    ) ? 1 : 0;
-assign inst_beq       = (opcode == `INST_BEQ   ) ? 1 : 0;
-assign inst_bne       = (opcode == `INST_BNE   ) ? 1 : 0;
 
-// J-Type Instructions
-assign inst_j         = (opcode == `INST_J     ) ? 1 : 0;
-assign inst_jal       = (opcode == `INST_JAL   ) ? 1 : 0;
+assign alu_reg_imm = (ins_addi || ins_addiu || ins_slti || ins_sltiu || ins_andi || ins_ori || 
+               ins_xori || ins_lui || ins_sb || ins_sh || ins_sw || ins_lb || ins_lh || 
+               ins_lw || ins_lbu || ins_lhu ) ? 1 : 0;
 
-/* --- Determine control signals --- */
+assign alu_ctrl = (ins_addi || ins_add) ? `ALU_ADD:
+           (ins_addiu || ins_addu || ins_sb || ins_sh || ins_sw || ins_lb || ins_lbu || ins_lhu ||
+                ins_lh || ins_lw) ? `ALU_ADDU:
+           (ins_sub) ? `ALU_SUB :
+           (ins_sub || ins_subu) ? `ALU_SUBU :
+           (ins_slti || ins_slt) ? `ALU_SLT :
+           (ins_sltu || ins_sltiu) ? `ALU_SLTU :
+           (ins_and || ins_andi) ? `ALU_AND :
+           (ins_or || ins_ori) ? `ALU_OR :
+           (ins_xor || ins_xori) ? `ALU_XOR :
+           (ins_nor) ? `ALU_NOR :
+           (ins_sllv || ins_sll) ? `ALU_LEFT :
+           (ins_srlv || ins_srl) ? `ALU_RIGHTL :
+           (ins_srav || ins_sra) ? `ALU_RIGHTA :
+           `ALU_DEFAULT;  // output the second ALU input
 
-// LW
-assign en_lw = inst_lw ? 1 : 0;
+assign extend_ctrl =
+        (ins_lui) ? `EXTEND_HIGH :
+        (ins_addi || ins_slti) ? `EXTEND_SIGNED :
+        (ins_andi || ins_sltiu || ins_addiu || ins_ori | ins_xori || ins_sb || ins_sh ||
+        ins_sw || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `EXTEND_UNSIGNED : 
+        `EXTEND_NOP;
 
-// ALUOp
-assign cu_alu_op =
-       (inst_addi || inst_addiu || inst_add ||
-        inst_addu || inst_lw    || inst_sw    ) ? `ALU_OP_ADD  : // ADD
-       (inst_sub  || inst_subu  || inst_beq   ) ? `ALU_OP_SUB  : // SUB
-       (inst_slt  || inst_sltu  || inst_sltiu ) ? `ALU_OP_SLT  : // SLT
-       (inst_and  || inst_andi                ) ? `ALU_OP_AND  : // AND
-       (inst_or   || inst_ori                 ) ? `ALU_OP_OR   : // OR
-       (inst_xor  || inst_xori                ) ? `ALU_OP_XOR  : // XOR
-       (inst_nor                              ) ? `ALU_OP_NOR  : // NOR
-       (inst_sll                              ) ? `ALU_OP_SLL  : // SLL
-       (inst_srl                              ) ? `ALU_OP_SRL  : // SRL
-       (inst_sra                              ) ? `ALU_OP_SRA  : // SRA
-       (inst_sllv                             ) ? `ALU_OP_SLLV : // SLLV
-       (inst_srlv                             ) ? `ALU_OP_SRLV : // SRLV
-       (inst_srav                             ) ? `ALU_OP_SRAV : // SRAV
-       `ALU_OP_DEFAULT;  // Default ALU operand (output the second ALU input)
+assign data_src = 
+        (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `DATA_SRC_MEM : 
+        (ins_jal || ins_jalr) ? `DATA_SRC_JAL : `DATA_SRC_ALU;
 
-// RegDst
-assign cu_reg_dst =
-       (inst_add   || inst_addu  || inst_sub   || inst_subu  ||
-        inst_slt   || inst_sltu  || inst_and   || inst_or    ||
-        inst_nor   || inst_xor   || inst_sll   || inst_srl   ||
-        inst_sra   || inst_sllv  || inst_srlv  || inst_srav  ||
-        inst_jalr                                            ) ? `REG_DST_RD :
-       (inst_lui   || inst_addi  || inst_addiu || inst_sltiu ||
-        inst_andi  || inst_ori   || inst_xori  || inst_lw    ) ? `REG_DST_RT :
-       (inst_jal) ? `REG_DST_REG_31 : `REG_DST_DEFAULT;
-// ALUSrc
-assign cu_alu_src =
-       (inst_addi  || inst_addiu || inst_sltiu || inst_andi ||
-        inst_ori   || inst_xori  || inst_lw    || inst_sw   ) ? 1 : 0;
+assign wt_reg =
+       (ins_sltiu || ins_andi || ins_ori || ins_lui || ins_addi || ins_addiu || ins_slti || 
+       ins_xori || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `WT_REG_RT :
+       (ins_jal) ? `WT_REG_31 : `WT_REG_RD;
 
-// RegWrite
-assign en_reg_write =
-       (inst_lui   || type_r     || inst_addi  || inst_addiu ||
-        inst_sltiu || inst_andi  || inst_ori   || inst_xori  ||
-        inst_add   || inst_addu  || inst_sub   || inst_subu  ||
-        inst_slt   || inst_sltu  || inst_and   || inst_or    ||
-        inst_nor   || inst_xor   || inst_sll   || inst_srl   ||
-        inst_sra   || inst_sllv  || inst_srlv  || inst_srav  ||
-        inst_lw    || inst_jal   || inst_jalr                ) ? 1 : 0;
+assign jump =
+       (ins_beq || ins_bne || ins_blez || ins_bgtz || ins_bgez || ins_bltz) ? `JUMP_BEQ :
+       (ins_j || ins_jal)  ? `JUMP_J :
+       (ins_jr || ins_jalr) ? `JUMP_REG : `JUMP_SEQ;
 
-// MemWrite
-assign en_mem_write = (inst_sw) ? 1 : 0;
+assign en_wt_reg =
+        (ins_lui || r_ins || ins_addi || ins_addiu || ins_sltiu || ins_andi || 
+        ins_ori || ins_xori || ins_add || ins_addu || ins_sub || ins_subu ||
+        ins_slt || ins_sltu || ins_slti || ins_sltiu || ins_and || ins_or || 
+        ins_nor || ins_xor || ins_sll || ins_srl || ins_sra || ins_sllv || ins_srlv || 
+        ins_srav || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw || ins_jal || ins_jalr) ? 1 : 0;
 
-// RegSrc
-assign cu_reg_src =
-       // Extended immediate
-       (inst_lui                                             ) ? `REG_SRC_IMM :
+assign en_wt_mem = (ins_sb || ins_sh || ins_sw) ? 1 : 0;
 
-       // ALU result
-       (inst_addi  || inst_addiu || inst_sltiu || inst_andi  ||
-        inst_ori   || inst_xori  || inst_add   || inst_addu  ||
-        inst_sub   || inst_subu  || inst_slt   || inst_sltu  ||
-        inst_and   || inst_or    || inst_nor   || inst_xor   ||
-        inst_sll   || inst_srl   || inst_sra   || inst_sllv  ||
-        inst_srlv  || inst_srav                              ) ? `REG_SRC_ALU :
+assign en_load = (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? 1 : 0;
 
-       // Data memory
-       (inst_lw                                              ) ? `REG_SRC_MEM : 
-       (inst_jal   || inst_jalr                              ) ? `REG_SRC_JMP_DST : `REG_SRC_DEFAULT;
 
-// ExtOp
-assign cu_ext_op =
-       // shift left 16
-       (inst_lui                               ) ? `EXT_OP_SFT16 :
-       // signed extend
-       (inst_add   || inst_addiu || inst_sltiu ) ? `EXT_OP_SIGNED :
-       // unsigned extend
-       (inst_andi  || inst_ori   || inst_xori  ||
-        inst_lw    || inst_sw                  ) ? `EXT_OP_UNSIGNED : `EXT_OP_DEFAULT;
-
-// NPCOp
-assign cu_npc_op =
-       // normal: next instruction
-       (inst_lui   || inst_lw    || inst_sw    || inst_addi  ||
-        inst_addiu || inst_sltiu || inst_andi  || inst_ori   ||
-        inst_xori  || inst_add   || inst_addu  || inst_sub   ||
-        inst_subu  || inst_slt   || inst_sltu  || inst_and   ||
-        inst_or    || inst_nor   || inst_xor   || inst_sll   ||
-        inst_srl   || inst_sra   || inst_sllv  || inst_srlv  ||
-        inst_srav                                            ) ? `NPC_OP_NEXT :
-
-       // BEQ
-       // normal: next instruction
-       (inst_beq && !zero) ? `NPC_OP_NEXT :
-       // jump to target
-       (inst_beq &&  zero) ? `NPC_OP_OFFSET :
-
-       // BNE
-       // normal: next instruction
-       (inst_bne &&  zero) ? `NPC_OP_NEXT :
-       // jump to target
-       (inst_bne && !zero) ? `NPC_OP_OFFSET :
-
-       // jump to instr_index
-       (inst_j   || inst_jal)  ? `NPC_OP_JUMP :
-       // jump to rs data
-       (inst_jr  || inst_jalr) ? `NPC_OP_RS : `NPC_OP_DEFAULT;
 endmodule
