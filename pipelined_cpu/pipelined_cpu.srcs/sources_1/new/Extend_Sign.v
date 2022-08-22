@@ -22,13 +22,13 @@
 
 
 module Extend_Sign(
-    input [1:0] extend_op,
+    input [1:0] extend_ctrl,
     input [15:0] In_imm,
     output wire [31:0] Out_imm
     );
-    assign Out_result = (extend_op == `EXTEND_UNSIGNED)? {{16{0}}, In_imm}:
-                (extend_op == `EXTEND_HIGH)? {In_imm, {16{0}}}:
-                (extend_op == `EXTEND_SIGNED)? {{(16){In_imm[15]}}, In_imm}:
+    assign Out_result = (extend_ctrl == `EXTEND_UNSIGNED)? {{16{0}}, In_imm}:
+                (extend_ctrl == `EXTEND_HIGH)? {In_imm, {16{0}}}:
+                (extend_ctrl == `EXTEND_SIGNED)? {{(16){In_imm[15]}}, In_imm}:
                 32'd0;
     
 endmodule
