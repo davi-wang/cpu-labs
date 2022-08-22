@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "header.v"
+`include "Header.v"
 
 module control_unit(
             input wire rst,
