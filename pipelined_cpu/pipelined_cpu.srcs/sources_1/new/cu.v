@@ -12,14 +12,14 @@ module control_unit(
 
            output wire en_reg_write,
            output wire en_mem_write,
-           output wire en_lw
+           output wire en_lw,
 
            output wire cu_alu_src,
            output wire[3:0] alu_ctrl,
            output wire[1:0] extend_ctrl,
            output wire[1:0] cu_reg_src,
            output wire[1:0] cu_reg_dst,
-           output wire[`NPC_OP_LENGTH  - 1:0] cu_npc_op,
+           output wire[`NPC_OP_LENGTH  - 1:0] cu_npc_op
        );
 
 // Init instruction signals
