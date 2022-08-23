@@ -3,14 +3,16 @@
 
 // jump control signal : jump
 `define JUMP_SEQ        4'd0     // PC + 4
-`define JUMP_J          4'd1     // {PC[31:28], instr_index, 2'b00}
 `define JUMP_BEQ        4'd2     // {PC + 4 + offset}
 `define JUMP_BNE        4'd3     // {PC + 4 + offset}
 `define JUMP_BLEZ       4'd4     // {PC + 4 + offset}
 `define JUMP_BLTZ       4'd5     // {PC + 4 + offset}
 `define JUMP_BGEZ       4'd6     // {PC + 4 + offset}
 `define JUMP_BGTZ       4'd7     // {PC + 4 + offset}
-`define JUMP_REG        4'd8     // register
+`define JUMP_J          4'd8     // {PC[31:28], instr_index, 2'b00}
+`define JUMP_JAL        4'd9     // {PC[31:28], instr_index, 2'b00}
+`define JUMP_JR         4'd10    // register
+`define JUMP_JALR       4'd11    // register
 
 // ALU control signal : alu_ctrl
 `define ALU_DEFAULT     4'd0    // output source2
