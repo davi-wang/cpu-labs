@@ -9,8 +9,8 @@ module Extend_load(
 
 assign Out_imm = (extend_load == `EXTEND_LOAD_8s)? {{24{In_imm[7]}}, In_imm[7:0]}:
                 (extend_load == `EXTEND_LOAD_16s)? {{16{In_imm[15]}}, In_imm[15:0]}:
-                (extend_load == `EXTEND_LOAD_8u)? {{24{0}}, In_imm[7:0]}:
-                (extend_load == `EXTEND_LOAD_16u)? {{16{0}}, In_imm[15:0]}:
+                (extend_load == `EXTEND_LOAD_8u)? {{24{1'b0}}, In_imm[7:0]}:
+                (extend_load == `EXTEND_LOAD_16u)? {{16{1'b0}}, In_imm[15:0]}:
                 In_imm;
 
 endmodule

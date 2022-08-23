@@ -28,8 +28,8 @@ module Extend_Sign(
     output wire [31:0] Out_imm
     );
     
-assign Out_imm = (extend_ctrl == `EXTEND_ALU_UNSIGNED)? {{16{0}}, In_imm}:
-                (extend_ctrl == `EXTEND_ALU_HIGH)? {In_imm, {16{0}}}:
+assign Out_imm = (extend_ctrl == `EXTEND_ALU_UNSIGNED)? {{16{1'b0}}, In_imm}:
+                (extend_ctrl == `EXTEND_ALU_HIGH)? {In_imm, {16{1'b0}}}:
                 (extend_ctrl == `EXTEND_ALU_SIGNED)? {{(16){In_imm[15]}}, In_imm}:
                 32'd0;
     
