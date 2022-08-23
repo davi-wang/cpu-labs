@@ -20,11 +20,14 @@ module Pipeline1(
     input wire[2:0] extend_load,
     input wire[1:0] data_src,
     input wire[1:0] wt_reg,
+    input wire[4:0] load_dst,
+    input wire[4:0] wt_reg_dst,
+    input wire[4:0] rs_f,
+    input wire[4:0] rt_f,
+
 
     // pipeline control signals
-    input wire pip_pause,
     input wire pip_flush,
-
 
 
     // data and instrcution
@@ -41,8 +44,15 @@ module Pipeline1(
     output wire[1:0] extend_alu_out,
     output wire[2:0] extend_load_out,
     output wire[1:0] data_src_out,
-    output wire[1:0] wt_reg_out
+    output wire[1:0] wt_reg_out,
+
+    output wire pip_pause,
+    output wire[4:0] wt_reg_dst_out,
+    output wire[4:0] rs_f_out,
+    output wire[4:0] rt_f_out
     );
+
+
 
 reg instruction_register;
 reg reg1_register;
@@ -55,6 +65,10 @@ reg[1:0] extend_alu_register;
 reg[2:0] extend_load_register;
 reg[1:0] data_src_register;
 reg[1:0] wt_reg_register;
+reg[4:0] load_dst_register;
+reg[4:0] wt_reg_dst_register;
+reg[4:0] rs_f_register;
+reg[4:0] rt_f_register;
 
 assign instruction_out = {32{~pip_pause}} & instruction_register;
 assign reg1_out = {32{~pip_pause}} & reg1_register;
@@ -68,6 +82,9 @@ assign extend_alu_out = {2{~pip_pause}} & extend_alu_register;
 assign extend_load_out = {3{~pip_pause}} & extend_load_register;
 assign data_src_out = {2{~pip_pause}} & data_src_register;
 assign wt_reg_out = {2{~pip_pause}} & wt_reg_register;
+assign wt_reg_dst_out = {5{~pip_pause}} & wt_reg_dst_register;
+
+assign pip_pause = (&load_dst_register && (load_dst_register == rs_f || load_dst_register == rt_f))
 
 always @ (posedge clk) begin
     if (~rst || pip_flush || instruction == 32'd0) begin
@@ -83,8 +100,12 @@ always @ (posedge clk) begin
         extend_load_register <= 3'd0;
         data_src_register <= 2'd0;
         wt_reg_register <= 2'd0;
+        load_dst_register <= 5'd0
+        wt_reg_dst_register <= 5'd0
+        rs_f_register <= 5'd0;
+        rt_f_register <= 5'd0;
     end else if (pip_pause) begin
-        
+        load_dst_register <= 5'd0
     end
     else begin
         instruction_register <= instruction;
@@ -99,6 +120,10 @@ always @ (posedge clk) begin
         extend_load_register <= extend_load;
         data_src_register <= data_src;
         wt_reg_register <= wt_reg;
+        load_dst_register <= load_dst;
+        wt_reg_dst_register <= wt_reg_dst;
+        rs_f_register <= rs_f;
+        rt_f_register <= rt_f;
     end
 end
 
