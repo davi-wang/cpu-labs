@@ -26,17 +26,14 @@ module PC(
     input [31:0]npc,
     input stall,
     
-    output wire [31:0]i_addr
+    output reg [31:0]pc
     );
     
-    reg [31:0] pc;
     always@(posedge clk or negedge rst) begin
         if(!rst)
             pc = 32'd0;
         else if( !stall )
             pc = npc;  
     end
-    
-    assign i_addr = pc;
     
 endmodule
