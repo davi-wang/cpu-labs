@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-`include "Header.v"
+`include"Header.v"
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -39,15 +39,29 @@ module ALU_Unit(
     
     always@(*) begin
         mid_result[32] = 0;
+        // zero_out = 0;
+        // overflow = 0;
         case(alu_op)
             `ALU_ADD:begin
                  mid_result = {in_data1[31], in_data1}+{in_data2[31],in_data2};
                  // assign overflow = (mid_result[32] != mid_result[31]) ? 1:0;
+                 // assign zero_out = (mid_result == 33'd0) ? 1:0;
+                 end
+            `ALU_ADDU: begin
+                 mid_result = {1'b0, in_data1}+{1'b0,in_data2};
+                 // assign overflow = (mid_result[32] ==1) ? 1:0;
+                 // assign zero_out = (mid_result == 33'd0) ? 1:0;
                  end
             `ALU_SUB: begin 
                 mid_result = {in_data1[31], in_data1}-{in_data2[31],in_data2};
                 // assign overflow = (mid_result[32] != mid_result[31]) ? 1:0;
+                // assign zero_out = (mid_result == 33'd0) ? 1:0;
                 end
+            `ALU_SUBU: begin
+                 mid_result = {1'b0, in_data1}+{1'b0,in_data2};
+                 // assign overflow = (mid_result[32] ==1) ? 1:0;
+                 // assign zero_out = (mid_result == 33'd0) ? 1:0;
+                 end
             `ALU_AND: mid_result[31:0] = in_data1 & in_data2;
             `ALU_OR : mid_result[31:0] = in_data1 | in_data2;
             `ALU_XOR: mid_result[31:0] = in_data1 ^ in_data2;
