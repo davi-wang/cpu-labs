@@ -15,7 +15,7 @@ module control_unit(
     output wire[2:0] extend_load,
     output wire[1:0] data_src,
     output wire[1:0] wt_reg,
-    output wire[3:0] jump
+    output wire[3:0] jump,
     
     // forwarding
     output wire[4:0] load_dst,
@@ -27,8 +27,9 @@ module control_unit(
 wire[5:0] operation;
 wire[5:0] func;
 
-assign operation = instrcution[31:26];
-assign func = instrcution[5:0];
+assign operation = instruction[31:26];
+assign func = instruction[5:0];
+assign rt = instruction[20:16];
 
 // R
 assign r_ins = (operation == 6'd0) ? 1 : 0;
@@ -144,13 +145,13 @@ assign en_wt_reg =
 
 assign en_wt_mem = (ins_sb || ins_sh || ins_sw) ? 1 : 0;
 
-assign load_dst = (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? instrcution[20:16] : 0;
+assign load_dst = (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? instruction[20:16] : 0;
 
-assign rs_f = (r_ins || (!ins_j && !ins_jal)) ? instrcution[25:21] : 5'd0;
+assign rs_f = (r_ins || (!ins_j && !ins_jal)) ? instruction[25:21] : 5'd0;
 
-assign rt_f = (r_ins) ? instrcution[20:16] : 5'd0;
+assign rt_f = (r_ins) ? instruction[20:16] : 5'd0;
 
-assign wt_reg_dst = (r_ins) ? instrcution[15:11] :
-                    (!ins_j && !ins_jal) ? instrcution[20:16] : 5'd0;
+assign wt_reg_dst = (r_ins) ? instruction[15:11] :
+                    (!ins_j && !ins_jal) ? instruction[20:16] : 5'd0;
 
 endmodule
