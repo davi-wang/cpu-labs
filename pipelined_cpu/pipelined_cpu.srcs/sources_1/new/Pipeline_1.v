@@ -83,6 +83,8 @@ assign extend_load_out = {3{~pip_pause}} & extend_load_register;
 assign data_src_out = {2{~pip_pause}} & data_src_register;
 assign wt_reg_out = {2{~pip_pause}} & wt_reg_register;
 assign wt_reg_dst_out = {5{~pip_pause}} & wt_reg_dst_register;
+assign rs_f_out = {5{~pip_pause}} & rs_f_register;
+assign rt_f_out = {5{~pip_pause}} & rt_f_register;
 
 assign pip_pause = (&load_dst_register && (load_dst_register == rs_f || load_dst_register == rt_f))
 
