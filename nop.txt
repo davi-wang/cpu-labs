@@ -1,0 +1,3 @@
+产生NOP的条件
+1. LW与下一条语句相关 -- pipeline0 and pipeline1 stop for one cycle
+2. 跳转语句后面 -- insert a nop at pipeline1 and replace the instruction in pipeline0 with the new one.
