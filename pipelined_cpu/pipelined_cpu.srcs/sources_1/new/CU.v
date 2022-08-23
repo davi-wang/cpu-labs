@@ -2,24 +2,25 @@
 `include "Header.v"
 
 module control_unit(
-            input wire rst,
+    input wire rst,
 
-            input wire[5:0] operation,
-            input wire[4:0] rt,
-            input wire[4:0] s,
-            input wire[5:0] func,
+    input wire[5:0] operation,
+    input wire[4:0] rt,
+    input wire[4:0] s,
+    input wire[5:0] func,
 
-            output wire en_wt_reg,
-            output wire en_wt_mem,
-            output wire en_load,
+    output wire en_wt_reg,
+    output wire en_wt_mem,
+    output wire en_load,
 
-            output wire alu_reg_imm,
-            output wire[3:0] alu_ctrl,
-            output wire[1:0] extend_ctrl,
-            output wire[1:0] data_src,
-            output wire[1:0] wt_reg,
-            output wire[1:0] jump
-       );
+    output wire alu_reg_imm,
+    output wire[3:0] alu_ctrl,
+    output wire[1:0] extend_alu,
+    output wire[2:0] extend_load,
+    output wire[1:0] data_src,
+    output wire[1:0] wt_reg,
+    output wire[1:0] jump
+    );
 
 
 // R
@@ -92,12 +93,19 @@ assign alu_ctrl = (ins_addi || ins_add) ? `ALU_ADD:
            (ins_srav || ins_sra) ? `ALU_RIGHTA :
            `ALU_DEFAULT;  // output the second ALU input
 
-assign extend_ctrl =
-        (ins_lui) ? `EXTEND_HIGH :
-        (ins_addi || ins_slti) ? `EXTEND_SIGNED :
+assign extend_alu =
+        (ins_lui) ? `EXTEND_ALU_HIGH :
+        (ins_addi || ins_slti) ? `EXTEND_ALU_SIGNED :
         (ins_andi || ins_sltiu || ins_addiu || ins_ori | ins_xori || ins_sb || ins_sh ||
-        ins_sw || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `EXTEND_UNSIGNED : 
-        `EXTEND_NOP;
+        ins_sw || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `EXTEND_ALU_UNSIGNED : 
+        `EXTEND_ALU_NOP;
+
+assign extend_load =
+        (ins_lb) ? `EXTEND_LOAD_8s :
+        (ins_lh) ? `EXTEND_LOAD_16s :
+        (ins_lbu) ? `EXTEND_LOAD_8u : 
+        (ins_lhu) ? `EXTEND_LOAD_16u :
+        `EXTEND_LOAD_NOP;
 
 assign data_src = 
         (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `DATA_SRC_MEM : 
