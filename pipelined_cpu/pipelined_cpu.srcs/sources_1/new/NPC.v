@@ -30,13 +30,18 @@ module NPC(
     input [15:0] reg2_data,
     
     output  reg [31:0]npc,
-    output  reg [31:0]des_inst_addr
+    output  reg [31:0]des_inst_addr,
+    output  reg pip_flush
     
     );
     
     always@(*)begin
+        pip_flush = 1;
         case(jump_ctrl)
-            `JUMP_SEQ: npc = pc + 4;
+            `JUMP_SEQ: begin
+                 npc = pc + 4;
+                 pip_flush = 0;
+             end
             `JUMP_BEQ: npc = (reg1_data == reg2_data)? pc+(instr_offset<<2) : pc+4;
             `JUMP_BNE: npc = (reg1_data != reg2_data)? pc+(instr_offset<<2) : pc+4;
             `JUMP_BLEZ: npc = (reg1_data <= 0 )? pc+(instr_offset<<2) : pc+4;
@@ -54,7 +59,10 @@ module NPC(
                 npc = reg1_data;
                 des_inst_addr = npc+4;
                 end
-            default: npc = pc;
+            default: begin
+                npc = pc;
+                pip_flush = 0;
+                end
         endcase
         
     end
