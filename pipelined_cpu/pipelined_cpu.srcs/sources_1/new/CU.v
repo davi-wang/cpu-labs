@@ -117,7 +117,12 @@ assign wt_reg =
        (ins_jal) ? `WT_REG_31 : `WT_REG_RD;
 
 assign jump =
-       (ins_beq || ins_bne || ins_blez || ins_bgtz || ins_bgez || ins_bltz) ? `JUMP_BEQ :
+       (ins_beq) ? `JUMP_BEQ :
+       (ins_bne) ? `JUMP_BNE :
+       ( ins_blez) ? `JUMP_BLEZ :
+       (ins_bgtz) ? `JUMP_BGTZ :
+       (ins_bgez) ? `JUMP_BGEZ :
+       ( ins_bltz) ? `JUMP_BLTZ :
        (ins_j || ins_jal)  ? `JUMP_J :
        (ins_jr || ins_jalr) ? `JUMP_REG : `JUMP_SEQ;
 
