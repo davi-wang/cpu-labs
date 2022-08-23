@@ -11,7 +11,6 @@ module control_unit(
 
     output wire en_wt_reg,
     output wire en_wt_mem,
-    output wire en_load,
 
     output wire alu_reg_imm,
     output wire[3:0] alu_ctrl,
@@ -19,7 +18,7 @@ module control_unit(
     output wire[2:0] extend_load,
     output wire[1:0] data_src,
     output wire[1:0] wt_reg,
-    output wire[1:0] jump
+    output wire[3:0] jump
     );
 
 
