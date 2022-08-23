@@ -17,7 +17,7 @@ assign head = addr - 32'h10010000;
 assign data_mem_out = {memory[head+3], memory[head+2], memory[head+1], memory[head]};
 
 always @ (posedge clk) begin
-    if (w_m) begin
+    if (en_wt_mem) begin
         memory[head+3] <= write_data[31:24];
         memory[head+2] <= write_data[23:16];
         memory[head+1] <= write_data[15:8];

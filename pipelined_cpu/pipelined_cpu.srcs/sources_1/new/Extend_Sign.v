@@ -22,7 +22,7 @@
 
 
 module Extend_Sign(
-    input [1:0] extend_alu,
+    input [1:0] extend_ctrl,
     input [15:0] In_imm,
 
     output wire [31:0] Out_imm
