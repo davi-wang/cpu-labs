@@ -10,7 +10,7 @@ module control_unit(
     output wire en_wt_mem,
 
     output wire alu_reg_imm,
-    output wire[3:0] alu_ctrl,
+    output wire[4:0] alu_ctrl,
     output wire[1:0] extend_alu,
     output wire[2:0] extend_load,
     output wire[2:0] data_src,
@@ -95,9 +95,12 @@ assign alu_ctrl = (ins_addi || ins_add) ? `ALU_ADD:
            (ins_or || ins_ori) ? `ALU_OR :
            (ins_xor || ins_xori) ? `ALU_XOR :
            (ins_nor) ? `ALU_NOR :
-           (ins_sllv || ins_sll) ? `ALU_LEFT :
-           (ins_srlv || ins_srl) ? `ALU_RIGHTL :
-           (ins_srav || ins_sra) ? `ALU_RIGHTA :
+           (ins_sll) ? `ALU_LEFT :
+           (ins_sllv) ? `ALU_LEFTR :
+           (ins_srl) ? `ALU_RIGHTL :
+           (ins_srlv) ? `ALU_RIGHTLR :
+           (ins_sra) ? `ALU_RIGHTA :
+           (ins_srav) ? `ALU_RIGHTAR :
            `ALU_DEFAULT;  // output the second ALU input
 
 assign extend_alu =
@@ -108,8 +111,8 @@ assign extend_alu =
         `EXTEND_ALU_NOP;
 
 assign extend_load =
-        (ins_lb) ? `EXTEND_LOAD_8s :
-        (ins_lh) ? `EXTEND_LOAD_16s :
+        (ins_lb || ins_sb) ? `EXTEND_LOAD_8s :
+        (ins_lh || ins_sh) ? `EXTEND_LOAD_16s :
         (ins_lbu) ? `EXTEND_LOAD_8u : 
         (ins_lhu) ? `EXTEND_LOAD_16u :
         `EXTEND_LOAD_NOP;

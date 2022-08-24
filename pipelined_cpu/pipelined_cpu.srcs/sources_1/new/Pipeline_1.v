@@ -15,7 +15,7 @@ module Pipeline1(
     input wire en_wt_mem,
 
     input wire alu_reg_imm,
-    input wire[3:0] alu_ctrl,
+    input wire[4:0] alu_ctrl,
     input wire[1:0] extend_alu,
     input wire[2:0] extend_load,
     input wire[2:0] data_src,
@@ -39,7 +39,7 @@ module Pipeline1(
     output wire en_wt_mem_out,
 
     output wire alu_reg_imm_out,
-    output wire[3:0] alu_ctrl_out,
+    output wire[4:0] alu_ctrl_out,
     output wire[1:0] extend_alu_out,
     output wire[2:0] extend_load_out,
     output wire[2:0] data_src_out,
@@ -58,7 +58,7 @@ reg[31:0] reg2_register;
 reg en_wt_reg_register;
 reg en_wt_mem_register;
 reg alu_reg_imm_register;
-reg[3:0] alu_ctrl_register;
+reg[4:0] alu_ctrl_register;
 reg[1:0] extend_alu_register;
 reg[2:0] extend_load_register;
 reg[2:0] data_src_register;
@@ -74,7 +74,7 @@ assign reg2_out = {32{~pip_pause}} & reg2_register;
 assign en_wt_reg_out = ~pip_pause & en_wt_reg_register;
 assign en_wt_mem_out = ~pip_pause & en_wt_mem_register;
 assign alu_reg_imm_out = ~pip_pause & alu_reg_imm_register;
-assign alu_ctrl_out = {4{~pip_pause}} & alu_ctrl_register;
+assign alu_ctrl_out = {5{~pip_pause}} & alu_ctrl_register;
 assign extend_alu_out = {2{~pip_pause}} & extend_alu_register;
 assign extend_load_out = {3{~pip_pause}} & extend_load_register;
 assign data_src_out = {3{~pip_pause}} & data_src_register;
@@ -92,7 +92,7 @@ always @ (posedge clk) begin
         en_wt_reg_register <= 0;
         en_wt_mem_register <= 0;
         alu_reg_imm_register <= 0;
-        alu_ctrl_register <= 4'd0;
+        alu_ctrl_register <= 5'd0;
         extend_alu_register <= 2'd0; 
         extend_load_register <= 3'd0;
         data_src_register <= 3'd0;
