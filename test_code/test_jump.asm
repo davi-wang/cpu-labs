@@ -3,6 +3,8 @@
 	temp2: .word 99
 	temp3: .word 1 
 	temp4: .word 2
+	temp5: .word 0x84
+	temp6: .word 0x90
 
 .text
 	lui $t0, 0
@@ -57,7 +59,15 @@
 	jal label_8
 	addiu $t3, $t3, 1
 	label_8:
+	lw    $t5, 16($t0)
+	jr    $t5
 	addiu $t3, $t3, 1
+	lw    $t5, 20($t0)
+	jalr  $t6, $t5
+	addiu $t3, $t3, 1
+	addiu $t3, $t3, 1
+	
+	
 	
 	
 	

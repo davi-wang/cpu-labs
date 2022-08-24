@@ -1,7 +1,7 @@
-file = open("test_cal_b.txt",'r')
+file = open("test_jump_inst.txt",'r')
 content = file.read()
 
-file_new = open("test_cal_b_2.txt",'w')
+file_new = open("test_jump_inst_2.txt",'w')
 
 i = 0
 while i <len(content):
