@@ -1,3 +1,4 @@
+`include "Header.v"
 `timescale 1ns / 1ps
 
 module forwarding_mux(
@@ -19,12 +20,21 @@ endmodule
 module alu_data_mux(
     input [31:0] mux_data,
     input [31:0] extended_imm,
-    input mux_ctrl,
-    output wire [31:0] alu_data2
+    input [31:0] cp0_data,
+
+    input [1:0] mux_ctrl,
+    output reg [31:0] alu_data2
 );
-
-assign alu_data2 = (mux_ctrl) ? extended_imm : mux_data;
-
+    always @(*) begin
+        if(mux_ctrl == 2)
+            alu_data2 <= cp0_data;
+        else if(mux_ctrl == 1)
+            alu_data2 <= extended_imm;
+        else if(mux_data == 0)
+            alu_data2 <= mux_data;
+        else
+            alu_data2 <= 32'b0;
+    end
 endmodule
 
 

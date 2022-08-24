@@ -8,6 +8,7 @@
 `define InterruptNotAssert 1'b0
 `define InterruptAssert 1'b1
 
+//cp0 REG
 `define CP0_REG_COUNT 5'b01001
 `define CP0_REG_COMPARE 5'b01011
 `define CP0_REG_STATUS 5'b01100
@@ -16,4 +17,5 @@
 `define WriteEnable 1'b1
 
 //op
-
+`define EXE_MFC0_OP  4'd14
+`define EXE_MTC0_OP  4'd14   

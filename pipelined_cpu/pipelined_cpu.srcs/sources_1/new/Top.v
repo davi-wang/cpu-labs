@@ -44,9 +44,6 @@ wire[4:0] wt_reg_dst;
 
 /////////////////////////////////
 // pip1
-wire[31:0] reg1_out;
-wire[31:0] reg2_out;
-wire[31:0] instruction_out;
 wire en_wt_reg_out;
 wire en_wt_mem_out;
 wire alu_reg_imm_out;

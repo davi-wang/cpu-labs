@@ -10,12 +10,15 @@ module Pipeline_2(
     input wire[31:0]   In_jmp_dst,
     input wire[31:0]   In_extended_imm,
     input wire[4:0]    In_dest_reg,
-    input wire[4:0]    In_dest_reg,
     input wire[1:0]    In_extend_load,
     
     input wire         en_mem_write_in,
     input wire[2:0]    cu_reg_src_in,
     input wire         en_reg_write_in,
+
+
+    //exe
+    input wire cp0_reg_we,
     
     output reg[31:0]   Out_alu_result,
     output reg[31:0]   Out_reg2_data,
@@ -30,7 +33,7 @@ module Pipeline_2(
     
     );
     
-    always@(posedge clk)begin
+    always@(posedge clk or negedge rst)begin
         if(!rst)begin 
             Out_alu_result     <= 32'd0;
             Out_reg2_data      <= 32'd0;

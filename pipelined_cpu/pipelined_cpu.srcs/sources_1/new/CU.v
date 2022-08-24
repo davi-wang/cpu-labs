@@ -1,24 +1,24 @@
 `timescale 1ns / 1ps
 `include "Header.v"
+`include "CP0_header.v"
 
-module control_unit(input wire rst,                     
+module control_unit(input wire rst,
                     input wire[31:0] instruction,
-                    output wire en_wt_reg,              //write to cpu reg
-                    output wire en_wt_mem,              //write to memory        
-                    output wire alu_reg_imm,            //src from reg or immed      
-                    output wire[3:0] alu_ctrl,          //operation of alu
-                    output wire[1:0] extend_alu,        //
-                    output wire[2:0] extend_load,       
-                    output wire[1:0] data_src,          //选择writeback 来源
-
-                        
-
-                    output wire[1:0] wt_reg,            //选择写rd rt or 31
-                    output wire[3:0] jump,              
-                    output wire[4:0] load_dst,          //        
+                    output wire en_wt_reg,        //write to cpu reg
+                    output wire en_wt_mem,        //write to memory
+                    output wire alu_reg_imm,      //src from reg or immed
+                    output wire[3:0] alu_ctrl,    //operation of alu
+                    output wire[1:0] extend_alu,
+                    output wire[2:0] extend_load,
+                    output wire[1:0] data_src,    //选择writeback 来源
+                    output wire[1:0] wt_reg,      //选择写rd rt or 31
+                    output wire[3:0] jump,
+                    output wire[4:0] load_dst,
                     output wire[4:0] rs_f,
                     output wire[4:0] rt_f,
-                    output wire[4:0] wt_reg_dst);
+                    output wire[4:0] wt_reg_dst,
+                    output wire cp0_reg_we,
+                    output wire cp0_reg_re);
     
     wire[5:0] operation;
     wire[5:0] func;
@@ -78,17 +78,10 @@ module control_unit(input wire rst,
     
     
     // mtc0 & mfc0
-    always @(*) begin
-        if (instruction[31:21] == 11'b01000000000 &&
-        instruction[10:0] == 11'b00000000000) begin
-        //TODO: MFC0 WRITE TO CP0 REG
-    end
-    
-    else if (instruction[31:21] == 11'b01000000100 &&
-    instruction[10:0] == 11'b00000000000) begin
-    //TODO: MTC0 READ FROM CP0
-    end
-    end
+    assign mtc0 = (instruction[31:21] == 11'b01000000000 &&
+    instruction[10:0] == 11'b00000000000)?1:0;
+    assign mfc0 = (instruction[31:21] == 11'b01000000100 &&
+    instruction[10:0] == 11'b00000000000)?1:0;
     
     
     assign alu_reg_imm = (ins_addi || ins_addiu || ins_slti || ins_sltiu || ins_andi || ins_ori ||
@@ -109,6 +102,8 @@ module control_unit(input wire rst,
     (ins_sllv || ins_sll) ? `ALU_LEFT :
     (ins_srlv || ins_srl) ? `ALU_RIGHTL :
     (ins_srav || ins_sra) ? `ALU_RIGHTA :
+    (mtc0)? `EXE_MTC0_OP:
+    (mfc0)? `EXE_MFC0_OP:
     `ALU_DEFAULT;  // output the second ALU input
     
     assign extend_alu = 
@@ -131,7 +126,7 @@ module control_unit(input wire rst,
     
     assign wt_reg = 
     (ins_sltiu || ins_andi || ins_ori || ins_lui || ins_addi || ins_addiu || ins_slti ||
-    ins_xori || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `WT_REG_RT :
+    ins_xori || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw || mfc0) ? `WT_REG_RT :
     (ins_jal) ? `WT_REG_31 : `WT_REG_RD;
     
     assign jump = 
@@ -151,7 +146,8 @@ module control_unit(input wire rst,
     ins_ori || ins_xori || ins_add || ins_addu || ins_sub || ins_subu ||
     ins_slt || ins_sltu || ins_slti || ins_sltiu || ins_and || ins_or ||
     ins_nor || ins_xor || ins_sll || ins_srl || ins_sra || ins_sllv || ins_srlv ||
-    ins_srav || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw || ins_jal || ins_jalr) ? 1 : 0;
+    ins_srav || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw || ins_jal
+    || ins_jalr || mfc0) ? 1 : 0;
     
     assign en_wt_mem = (ins_sb || ins_sh || ins_sw) ? 1 : 0;
     
@@ -163,5 +159,8 @@ module control_unit(input wire rst,
     
     assign wt_reg_dst = (r_ins) ? instruction[15:11] :
     (!ins_j && !ins_jal) ? instruction[20:16] : 5'd0;
+
+    assign cp0_reg_we = (mtc0)?1:0;
+    assign cp0_reg_we = (mfc0)?1:0;
     
 endmodule
