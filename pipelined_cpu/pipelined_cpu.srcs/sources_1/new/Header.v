@@ -46,11 +46,18 @@
 
 
 // data source signal : data_src
-`define DATA_SRC_ALU    2'd1     // ALU
-`define DATA_SRC_MEM    2'd2     // from data memory
-`define DATA_SRC_JAL    2'd3     // from (jump_destination + 4)
+`define DATA_SRC_ALU    3'd1     // ALU
+`define DATA_SRC_MEM    3'd2     // from data memory
+`define DATA_SRC_JAL    3'd3     // from (jump_destination + 4)
+`define DATA_SRC_IMM    3'd4     // imm
 
 // write register signal : wt_reg
 `define WT_REG_RT       2'd0      // rt
 `define WT_REG_RD       2'd1      // rd
 `define WT_REG_31       2'd2      // GPR[31] 
+
+
+// `define ALU_RESULT      3'b001
+// `define MEM_DATA        3'b010 
+// `define EXTENDED_IMM    3'b011 
+// `define JUMP_DST        3'b100 

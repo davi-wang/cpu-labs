@@ -10,10 +10,10 @@ module Data_mem(
     );
 
 
-reg[7:0] memory[1023:0];
+reg[7:0] memory[64:0];
 wire[31:0] head;
 
-assign head = addr - 32'h10010000;
+assign head = addr;
 assign data_mem_out = {memory[head+3], memory[head+2], memory[head+1], memory[head]};
 
 always @ (posedge clk) begin

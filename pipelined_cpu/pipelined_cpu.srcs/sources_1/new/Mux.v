@@ -20,21 +20,12 @@ endmodule
 module alu_data_mux(
     input [31:0] mux_data,
     input [31:0] extended_imm,
-    input [31:0] cp0_data,
-
-    input [1:0] mux_ctrl,
-    output reg [31:0] alu_data2
+    input mux_ctrl,
+    output wire [31:0] alu_data2
 );
-    always @(*) begin
-        if(mux_ctrl == 2)
-            alu_data2 <= cp0_data;
-        else if(mux_ctrl == 1)
-            alu_data2 <= extended_imm;
-        else if(mux_data == 0)
-            alu_data2 <= mux_data;
-        else
-            alu_data2 <= 32'b0;
-    end
+
+assign alu_data2 = (mux_ctrl) ? extended_imm : mux_data;
+
 endmodule
 
 
@@ -63,9 +54,11 @@ module w_reg_data_mux(
     
     output wire [31:0]data_mux_out
 );
-    assign data_mux_out = (mux_ctrl == 3'b100)? jump_dest:
-                          (mux_ctrl == 3'b011)? extended_imm:
-                          (mux_ctrl == 3'b010)? dmem_data:
-                          alu_result;
+
+
+assign data_mux_out = (mux_ctrl == `DATA_SRC_JAL) ? jump_dest:
+                      (mux_ctrl == `DATA_SRC_IMM) ? extended_imm:
+                      (mux_ctrl == `DATA_SRC_MEM) ? dmem_data:
+                      alu_result; // DATA_SRC_ALU
     
 endmodule

@@ -16,7 +16,7 @@ wire[31:0] pc_out;
 
 ///////////////////////////////////////
 // pip0 
-wire[31:0] instruction_out;
+wire[31:0] pip0_instruction_out;
 
 // NPC
 wire[31:0] npc_addr;
@@ -24,8 +24,8 @@ wire[31:0] reg31_val;
 wire pip_flush;
 
 // register file
-wire[31:0] reg1_out;
-wire[31:0] reg2_out;
+wire[31:0] regfile1_out;
+wire[31:0] regfile2_out;
 
 // CU
 wire en_wt_reg;
@@ -34,26 +34,27 @@ wire alu_reg_imm;
 wire[3:0] alu_ctrl;
 wire[1:0] extend_alu;
 wire[2:0] extend_load;
-wire[1:0] data_src;
+wire[2:0] data_src;
 wire[1:0] wt_reg;
 wire[3:0] jump;
 wire[4:0] load_dst;
 wire[4:0] rs_f;
 wire[4:0] rt_f;
-wire[4:0] wt_reg_dst;
 
 /////////////////////////////////
 // pip1
+wire[31:0] reg1_out;
+wire[31:0] reg2_out;
+wire[31:0] instruction_out;
 wire en_wt_reg_out;
 wire en_wt_mem_out;
 wire alu_reg_imm_out;
 wire[3:0] alu_ctrl_out;
 wire[1:0] extend_alu_out;
 wire[2:0] extend_load_out;
-wire[1:0] data_src_out;
+wire[2:0] data_src_out;
 wire[1:0] wt_reg_out;
 wire pip_pause;
-wire[4:0] wt_reg_dst_out;
 wire[4:0] rs_f_out;
 wire[4:0] rt_f_out;
 
@@ -68,9 +69,10 @@ wire[1:0] forwarding_1;
 wire[1:0] forwarding_2;
 
 // MUX
-wire[31:0] forwarding_mux_out;
+wire[31:0] forwarding_mux1_out;
+wire[31:0] forwarding_mux2_out;
 wire[31:0] ad_mux_out;
-wire[4:0] dr_mux_out;
+wire[4:0]  dr_mux_out;
 
 
 ///////////////////////////////
@@ -83,6 +85,7 @@ wire[4:0]    pip2_out_dest_reg;
 wire         pip2_en_mem_write_out;
 wire[2:0]    pip2_cu_reg_src_out;
 wire         pip2_en_reg_write_out;
+wire[2:0]    pip2_out_extend_load;
 
 // Data memory
 wire[31:0] data_mem_out;
@@ -127,19 +130,20 @@ Pipeline0 pip0(
     .rst(rst),
     .instruction(im_out),
     .pip_pause(pip_pause),
+    .pip_flush(pip_flush),
 
-    .instruction_out(instruction_out)
+    .instruction_out(pip0_instruction_out)
     );
 
 reg_files reg_f(
     .clk(clk),
     .rst(rst),
 
-    .reg1_addr(instruction_out[25:21]),
-    .reg2_addr(instruction_out[20:16]),
+    .reg1_addr(pip0_instruction_out[25:21]),
+    .reg2_addr(pip0_instruction_out[20:16]),
     .W_data(wb_data),
     .W_reg_addr(pip3_destination_reg),
-    .reg_we(wt_reg),
+    .reg_we(pip3_out_en_reg_write),
 
     .reg1_data(regfile1_out),
     .reg2_data(regfile2_out)
@@ -150,10 +154,10 @@ reg_files reg_f(
 NPC npc(
     .pc(pc_out),
     .jump_ctrl(jump),
-    .instr_index(instruction_out[25:0]),
-    .instr_offset(instruction_out[15:0]),
-    .reg1_data(instruction_out[25:21]),
-    .reg2_data(instruction_out[20:16]),
+    .instr_index(pip0_instruction_out[25:0]),
+    .instr_offset(pip0_instruction_out[15:0]),
+    .reg1_data(regfile1_out),
+    .reg2_data(regfile2_out),
     
     .npc(npc_addr),
     .des_inst_addr(reg31_val),
@@ -164,7 +168,7 @@ NPC npc(
 control_unit cu(
     .rst(rst),
 
-    .instruction(instruction_out),
+    .instruction(pip0_instruction_out),
 
     .en_wt_reg(en_wt_reg),
     .en_wt_mem(en_wt_mem),
@@ -179,15 +183,14 @@ control_unit cu(
     
     .load_dst(load_dst),
     .rs_f(rs_f),
-    .rt_f(rt_f),
-    .wt_reg_dst(wt_reg_dst)
+    .rt_f(rt_f)
     );
 
 Pipeline1 pip1(
     .clk(clk),
     .rst(rst),
 
-    .instruction(instruction_out),
+    .instruction(pip0_instruction_out),
     .reg1(regfile1_out),
     .reg2(regfile2_out),
 
@@ -201,15 +204,14 @@ Pipeline1 pip1(
     .data_src(data_src),
     .wt_reg(wt_reg),
     .load_dst(load_dst),
-    .wt_reg_dst(wt_reg_dst),
     .rs_f(rs_f),
     .rt_f(rt_f),
 
 
     .pip_flush(pip_flush),
 
-    .reg1_out(reg1_out),
-    .reg2_out(reg2_out),
+    .reg1_out(pip1_reg1_out),
+    .reg2_out(pip1_reg2_out),
     .instruction_out(instruction_out),
 
     .en_wt_reg_out(en_wt_reg_out),
@@ -232,8 +234,8 @@ ALU_Unit alu(
     .clk(clk),
     .reset(rst),
     
-    .in_data1(forwarding_mux1_out),
-    .in_data2(ad_mux_out),
+    .in_data1(ad_mux_out),
+    .in_data2(forwarding_mux2_out),
     .alu_op(alu_ctrl_out),
     
     .result(alu_result)
@@ -250,7 +252,7 @@ Forwarding fwd(
     .pipeline2_en_wt_reg_out(pip2_en_reg_write_out),
     .pipeline2_wt_reg_dst(pip2_out_dest_reg),
     .pipeline3_en_wt_reg_out(pip3_out_en_reg_write),
-    .pipeline3_wt_reg_dst(pip3_out_en_reg_write),
+    .pipeline3_wt_reg_dst(pip3_destination_reg),
     .rs(rs_f_out),
     .rt(rt_f_out),
 
@@ -259,7 +261,7 @@ Forwarding fwd(
     );
 
 forwarding_mux f_mux1(
-    .reg_data(reg1_out),
+    .reg_data(pip1_reg1_out),
     .write_data(wb_data),
     .alu_result(pip2_out_alu_result),
     .mux_ctrl(forwarding_1),
@@ -268,7 +270,7 @@ forwarding_mux f_mux1(
 );
 
 forwarding_mux f_mux2(
-    .reg_data(reg2_out),
+    .reg_data(pip1_reg2_out),
     .write_data(wb_data),
     .alu_result(pip2_out_alu_result),
     .mux_ctrl(forwarding_2),
@@ -277,11 +279,11 @@ forwarding_mux f_mux2(
 );
 
 alu_data_mux ad_mux(
-    mux_data(forwarding_mux2_out),
-    extended_imm(es_imm32),
-    mux_ctrl(alu_reg_imm_out),
+    .mux_data(forwarding_mux1_out),
+    .extended_imm(es_imm32),
+    .mux_ctrl(alu_reg_imm_out),
 
-    alu_data2(ad_mux_out)
+    .alu_data2(ad_mux_out)
 );
 
 dest_reg_mux dr_mux(

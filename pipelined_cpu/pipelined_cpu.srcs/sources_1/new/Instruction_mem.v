@@ -6,7 +6,7 @@ module Instruction_mem(
     output wire[31:0] ins_out
     );
 
-reg[7:0] memory[1023:0];
+reg[7:0] memory[127:0];
 wire[31:0] head;
 
 assign head = addr;
