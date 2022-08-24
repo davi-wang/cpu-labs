@@ -14,3 +14,6 @@
 `define CP0_REG_CAUSE 5'b01101
 `define CP0_REG_EPC 5'b01110
 `define WriteEnable 1'b1
+
+//op
+
