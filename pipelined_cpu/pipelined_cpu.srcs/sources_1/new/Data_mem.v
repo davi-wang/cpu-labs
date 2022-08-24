@@ -17,6 +17,10 @@ wire[31:0] head;
 assign head = addr;
 assign data_mem_out = {memory[head+3], memory[head+2], memory[head+1], memory[head]};
 
+initial begin
+    $readmemb("D:/assignment/Hardware_practice/MIPS-CPU/hardware-labs/test_code/test_load_data_2.txt", memory);
+end
+
 always @ (posedge clk) begin
     if (en_wt_mem) begin
         if (extend == `EXTEND_LOAD_8s) begin

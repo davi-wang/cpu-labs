@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-
+`include "Header.v"
 module forwarding_mux(
     input [31:0]reg_data,
     input [31:0]write_data,
