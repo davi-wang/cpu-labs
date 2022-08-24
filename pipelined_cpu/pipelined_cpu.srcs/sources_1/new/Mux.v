@@ -62,3 +62,19 @@ assign data_mux_out = (mux_ctrl == `DATA_SRC_JAL) ? jump_dest:
                       alu_result; // DATA_SRC_ALU
     
 endmodule
+
+
+module reg_imm_mux(
+    input [31:0] In_reg,
+    input [31:0] In_imm,
+
+    input [2:0] mux_ctrl,
+    
+    output wire [31:0]data_mux_out
+);
+
+
+assign data_mux_out = (mux_ctrl == `DATA_SRC_IMM) ? In_imm: 
+                      In_reg; // DATA_SRC_ALU
+    
+endmodule

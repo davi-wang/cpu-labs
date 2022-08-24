@@ -31,7 +31,7 @@ wire[31:0] regfile2_out;
 wire en_wt_reg;
 wire en_wt_mem;
 wire alu_reg_imm;
-wire[3:0] alu_ctrl;
+wire[4:0] alu_ctrl;
 wire[1:0] extend_alu;
 wire[2:0] extend_load;
 wire[2:0] data_src;
@@ -49,7 +49,7 @@ wire[31:0] instruction_out;
 wire en_wt_reg_out;
 wire en_wt_mem_out;
 wire alu_reg_imm_out;
-wire[3:0] alu_ctrl_out;
+wire[4:0] alu_ctrl_out;
 wire[1:0] extend_alu_out;
 wire[2:0] extend_load_out;
 wire[2:0] data_src_out;
@@ -92,6 +92,8 @@ wire[31:0] data_mem_out;
 
 // Extend load
 wire[31:0] el_imm32;
+
+wire[31:0] reg_imm_mux_out;
 
 ///////////////////////////////////////////
 // pip3
@@ -234,8 +236,9 @@ ALU_Unit alu(
     .clk(clk),
     .reset(rst),
     
-    .in_data1(ad_mux_out),
-    .in_data2(forwarding_mux2_out),
+    .in_data1(forwarding_mux1_out),
+    .in_data2(ad_mux_out),
+    .shift(instruction_out[10:6]),
     .alu_op(alu_ctrl_out),
     
     .result(alu_result)
@@ -263,7 +266,7 @@ Forwarding fwd(
 forwarding_mux f_mux1(
     .reg_data(pip1_reg1_out),
     .write_data(wb_data),
-    .alu_result(pip2_out_alu_result),
+    .alu_result(reg_imm_mux_out),
     .mux_ctrl(forwarding_1),
     
     .out_mux(forwarding_mux1_out)
@@ -272,14 +275,14 @@ forwarding_mux f_mux1(
 forwarding_mux f_mux2(
     .reg_data(pip1_reg2_out),
     .write_data(wb_data),
-    .alu_result(pip2_out_alu_result),
+    .alu_result(reg_imm_mux_out),
     .mux_ctrl(forwarding_2),
     
     .out_mux(forwarding_mux2_out)
 );
 
 alu_data_mux ad_mux(
-    .mux_data(forwarding_mux1_out),
+    .mux_data(forwarding_mux2_out),
     .extended_imm(es_imm32),
     .mux_ctrl(alu_reg_imm_out),
 
@@ -321,11 +324,21 @@ Pipeline_2 pip2(
     .cu_reg_src_out(pip2_cu_reg_src_out)
     );
 
+reg_imm_mux ri_mux(
+    .In_reg(pip2_out_alu_result),
+    .In_imm(pip2_out_extended_imm),
+
+    .mux_ctrl(pip2_cu_reg_src_out),
+    
+    .data_mux_out(reg_imm_mux_out)
+);
+
 Data_mem dm(
     .clk(clk),
     .en_wt_mem(pip2_en_mem_write_out),
     .addr(pip2_out_alu_result),
     .write_data(pip2_out_reg2_data),
+    .extend(pip2_out_extend_load),
 
     .data_mem_out(data_mem_out)
     );
