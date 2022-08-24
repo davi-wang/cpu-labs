@@ -22,12 +22,12 @@
 
 
 module NPC(
-    input [31:0]pc,
+    input [31:0] pc,
     input [3:0] jump_ctrl,
     input [25:0] instr_index,
     input [15:0] instr_offset,
     input [31:0] reg1_data,
-    input [15:0] reg2_data,
+    input [31:0] reg2_data,
     
     output  reg [31:0]npc,
     output  reg [31:0]des_inst_addr,
@@ -42,12 +42,12 @@ module NPC(
                  npc = pc + 4;
                  pip_flush = 0;
              end
-            `JUMP_BEQ: npc = (reg1_data == reg2_data)? pc+(instr_offset<<2) : pc+4;
-            `JUMP_BNE: npc = (reg1_data != reg2_data)? pc+(instr_offset<<2) : pc+4;
-            `JUMP_BLEZ: npc = (reg1_data <= 0 )? pc+(instr_offset<<2) : pc+4;
-            `JUMP_BLTZ: npc = (reg1_data < 0 )? pc+(instr_offset<<2) : pc+4;
-            `JUMP_BGEZ: npc = (reg1_data >= 0 )? pc+(instr_offset<<2) : pc+4;
-            `JUMP_BGTZ : npc = (reg1_data > 0 )? pc+(instr_offset<<2) : pc+4;
+            `JUMP_BEQ: npc = (reg1_data == reg2_data) ? pc+(instr_offset<<2) : pc+4;
+            `JUMP_BNE: npc = (reg1_data != reg2_data) ? pc+(instr_offset<<2) : pc+4;
+            `JUMP_BLEZ: npc = (reg1_data <= 0) ? pc+(instr_offset<<2) : pc+4;
+            `JUMP_BLTZ: npc = (reg1_data < 0) ? pc+(instr_offset<<2) : pc+4;
+            `JUMP_BGEZ: npc = (reg1_data >= 0) ? pc+(instr_offset<<2) : pc+4;
+            `JUMP_BGTZ: npc = (reg1_data > 0) ? pc+(instr_offset<<2) : pc+4;
             
             `JUMP_J  : npc = {pc[31:28], instr_index, 2'b00};
             `JUMP_JAL : begin

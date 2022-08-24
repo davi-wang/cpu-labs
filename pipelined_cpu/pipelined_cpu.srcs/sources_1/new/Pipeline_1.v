@@ -18,10 +18,9 @@ module Pipeline1(
     input wire[3:0] alu_ctrl,
     input wire[1:0] extend_alu,
     input wire[2:0] extend_load,
-    input wire[1:0] data_src,
+    input wire[2:0] data_src,
     input wire[1:0] wt_reg,
     input wire[4:0] load_dst,
-    input wire[4:0] wt_reg_dst,
     input wire[4:0] rs_f,
     input wire[4:0] rt_f,
 
@@ -43,30 +42,28 @@ module Pipeline1(
     output wire[3:0] alu_ctrl_out,
     output wire[1:0] extend_alu_out,
     output wire[2:0] extend_load_out,
-    output wire[1:0] data_src_out,
+    output wire[2:0] data_src_out,
     output wire[1:0] wt_reg_out,
 
-    output wire pip_pause,
-    output wire[4:0] wt_reg_dst_out,
+    output reg pip_pause,
     output wire[4:0] rs_f_out,
     output wire[4:0] rt_f_out
     );
 
 
 
-reg instruction_register;
-reg reg1_register;
-reg reg2_register;
+reg[31:0] instruction_register;
+reg[31:0] reg1_register;
+reg[31:0] reg2_register;
 reg en_wt_reg_register;
 reg en_wt_mem_register;
 reg alu_reg_imm_register;
 reg[3:0] alu_ctrl_register;
 reg[1:0] extend_alu_register;
 reg[2:0] extend_load_register;
-reg[1:0] data_src_register;
+reg[2:0] data_src_register;
 reg[1:0] wt_reg_register;
 reg[4:0] load_dst_register;
-reg[4:0] wt_reg_dst_register;
 reg[4:0] rs_f_register;
 reg[4:0] rt_f_register;
 
@@ -80,16 +77,14 @@ assign alu_reg_imm_out = ~pip_pause & alu_reg_imm_register;
 assign alu_ctrl_out = {4{~pip_pause}} & alu_ctrl_register;
 assign extend_alu_out = {2{~pip_pause}} & extend_alu_register;
 assign extend_load_out = {3{~pip_pause}} & extend_load_register;
-assign data_src_out = {2{~pip_pause}} & data_src_register;
+assign data_src_out = {3{~pip_pause}} & data_src_register;
 assign wt_reg_out = {2{~pip_pause}} & wt_reg_register;
-assign wt_reg_dst_out = {5{~pip_pause}} & wt_reg_dst_register;
 assign rs_f_out = {5{~pip_pause}} & rs_f_register;
 assign rt_f_out = {5{~pip_pause}} & rt_f_register;
 
-assign pip_pause = (&load_dst_register && (load_dst_register == rs_f || load_dst_register == rt_f));
 
 always @ (posedge clk) begin
-    if (~rst || pip_flush || instruction == 32'd0) begin
+    if (~rst || pip_flush) begin
         instruction_register <= 32'd0;
         reg1_register <= 32'd0;
         reg2_register <= 32'd0;
@@ -100,14 +95,16 @@ always @ (posedge clk) begin
         alu_ctrl_register <= 4'd0;
         extend_alu_register <= 2'd0; 
         extend_load_register <= 3'd0;
-        data_src_register <= 2'd0;
+        data_src_register <= 3'd0;
         wt_reg_register <= 2'd0;
         load_dst_register <= 5'd0;
-        wt_reg_dst_register <= 5'd0;
         rs_f_register <= 5'd0;
         rt_f_register <= 5'd0;
+        pip_pause <= 0;
+
     end else if (pip_pause) begin
         load_dst_register <= 5'd0;
+        pip_pause <= 0;
     end
     else begin
         instruction_register <= instruction;
@@ -123,9 +120,9 @@ always @ (posedge clk) begin
         data_src_register <= data_src;
         wt_reg_register <= wt_reg;
         load_dst_register <= load_dst;
-        wt_reg_dst_register <= wt_reg_dst;
         rs_f_register <= rs_f;
         rt_f_register <= rt_f;
+        pip_pause <= (load_dst_register != 5'd0 && (load_dst_register == rs_f || load_dst_register == rt_f));
     end
 end
 

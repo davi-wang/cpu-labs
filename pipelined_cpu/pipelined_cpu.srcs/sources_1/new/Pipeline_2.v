@@ -10,8 +10,7 @@ module Pipeline_2(
     input wire[31:0]   In_jmp_dst,
     input wire[31:0]   In_extended_imm,
     input wire[4:0]    In_dest_reg,
-    input wire[4:0]    In_dest_reg,
-    input wire[1:0]    In_extend_load,
+    input wire[2:0]    In_extend_load,
     
     input wire         en_mem_write_in,
     input wire[2:0]    cu_reg_src_in,
@@ -22,7 +21,7 @@ module Pipeline_2(
     output reg[31:0]   Out_jmp_dst,
     output reg[31:0]   Out_extended_imm,
     output reg[4:0]    Out_dest_reg,
-    output reg[1:0]    Out_extend_load,
+    output reg[2:0]    Out_extend_load,
     
     output reg         en_mem_write_out,
     output reg[2:0]    cu_reg_src_out,
@@ -40,7 +39,7 @@ module Pipeline_2(
             Out_extend_load    <= 2'd0;
             
             en_mem_write_out   <= 3'd0;
-            cu_reg_src_out     <= 0;
+            cu_reg_src_out     <= 3'd0;
             en_reg_write_out   <= 0;
             end
         else begin

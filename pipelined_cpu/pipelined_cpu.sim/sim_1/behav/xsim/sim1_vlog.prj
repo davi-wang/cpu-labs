@@ -1,0 +1,25 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../pipelined_cpu.srcs/sources_1/new/ALU_Unit.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/CU.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Data_mem.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Extend_Sign.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Extend_load.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Forwarding.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Instruction_mem.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Mux.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/NPC.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/PC.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Pipeline_0.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Pipeline_1.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Pipeline_2.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Pipeline_3.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/Top.v" \
+"../../../../pipelined_cpu.srcs/sources_1/new/reg_files.v" \
+"../../../../pipelined_cpu.srcs/sim_1/new/sim1.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

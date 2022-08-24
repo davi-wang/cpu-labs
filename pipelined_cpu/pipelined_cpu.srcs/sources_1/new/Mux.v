@@ -20,7 +20,7 @@ module alu_data_mux(
     input [31:0] mux_data,
     input [31:0] extended_imm,
     input mux_ctrl,
-    output wire [31:0] alu_data2
+    output [31:0] alu_data2
 );
 
 assign alu_data2 = (mux_ctrl) ? extended_imm : mux_data;
@@ -53,9 +53,11 @@ module w_reg_data_mux(
     
     output wire [31:0]data_mux_out
 );
-    assign data_mux_out = (mux_ctrl == 3'b100)? jump_dest:
-                          (mux_ctrl == 3'b011)? extended_imm:
-                          (mux_ctrl == 3'b010)? dmem_data:
-                          alu_result;
+
+
+assign data_mux_out = (mux_ctrl == `DATA_SRC_JAL) ? jump_dest:
+                      (mux_ctrl == `DATA_SRC_IMM) ? extended_imm:
+                      (mux_ctrl == `DATA_SRC_MEM) ? dmem_data:
+                      alu_result; // DATA_SRC_ALU
     
 endmodule
