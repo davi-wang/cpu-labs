@@ -8,7 +8,8 @@ module ALU_Unit(
     
     input [31:0]in_data1,
     input [31:0]in_data2,
-    input [3:0]alu_op,
+    input [4:0]shift,
+    input [4:0]alu_op,
     
     // output reg overflow,
     // output reg zero_out, 
@@ -47,11 +48,14 @@ module ALU_Unit(
             `ALU_OR : mid_result[31:0] = in_data1 | in_data2;
             `ALU_XOR: mid_result[31:0] = in_data1 ^ in_data2;
             `ALU_NOR: mid_result[31:0] = ~(in_data1 | in_data2);
-            `ALU_SLT: mid_result[31:0] = ($signed(in_data1) < $signed(in_data2))? 32'd1:0;
-            `ALU_SLTU:mid_result[31:0] = (in_data1 < in_data2)? 32'd1:32'd0;
-            `ALU_LEFT: mid_result[31:0] = in_data2 << in_data1[4:0];
-            `ALU_RIGHTL: mid_result[31:0] = in_data2 >> in_data1[4:0];
-            `ALU_RIGHTA: mid_result[31:0] = $signed(in_data2) >> in_data1[4:0];
+            `ALU_SLT: mid_result[31:0] = ($signed(in_data1) < $signed(in_data2)) ? 32'd1:0;
+            `ALU_SLTU:mid_result[31:0] = (in_data1 < in_data2) ? 32'd1 : 32'd0;
+            `ALU_LEFT: mid_result[31:0] = in_data2 << shift;
+            `ALU_LEFTR: mid_result[31:0] = in_data2 << in_data1;
+            `ALU_RIGHTL: mid_result[31:0] = in_data2 >> shift;
+            `ALU_RIGHTLR: mid_result[31:0] = in_data2 >> in_data1;
+            `ALU_RIGHTA: mid_result[31:0] = $signed(in_data2) >>> shift;
+            `ALU_RIGHTAR: mid_result[31:0] = $signed(in_data2) >>> in_data1;
             `ALU_DEFAULT: mid_result[31:0] =  32'd0;     
         endcase
    

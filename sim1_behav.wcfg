@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="167870fs"></ZoomStartTime>
-      <ZoomEndTime time="279871fs"></ZoomEndTime>
-      <Cursor1Time time="239670fs"></Cursor1Time>
+      <ZoomStartTime time="233560fs"></ZoomStartTime>
+      <ZoomEndTime time="345561fs"></ZoomEndTime>
+      <Cursor1Time time="281020fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="175"></NameColumnWidth>
       <ValueColumnWidth column_width="86"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="44" />
+   <WVObjectSize size="64" />
    <wvobject fp_name="/sim1/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -40,6 +40,7 @@
    <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers" type="array">
       <obj_property name="ElementShortName">registers[31:0][31:0]</obj_property>
       <obj_property name="ObjectShortName">registers[31:0][31:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/pc/pc" type="array">
       <obj_property name="ElementShortName">pc[31:0]</obj_property>
@@ -109,13 +110,17 @@
       <obj_property name="ElementShortName">W_data[31:0]</obj_property>
       <obj_property name="ObjectShortName">W_data[31:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/en_wt_mem" type="logic">
+      <obj_property name="ElementShortName">en_wt_mem</obj_property>
+      <obj_property name="ObjectShortName">en_wt_mem</obj_property>
+   </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/reg_f/reg_we" type="logic">
       <obj_property name="ElementShortName">reg_we</obj_property>
       <obj_property name="ObjectShortName">reg_we</obj_property>
    </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/alu/alu_op" type="array">
-      <obj_property name="ElementShortName">alu_op[3:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_op[3:0]</obj_property>
+      <obj_property name="ElementShortName">alu_op[4:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_op[4:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/alu/result" type="array">
       <obj_property name="ElementShortName">result[31:0]</obj_property>
@@ -126,8 +131,8 @@
       <obj_property name="ObjectShortName">instruction_out[31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/cu/alu_ctrl" type="array">
-      <obj_property name="ElementShortName">alu_ctrl[3:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_ctrl[3:0]</obj_property>
+      <obj_property name="ElementShortName">alu_ctrl[4:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_ctrl[4:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/w_mux/alu_result" type="array">
       <obj_property name="ElementShortName">alu_result[31:0]</obj_property>
@@ -165,6 +170,14 @@
       <obj_property name="ElementShortName">write_data[31:0]</obj_property>
       <obj_property name="ObjectShortName">write_data[31:0]</obj_property>
    </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/addr" type="array">
+      <obj_property name="ElementShortName">addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/en_wt_mem" type="logic">
+      <obj_property name="ElementShortName">en_wt_mem</obj_property>
+      <obj_property name="ObjectShortName">en_wt_mem</obj_property>
+   </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/fwd/pipeline2_en_wt_reg_out" type="logic">
       <obj_property name="ElementShortName">pipeline2_en_wt_reg_out</obj_property>
       <obj_property name="ObjectShortName">pipeline2_en_wt_reg_out</obj_property>
@@ -196,5 +209,73 @@
    <wvobject fp_name="/sim1/TOP_MOD/fwd/forwarding_2" type="array">
       <obj_property name="ElementShortName">forwarding_2[1:0]</obj_property>
       <obj_property name="ObjectShortName">forwarding_2[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/reg_data" type="array">
+      <obj_property name="ElementShortName">reg_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/write_data" type="array">
+      <obj_property name="ElementShortName">write_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">write_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/alu_result" type="array">
+      <obj_property name="ElementShortName">alu_result[31:0]</obj_property>
+      <obj_property name="ObjectShortName">alu_result[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/mux_ctrl" type="array">
+      <obj_property name="ElementShortName">mux_ctrl[1:0]</obj_property>
+      <obj_property name="ObjectShortName">mux_ctrl[1:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/out_mux" type="array">
+      <obj_property name="ElementShortName">out_mux[31:0]</obj_property>
+      <obj_property name="ObjectShortName">out_mux[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/ri_mux/In_reg" type="array">
+      <obj_property name="ElementShortName">In_reg[31:0]</obj_property>
+      <obj_property name="ObjectShortName">In_reg[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/ri_mux/In_imm" type="array">
+      <obj_property name="ElementShortName">In_imm[31:0]</obj_property>
+      <obj_property name="ObjectShortName">In_imm[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/ri_mux/mux_ctrl" type="array">
+      <obj_property name="ElementShortName">mux_ctrl[2:0]</obj_property>
+      <obj_property name="ObjectShortName">mux_ctrl[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/ri_mux/data_mux_out" type="array">
+      <obj_property name="ElementShortName">data_mux_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_mux_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/en_wt_mem" type="logic">
+      <obj_property name="ElementShortName">en_wt_mem</obj_property>
+      <obj_property name="ObjectShortName">en_wt_mem</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/addr" type="array">
+      <obj_property name="ElementShortName">addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/write_data" type="array">
+      <obj_property name="ElementShortName">write_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">write_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/extend" type="array">
+      <obj_property name="ElementShortName">extend[2:0]</obj_property>
+      <obj_property name="ObjectShortName">extend[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/data_mem_out" type="array">
+      <obj_property name="ElementShortName">data_mem_out[31:0]</obj_property>
+      <obj_property name="ObjectShortName">data_mem_out[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/memory" type="array">
+      <obj_property name="ElementShortName">memory[64:0][7:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[64:0][7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/head" type="array">
+      <obj_property name="ElementShortName">head[31:0]</obj_property>
+      <obj_property name="ObjectShortName">head[31:0]</obj_property>
    </wvobject>
 </wave_config>

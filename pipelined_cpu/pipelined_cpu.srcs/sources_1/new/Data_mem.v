@@ -5,6 +5,7 @@ module Data_mem(
     input wire en_wt_mem,
     input wire[31:0] addr,
     input wire[31:0] write_data,
+    input wire[2:0] extend,
 
     output wire[31:0] data_mem_out
     );
@@ -18,10 +19,18 @@ assign data_mem_out = {memory[head+3], memory[head+2], memory[head+1], memory[he
 
 always @ (posedge clk) begin
     if (en_wt_mem) begin
-        memory[head+3] <= write_data[31:24];
-        memory[head+2] <= write_data[23:16];
-        memory[head+1] <= write_data[15:8];
-        memory[head] <= write_data[7:0];
+        if (extend == `EXTEND_LOAD_8s) begin
+            memory[head] = write_data[7:0];
+        end
+        else if (extend == `EXTEND_LOAD_16s) begin
+            memory[head+1] = write_data[15:8];
+            memory[head] = write_data[7:0];
+        end else begin
+            memory[head+3] = write_data[31:24];
+            memory[head+2] = write_data[23:16];
+            memory[head+1] = write_data[15:8];
+            memory[head] = write_data[7:0];
+        end
     end
 end
 endmodule
