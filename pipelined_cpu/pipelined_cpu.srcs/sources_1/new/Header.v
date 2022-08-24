@@ -2,7 +2,8 @@
 
 
 // jump control signal : jump
-`define JUMP_SEQ        4'd0     // PC + 4
+`define JUMP_PAUSE      4'd0     // PAUSE
+`define JUMP_SEQ        4'd1     // PC + 4
 `define JUMP_BEQ        4'd2     // {PC + 4 + offset}
 `define JUMP_BNE        4'd3     // {PC + 4 + offset}
 `define JUMP_BLEZ       4'd4     // {PC + 4 + offset}

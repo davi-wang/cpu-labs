@@ -20,8 +20,7 @@ module control_unit(
     // forwarding
     output wire[4:0] load_dst,
     output wire[4:0] rs_f,
-    output wire[4:0] rt_f,
-    output wire[4:0] wt_reg_dst
+    output wire[4:0] rt_f
     );
 
 wire[5:0] operation;
@@ -120,9 +119,8 @@ assign data_src =
         (ins_jal || ins_jalr) ? `DATA_SRC_JAL : `DATA_SRC_ALU;
 
 assign wt_reg =
-       (ins_sltiu || ins_andi || ins_ori || ins_lui || ins_addi || ins_addiu || ins_slti || 
-       ins_xori || ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `WT_REG_RT :
-       (ins_jal) ? `WT_REG_31 : `WT_REG_RD;
+       (r_ins) ? `WT_REG_RD :
+       (ins_jal || ins_jalr) ? `WT_REG_31 : `WT_REG_RT;
 
 assign jump =
        (ins_beq) ? `JUMP_BEQ :
@@ -150,8 +148,5 @@ assign load_dst = (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? instructi
 assign rs_f = (r_ins || (!ins_j && !ins_jal)) ? instruction[25:21] : 5'd0;
 
 assign rt_f = (r_ins) ? instruction[20:16] : 5'd0;
-
-assign wt_reg_dst = (r_ins) ? instruction[15:11] :
-                    (!ins_j && !ins_jal) ? instruction[20:16] : 5'd0;
 
 endmodule

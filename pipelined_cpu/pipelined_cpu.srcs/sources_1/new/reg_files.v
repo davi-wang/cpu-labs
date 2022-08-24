@@ -29,6 +29,7 @@ module reg_files(
     input wire [31:0] W_data,
     input wire [4:0] W_reg_addr,
     input wire reg_we,
+    
     output [31:0] reg1_data,
     output [31:0] reg2_data 
     );

@@ -1,23 +1,4 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2022/08/23 22:53:17
-// Design Name: 
-// Module Name: Mux
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
 module forwarding_mux(
     input [31:0]reg_data,
@@ -28,9 +9,9 @@ module forwarding_mux(
     output wire[31:0] out_mux 
 );
 
-    assign out_mux = (mux_ctrl==2'b01)? alu_result:
-                     (mux_ctrl==2'b10)? write_data:
-                     reg_data;
+assign out_mux = (mux_ctrl==2'b01)? alu_result:
+                 (mux_ctrl==2'b10)? write_data:
+                 reg_data;
 
 endmodule
 
@@ -41,8 +22,11 @@ module alu_data_mux(
     input mux_ctrl,
     output wire [31:0] alu_data2
 );
-    assign alu_data2 = (mux_ctrl)? extended_imm: mux_data;
+
+assign alu_data2 = (mux_ctrl) ? extended_imm : mux_data;
+
 endmodule
+
 
 module dest_reg_mux(
     input [4:0]rt,
@@ -51,9 +35,10 @@ module dest_reg_mux(
     
     output wire [4:0]dest_reg_out
 );
-    assign dest_reg_out = (mux_ctrl == 2'b10)? rd:
-                          (mux_ctrl == 2'b11)? 5'b11111:
-                          rt;
+
+assign dest_reg_out = (mux_ctrl == `WT_REG_RD) ? rd :
+                      (mux_ctrl == `WT_REG_31) ? 5'b11111 :
+                      rt;
     
 endmodule
 
