@@ -10,8 +10,7 @@ module Pipeline_2(
     input wire[31:0]   In_jmp_dst,
     input wire[31:0]   In_extended_imm,
     input wire[4:0]    In_dest_reg,
-    input wire[4:0]    In_dest_reg,
-    input wire[1:0]    In_extend_load,
+    input wire[2:0]    In_extend_load,
     
     input wire         en_mem_write_in,
     input wire[2:0]    cu_reg_src_in,

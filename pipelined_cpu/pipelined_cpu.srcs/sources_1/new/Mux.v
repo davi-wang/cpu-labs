@@ -21,7 +21,7 @@ module alu_data_mux(
     input [31:0] mux_data,
     input [31:0] extended_imm,
     input mux_ctrl,
-    output wire [31:0] alu_data2
+    output [31:0] alu_data2
 );
 
 assign alu_data2 = (mux_ctrl) ? extended_imm : mux_data;

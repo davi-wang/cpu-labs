@@ -43,8 +43,8 @@ wire[4:0] rt_f;
 
 /////////////////////////////////
 // pip1
-wire[31:0] reg1_out;
-wire[31:0] reg2_out;
+wire[31:0] pip1_reg1_out;
+wire[31:0] pip1_reg2_out;
 wire[31:0] instruction_out;
 wire en_wt_reg_out;
 wire en_wt_mem_out;

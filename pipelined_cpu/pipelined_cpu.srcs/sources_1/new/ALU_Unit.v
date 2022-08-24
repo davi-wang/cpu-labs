@@ -39,7 +39,7 @@ module ALU_Unit(
                 // assign zero_out = (mid_result == 33'd0) ? 1:0;
                 end
             `ALU_SUBU: begin
-                 mid_result = {1'b0, in_data1}+{1'b0,in_data2};
+                 mid_result = {1'b0, in_data1}-{1'b0,in_data2};
                  // assign overflow = (mid_result[32] ==1) ? 1:0;
                  // assign zero_out = (mid_result == 33'd0) ? 1:0;
                  end
@@ -49,9 +49,9 @@ module ALU_Unit(
             `ALU_NOR: mid_result[31:0] = ~(in_data1 | in_data2);
             `ALU_SLT: mid_result[31:0] = ($signed(in_data1) < $signed(in_data2))? 32'd1:0;
             `ALU_SLTU:mid_result[31:0] = (in_data1 < in_data2)? 32'd1:32'd0;
-            `ALU_LEFT: mid_result[31:0] = in_data1 << in_data2[4:0];
-            `ALU_RIGHTL: mid_result[31:0] = in_data1 >> in_data2[4:0];
-            `ALU_RIGHTA: mid_result[31:0] = $signed(in_data1) >> in_data2[4:0];
+            `ALU_LEFT: mid_result[31:0] = in_data2 << in_data1[4:0];
+            `ALU_RIGHTL: mid_result[31:0] = in_data2 >> in_data1[4:0];
+            `ALU_RIGHTA: mid_result[31:0] = $signed(in_data2) >> in_data1[4:0];
             `ALU_DEFAULT: mid_result[31:0] =  32'd0;     
         endcase
    

@@ -13,7 +13,7 @@ module control_unit(
     output wire[3:0] alu_ctrl,
     output wire[1:0] extend_alu,
     output wire[2:0] extend_load,
-    output wire[1:0] data_src,
+    output wire[2:0] data_src,
     output wire[1:0] wt_reg,
     output wire[3:0] jump,
     
@@ -116,6 +116,7 @@ assign extend_load =
 
 assign data_src = 
         (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `DATA_SRC_MEM : 
+        (ins_lui) ? `DATA_SRC_IMM : 
         (ins_jal || ins_jalr) ? `DATA_SRC_JAL : `DATA_SRC_ALU;
 
 assign wt_reg =
@@ -147,6 +148,6 @@ assign load_dst = (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? instructi
 
 assign rs_f = (r_ins || (!ins_j && !ins_jal)) ? instruction[25:21] : 5'd0;
 
-assign rt_f = (r_ins) ? instruction[20:16] : 5'd0;
+assign rt_f = (r_ins || ins_sb || ins_sh || ins_sw) ? instruction[20:16] : 5'd0;
 
 endmodule
