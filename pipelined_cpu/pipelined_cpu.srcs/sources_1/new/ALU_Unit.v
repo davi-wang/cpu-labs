@@ -51,11 +51,11 @@ module ALU_Unit(
             `ALU_SLT: mid_result[31:0] = ($signed(in_data1) < $signed(in_data2)) ? 32'd1:0;
             `ALU_SLTU:mid_result[31:0] = (in_data1 < in_data2) ? 32'd1 : 32'd0;
             `ALU_LEFT: mid_result[31:0] = in_data2 << shift;
-            `ALU_LEFTR: mid_result[31:0] = in_data2 << in_data1;
+            `ALU_LEFTR: mid_result[31:0] = in_data2 << in_data1[4:0];
             `ALU_RIGHTL: mid_result[31:0] = in_data2 >> shift;
-            `ALU_RIGHTLR: mid_result[31:0] = in_data2 >> in_data1;
+            `ALU_RIGHTLR: mid_result[31:0] = in_data2 >> in_data1[4:0];
             `ALU_RIGHTA: mid_result[31:0] = $signed(in_data2) >>> shift;
-            `ALU_RIGHTAR: mid_result[31:0] = $signed(in_data2) >>> in_data1;
+            `ALU_RIGHTAR: mid_result[31:0] = $signed(in_data2) >>> in_data1[4:0];
             `ALU_DEFAULT: mid_result[31:0] =  32'd0;     
         endcase
    
