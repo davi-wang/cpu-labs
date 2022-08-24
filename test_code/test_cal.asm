@@ -4,6 +4,7 @@ temp2:  .word 1002
 temp3:  .word -20
 temp4:  .word -100
 temp5:  .word 5
+temp6:  .word 0
 
 .text
 	lui $t0, 0
@@ -16,9 +17,13 @@ temp5:  .word 5
 	add $t5, $t1, $t5
 	addiu $t5, $t1, 100
 	
+	sw   $t5, 20($t0) 
+	lui  $t5, 1000
+	
 	sub $t5, $t1, $t2
 	sub $t5, $t1, $t3
 	subu $t5, $5, $t1
+	
 	
 	and $t6, $t1, $t2
 	or  $t6, $t1, $t2
