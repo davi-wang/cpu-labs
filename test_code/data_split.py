@@ -1,7 +1,7 @@
-file = open("raw_inst_and _data/test_load_data.txt",'r')
+file = open("raw_inst_and _data/test_forwarding_inst.txt",'r')
 content = file.read()
 
-file_new = open("test_load_data_2.txt",'w')
+file_new = open("test_forwarding_inst_2.txt",'w')
 
 i = 0
 while i <len(content):
