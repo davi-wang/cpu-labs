@@ -1,7 +1,6 @@
 `include "Header.v"
 `timescale 1ns / 1ps
 module ID (input rst,
-           input [3:0] stall,
            input wire[31:0] pc_i,           //pc value
            input wire[31:0] inst_i,         //instruction code
            input wire[31:0] reg1_data_i,
@@ -15,7 +14,7 @@ module ID (input rst,
            output reg branch_flag_o,
            output reg [31:0] branch_target,
            output reg [31:0] link_addr_o,
-           output [1:0] stallreq,
+           output stallreq,
            output reg reg1_read_o,
            output reg reg2_read_o,
            output reg[4:0] reg1_addr_o,
@@ -34,6 +33,7 @@ module ID (input rst,
     
     wire[4:0] rs = inst_i[25:21];
     wire[4:0] rt = inst_i[20:16];
+    wire[4:0] rd = inst_i[15:11];
     
     reg valid;
     reg [31:0] immed;
@@ -61,17 +61,6 @@ module ID (input rst,
             reg2_read_o   <= 1'b0;
             reg1_addr_o   <= `NopRegAddr;
             reg2_addr_o   <= `NopRegAddr;
-            valid         <= 1'b1;
-            immed         <= `ZeroWord;
-            link_addr_o   <= `ZeroWord;
-            branch_target <= `ZeroWord;
-            branch_flag_o <= 1'b0;
-            end else if (stall[2] == 1'b1) begin
-            alu_op        <= 4'h0;
-            wreg_o        <= 1'b0;
-            wd_o          <= `NopRegAddr;
-            reg1_read_o   <= 1'b0;
-            reg2_read_o   <= 1'b0;
             valid         <= 1'b1;
             immed         <= `ZeroWord;
             link_addr_o   <= `ZeroWord;
@@ -130,7 +119,7 @@ module ID (input rst,
                                 
                                 `EX_SLLV: begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_LEFT;
+                                    alu_op      <= `ALU_LEFT; //TODO
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
@@ -138,7 +127,7 @@ module ID (input rst,
                                 
                                 `EX_SRLV:begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_RIGHTL;
+                                    alu_op      <= `ALU_RIGHTL; //TODO
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
@@ -146,13 +135,61 @@ module ID (input rst,
                                 
                                 `EX_SRAV: begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_RIGHTA;
+                                    alu_op      <= `ALU_RIGHTA; //TODO
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
                                 end
                                 
-                                default:begin
+                                `EX_ADD: begin
+                                    wreg_o      <= 1'b1;
+                                    alu_op      <= `ALU_ADD; 
+                                    reg1_read_o <= 1'b1;
+                                    reg2_read_o <= 1'b1;
+                                    valid       <= 1'b1;
+                                end
+
+                                `EX_ADDU: begin
+                                    wreg_o      <= 1'b1;
+                                    alu_op      <= `ALU_ADDU; 
+                                    reg1_read_o <= 1'b1;
+                                    reg2_read_o <= 1'b1;
+                                    valid       <= 1'b1;
+                                end
+
+                                `EX_SUB:begin
+                                    wreg_o      <= 1'b1;
+                                    alu_op      <= `ALU_SUB; 
+                                    reg1_read_o <= 1'b1;
+                                    reg2_read_o <= 1'b1;
+                                    valid       <= 1'b1;
+                                end
+
+                                `EX_SUBU:begin
+                                    wreg_o      <= 1'b1;
+                                    alu_op      <= `ALU_SUBU; 
+                                    reg1_read_o <= 1'b1;
+                                    reg2_read_o <= 1'b1;
+                                    valid       <= 1'b1;
+                                end
+
+                                `EX_SLT:begin
+                                    wreg_o      <= 1'b1;
+                                    alu_op      <= `ALU_SLT; 
+                                    reg1_read_o <= 1'b1;
+                                    reg2_read_o <= 1'b1;
+                                    valid       <= 1'b1;
+                                end
+
+                                `EX_SLTU:begin
+                                    wreg_o      <= 1'b1;
+                                    alu_op      <= `ALU_SLTU; 
+                                    reg1_read_o <= 1'b1;
+                                    reg2_read_o <= 1'b1;
+                                    valid       <= 1'b1;
+                                end
+
+                                default: begin
                                     
                                 end
                                 
@@ -163,10 +200,118 @@ module ID (input rst,
                         end
                     endcase
                 end
+                
+                `EX_ADDI:begin
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_ADD;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    immed       <= {{16{inst_i[15]}}, inst_i[15:0]};
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
+                end
+
+                `EX_ADDIU:begin
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_ADDU;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    immed       <= {{16{inst_i[15]}}, inst_i[15:0]};
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
+                end
+
+                `EX_SLTI:begin
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_SLT;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    immed       <= {{16{inst_i[15]}}, inst_i[15:0]};
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
+                end
+
+                `EX_SLTIU:begin
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_SLTU;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    immed       <= {{16{inst_i[15]}}, inst_i[15:0]};
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
+                end
+
+                `EX_ORI: begin
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_OR;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    immed       <= {16'b0, inst_i[15:0]};
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
+                end
+                `EX_ANDI: begin
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_AND;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    immed       <= {16'b0, inst_i[15:0]};
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
+                end
+                `EX_XORI:begin
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_XOR;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    immed       <= {16'b0, inst_i[15:0]};
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
+                end
+                `EX_LUI:begin
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_OR;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    immed       <= {inst_i[15:0], 16'b0};
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
+                end
                 default:begin
-                    
                 end
             endcase
+            if (inst_i[31:21] == 11'b00000000000) begin
+                case(op3)
+                    `EX_SLL:begin
+                        wreg_o      <= 1'b1;
+                        alu_op      <= `ALU_OR; //TODO
+                        reg1_read_o <= 1'b1;
+                        reg2_read_o <= 1'b0;
+                        immed[4:0]  <= inst_i[10:6];
+                        wd_o        <= rd;
+                        valid       <= 1'b1;
+                    end
+                    `EX_SRL:begin
+                        wreg_o      <= 1'b1;
+                        alu_op      <= `ALU_OR; //TODO
+                        reg1_read_o <= 1'b1;
+                        reg2_read_o <= 1'b0;
+                        immed[4:0]  <= inst_i[10:6];
+                        wd_o        <= rd;
+                        valid       <= 1'b1;
+                    end
+                    `EX_SRA:begin
+                        wreg_o      <= 1'b1;
+                        alu_op      <= `ALU_OR; //TODO
+                        reg1_read_o <= 1'b1;
+                        reg2_read_o <= 1'b0;
+                        immed[4:0]  <= inst_i[10:6];
+                        wd_o        <= rd;
+                        valid       <= 1'b1;
+                    end
+                endcase
+            end
+            
             
         end
     end

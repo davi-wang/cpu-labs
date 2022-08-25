@@ -8,6 +8,7 @@ module ID_EX (
     input [3:0] alu_op_id,
     input [31:0] reg1_id,
     input [31:0] reg2_id,
+    input [3:0] stall,
     input wreg_id,
     input [4:0] w_reg_addr_id,
     
@@ -21,8 +22,14 @@ module ID_EX (
     always @(posedge clk ) begin
         if(!rst) begin
             alu_op_ex <= 4'h0;
-            reg1_ex <= 32'h0;
-            reg2_ex <= 32'h0;
+            reg1_ex <= `ZeroWord;
+            reg2_ex <= `ZeroWord;
+            wreg_ex <= 1'b0;
+            w_reg_addr_ex <= 5'b0;
+        end else if(stall[2] == 1'b1)begin
+            alu_op_ex <= 4'h0;
+            reg1_ex <= `ZeroWord;
+            reg2_ex <= `ZeroWord;
             wreg_ex <= 1'b0;
             w_reg_addr_ex <= 5'b0;
         end else begin

@@ -72,7 +72,7 @@
 `define EX_ANDI 6'b001100
 `define EX_ORI 6'b001101
 `define EX_XORI 6'b001110
-`define EXE_LUI 6'b001111
+`define EX_LUI 6'b001111
 
  `define EX_SLL 6'b000000
  `define EX_SLLV 6'b000100
@@ -80,6 +80,17 @@
  `define EX_SRLV 6'b000110
  `define EX_SRA 6'b000011
  `define EX_SRAV 6'b000111
+
+ `define EX_ADD 6'b100000
+ `define EX_ADDU 6'b100001
+ `define EX_SUB 6'b100010
+ `define EX_SUBU 6'b100011
+ `define EX_SLTU 6'b101010
+ `define EX_SLT 6'b101011
+ `define EX_SLTI 6'b001010
+ `define EX_SLTIU 6'b001011
+ `define EX_ADDI 6'b001000
+ `define EX_ADDIU 6'b001001
 
 // `define ALU_RESULT      3'b001
 // `define MEM_DATA        3'b010 

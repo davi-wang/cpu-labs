@@ -4,7 +4,7 @@ module EX_MEM (
     
     input  clk,
     input  rst,
-
+    input [3:0]stall,
     input [4:0] w_reg_addr_i,
     input wreg_i,
     input [31:0] wdata_i,

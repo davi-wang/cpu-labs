@@ -3,20 +3,20 @@ module CPU (
     input clk,
     input rst,
 
+    wire [3:0]stall,
+    wire stallreq_id,
+
     //pc to if/id
-    wire [3:0] pc_stall,
     wire pc_flag,
     wire [31:0] pc_target,
     wire [31:0] pc,
     wire [31:0] insc_im,
 
     //if/id to id
-    wire [3:0] IF2ID_stall,
     wire [31:0] insc_id,
     wire [31:0] id_pc,
 
     //to id
-    wire [3:0] ID_stall,
     wire [31:0]  reg1_data_id_in,
     wire [31:0] reg2_data_id_in,
     
@@ -64,6 +64,12 @@ module CPU (
 
 );
 
+    CU CU(
+        .rst(rst),
+        .stall(stall),
+        .stallreq_id(stallreq_id)
+    );
+
     Instruction_mem IM(
         .addr(pc),
         .ins_out(insc_im)
@@ -72,7 +78,7 @@ module CPU (
     PC PC(
         .clk(clk),
         .rst(rst),
-        .stall(pc_stall),
+        .stall(stall),
         .target(pc_target),
         .pc(pc)
     );
@@ -83,13 +89,12 @@ module CPU (
         .if_pc(pc),
         .insc_i(insc_im),
         .insc_o(insc_id),
-        .stall(IF2ID_stall),
+        .stall(stall),
         .id_pc(id_pc)
     );
 
     ID ID(
         .rst(rst),
-        .stall(ID_stall),
         .pc_i(id_pc),
         .inst_i(insc_id),
         .reg1_data_i(reg1_data_id_in),
@@ -108,13 +113,15 @@ module CPU (
         .wd_o(id_waddr),
         .wreg_o(id_we),
         .reg1_o(id_data1),
-        .reg2_o(id_data2)
+        .reg2_o(id_data2),
+        .stallreq(stallreq_id)
     );
 
 
     ID_EX ID_EX(
         .clk(clk),
         .rst(rst),
+        .stall(stall),
         .alu_op_id(id_alu_op),
         .reg1_id(id_data1),
         .reg2_id(id_data2),
@@ -142,6 +149,7 @@ module CPU (
     EX_MEM EX_MEM(
         .clk(clk),
         .rst(rst),
+        .stall(stall),
         .w_reg_addr_i(ex_wreg_addr),
         .wreg_i(ex_wreg_o),
         .wdata_i(ex_wreg_data),
