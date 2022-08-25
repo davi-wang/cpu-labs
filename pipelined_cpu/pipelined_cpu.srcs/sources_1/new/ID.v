@@ -1,21 +1,21 @@
 `include "Header.v"
-
+`timescale 1ns / 1ps
 module id (input rst,
            input [3:0] stall,
            input wire[31:0] pc_i,        //pc value
            input wire[31:0] inst_i,      //instruction code
            input wire[31:0] reg1_data_i,
            input wire[31:0] reg2_data_i,
-        
            input wire ex_wreg_i,
            input wire[31:0] ex_wdata_i,
            input wire[31:0] ex_wd_i,
-           
            input wire mem_wreg_i,
            input wire[31:0] mem_wdata_i,
            input wire[31:0] mem_wd_i,
-           
-           output [1:0] stallreq, 
+           output reg branch_flag_o,
+           output reg [31:0] branch_target,
+           output reg [31:0] link_addr_o,
+           output [1:0] stallreq,
            output reg reg1_read_o,
            output reg reg2_read_o,
            output reg[4:0] reg1_addr_o,
@@ -37,7 +37,16 @@ module id (input rst,
     reg valid;
     reg [31:0] immed;
     
+    //branch and J
+    wire [31:0] pc_plus_4;
+    wire [31:0] pc_plus_8;
+    assign pc_plus_4 = pc_i+4;
+    assign pc_plus_8 = pc_i+8;
     
+    wire [31:0] sign_ext_00;
+    assign sign_ext_00 = {{14{inst_i[15]}}, inst_i[15:0], 2'b00}; 
+
+
     //TODO:DECODE INSTRUCTIONS TO WRITE VALUE TO OUTPUT
     
     //decode instruction
@@ -50,7 +59,10 @@ module id (input rst,
             reg2_read_o <= 1'b0;
             valid       <= 1'b1;
             immed       <= `ZeroWord;
-        end else if (stall[2] == 1'b1) begin
+            link_addr_o <= `ZeroWord;
+            branch_target <= `ZeroWord;
+            branch_flag_o <= 1'b0;
+            end else if (stall[2] == 1'b1) begin
             alu_op      <= 4'h0;
             wreg_o      <= 1'b0;
             wd_o        <= `NopRegAddr;
@@ -58,6 +70,9 @@ module id (input rst,
             reg2_read_o <= 1'b0;
             valid       <= 1'b1;
             immed       <= `ZeroWord;
+            link_addr_o <= `ZeroWord;
+            branch_target <= `ZeroWord;
+            branch_flag_o <= 1'b0;
         end
         else begin
             alu_op      <= 4'h0;
@@ -67,15 +82,22 @@ module id (input rst,
             reg2_read_o <= 1'b0;
             valid       <= 1'b0;
             immed       <= `ZeroWord;
-            
+            link_addr_o <= `ZeroWord;
+            branch_target <= `ZeroWord;
+            branch_flag_o <= 1'b0;
+            reg1_addr_o <= rs;
+            reg2_addr_o <= rt;
             case(op)
+                
+                
+                
                 
             endcase
             
         end
     end
-
-
+    
+    
     
     //src num1
     always @(*) begin

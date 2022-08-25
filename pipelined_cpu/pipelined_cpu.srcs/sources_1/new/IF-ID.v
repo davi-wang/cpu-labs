@@ -1,5 +1,5 @@
 `include "Header.v"
-
+`timescale 1ns / 1ps
 module IF_ID (
     input clk,
     input rst,

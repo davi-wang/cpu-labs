@@ -1,5 +1,5 @@
 `include "Header.v"
-
+`timescale 1ns / 1ps
 module ID_EX (
     
     input clk,
