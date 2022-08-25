@@ -63,6 +63,23 @@
 `define WT_REG_RD       2'd1      // rd
 `define WT_REG_31       2'd2      // GPR[31] 
 
+// instrcution code
+`define SPECIAL 6'b000000
+`define EX_OR 6'b100101
+`define EX_AND 6'b100100
+`define EX_XOR 6'b100110
+`define EX_NOR  6'b100111
+`define EX_ANDI 6'b001100
+`define EX_ORI 6'b001101
+`define EX_XORI 6'b001110
+`define EXE_LUI 6'b001111
+
+ `define EX_SLL 6'b000000
+ `define EX_SLLV 6'b000100
+ `define EX_SRL 6'b000010
+ `define EX_SRLV 6'b000110
+ `define EX_SRA 6'b000011
+ `define EX_SRAV 6'b000111
 
 // `define ALU_RESULT      3'b001
 // `define MEM_DATA        3'b010 
