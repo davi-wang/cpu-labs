@@ -40,7 +40,7 @@ module reg_files(
         for(i=0;i<32;i=i+1) registers[i]<=32'b0;
     end
     
-    always@(posedge clk)begin           
+    always@(negedge clk)begin           
         if (reg_we) registers[W_reg_addr] <= W_data;
     end
     

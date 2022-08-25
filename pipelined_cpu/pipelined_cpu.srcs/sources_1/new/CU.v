@@ -119,8 +119,7 @@ assign extend_load =
 
 assign data_src = 
         (ins_lb || ins_lbu || ins_lhu || ins_lh || ins_lw) ? `DATA_SRC_MEM : 
-        (ins_lui) ? `DATA_SRC_IMM : 
-        (ins_jal || ins_jalr) ? `DATA_SRC_JAL : `DATA_SRC_ALU;
+        (ins_lui || ins_jal || ins_jalr) ? `DATA_SRC_IMM : `DATA_SRC_ALU;
 
 assign wt_reg =
        (r_ins) ? `WT_REG_RD :

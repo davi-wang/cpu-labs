@@ -39,21 +39,60 @@ module NPC(
         pip_flush = 1;
         case(jump_ctrl)
             `JUMP_SEQ: begin
-                 npc = pc + 4;
-                 pip_flush = 0;
-             end
-            `JUMP_BEQ: npc = (reg1_data == reg2_data) ? pc+($signed(instr_offset<<2)) : pc+4;
-            `JUMP_BNE: npc = (reg1_data != reg2_data) ? pc+($signed(instr_offset<<2)) : pc+4;
-            `JUMP_BLEZ: npc = (reg1_data <= 0) ? pc+($signed(instr_offset<<2)) : pc+4;
-            `JUMP_BLTZ: npc = (reg1_data < 0) ? pc+($signed(instr_offset<<2)) : pc+4;
-            `JUMP_BGEZ: npc = (reg1_data >= 0) ? pc+($signed(instr_offset<<2)) : pc+4;
-            `JUMP_BGTZ: npc = (reg1_data > 0) ? pc+($signed(instr_offset<<2)) : pc+4;
-            
-            `JUMP_J  : npc = {pc[31:28], instr_index, 2'b00};
+                npc = pc + 4;
+                pip_flush = 0;
+            end
+            `JUMP_BEQ: begin
+                if (reg1_data == reg2_data)
+                    npc = {pc + {{14{instr_offset[15]}}, {instr_offset, 2'b00}}}; 
+                else begin
+                    npc = pc+4;
+                    pip_flush = 0;
+                end
+            end
+            `JUMP_BNE: 
+                if (reg1_data != reg2_data)
+                    npc = {pc + {{14{instr_offset[15]}}, {instr_offset, 2'b00}}}; 
+                else begin
+                    npc = pc+4;
+                    pip_flush = 0;
+                end
+            `JUMP_BLEZ:
+                if ($signed(reg1_data) <= 0)
+                    npc = {pc + {{14{instr_offset[15]}}, {instr_offset, 2'b00}}}; 
+                else begin
+                    npc = pc+4;
+                    pip_flush = 0;
+                end
+            `JUMP_BLTZ:
+                if ($signed(reg1_data) < 0)
+                    npc = {pc + {{14{instr_offset[15]}}, {instr_offset, 2'b00}}}; 
+                else begin
+                    npc = pc+4;
+                    pip_flush = 0;
+                end
+            `JUMP_BGEZ:
+                if ($signed(reg1_data) >= 0)
+                    npc = {pc + {{14{instr_offset[15]}}, {instr_offset, 2'b00}}}; 
+                else begin
+                    npc = pc+4;
+                    pip_flush = 0;
+                end
+            `JUMP_BGTZ:
+                if ($signed(reg1_data) > 0)
+                    npc = {pc + {{14{instr_offset[15]}}, {instr_offset, 2'b00}}}; 
+                else begin
+                    npc = pc+4;
+                    pip_flush = 0;
+                end
+            `JUMP_J:
+                npc = {pc[31:28], instr_index, 2'b00};
+
             `JUMP_JAL : begin
                 npc = {pc[31:28], instr_index, 2'b00};
                 des_inst_addr = npc+4;     
                 end
+
             `JUMP_JR : npc = reg1_data;
             `JUMP_JALR: begin
                 npc = reg1_data;
@@ -64,6 +103,7 @@ module NPC(
                 pip_flush = 0;
                 end
         endcase
+        // if (npc == pc+4) pip_flush = 0;
         
     end
     
