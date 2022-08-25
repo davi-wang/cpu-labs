@@ -89,3 +89,8 @@
 //op
 `define EXE_MFC0_OP  4'd14
 `define EXE_MTC0_OP  4'd14   
+
+//stall
+`define STALL_EXE    2'b10
+`define STALL_MEM    2'b10
+`define STALL_DEFAULT    2'b00
