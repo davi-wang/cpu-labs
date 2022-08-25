@@ -94,3 +94,6 @@
 !*.txt
 !*.py
 *.xpr
+
+!*.drawio
+!*.png

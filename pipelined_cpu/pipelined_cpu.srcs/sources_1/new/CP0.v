@@ -1,5 +1,5 @@
 `timescale 1ps/1ps
-`include "CP0_header.v"
+`include "Header.v"
 
 module CP0 (input wire clk,
             input wire rst,
@@ -17,7 +17,7 @@ module CP0 (input wire clk,
             output reg timer_int_o);
     
     always @(posedge clk) begin
-        if (rst == `RstEnable) begin
+        if (!rst) begin
             count_o     <= `ZeroWord;
             compare_o   <= `ZeroWord;
             status_o    <= 32'h10000000; //CP0 exist

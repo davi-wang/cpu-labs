@@ -1,6 +1,10 @@
 `timescale 1ns / 1ps
 
 
+//NOP
+`define ZeroWord 32'h00000000
+`define NopRegAddr 5'b00000
+
 // jump control signal : jump
 `define JUMP_PAUSE      4'd0     // PAUSE
 `define JUMP_SEQ        4'd1     // PC + 4
@@ -16,7 +20,7 @@
 `define JUMP_JALR       4'd11    // register
 
 // ALU control signal : alu_ctrl
-`define ALU_DEFAULT     5'd0    // output source2
+`define ALU_DEFAULT     5'd0    // nop op
 `define ALU_ADD         5'd1
 `define ALU_ADDU        5'd2
 `define ALU_SUB         5'd3
@@ -64,3 +68,24 @@
 // `define MEM_DATA        3'b010 
 // `define EXTENDED_IMM    3'b011 
 // `define JUMP_DST        3'b100 
+
+`define RstEnable 1'b0
+`define RstDisable 1'b1
+
+`define RegBus 31:0
+`define RegAddrBus 4:0
+`define RegWidth 32
+`define InterruptNotAssert 1'b0
+`define InterruptAssert 1'b1
+
+//cp0 REG
+`define CP0_REG_COUNT 5'b01001
+`define CP0_REG_COMPARE 5'b01011
+`define CP0_REG_STATUS 5'b01100
+`define CP0_REG_CAUSE 5'b01101
+`define CP0_REG_EPC 5'b01110
+`define WriteEnable 1'b1
+
+//op
+`define EXE_MFC0_OP  4'd14
+`define EXE_MTC0_OP  4'd14   

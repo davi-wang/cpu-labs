@@ -1,15 +1,14 @@
 `timescale 1ns / 1ps
 `include"Header.v"
-`include"CP0_header.v"
 
-module ALU_Unit(input clk,
+module EX(input clk,
                 input reset,
                 input [31:0]in_data1,
                 input [31:0]in_data2,
-                input [3:0]alu_op,
+                input [3:0]alu_op_i,
                 input [4:0] wd_i,          //write addr of reg
                 input wreg_i,              //write enable
-                output reg [4:0] wd_o,         //write addr of reg
+                output reg [4:0] wd_o,     //write addr of reg
                 output reg wreg_o,         //write enalbe
                 output reg[31:0] wdata_o); //result
     
@@ -19,7 +18,7 @@ module ALU_Unit(input clk,
         if (!reset) begin
             mid_result[32] <= 0;
             end else begin
-            case(alu_op)
+            case(alu_op_i)
                 `ALU_ADD:begin
                     mid_result <= {in_data1[31], in_data1}+{in_data2[31],in_data2};
                 end
@@ -47,8 +46,8 @@ module ALU_Unit(input clk,
     end
     
     always @(*) begin
-        wd_o <= wd_i;
-        wreg_o <= wreg_i;
+        wd_o    <= wd_i;
+        wreg_o  <= wreg_i;
         wdata_o <= mid_result;
     end
     

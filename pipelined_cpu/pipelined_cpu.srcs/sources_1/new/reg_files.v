@@ -1,3 +1,4 @@
+`include "Header.v"
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company:
@@ -34,22 +35,39 @@ module reg_files(input clk,
     integer i;
     reg [31:0] registers [31:0];
     
-    initial begin
-        for(i = 0;i<32;i = i+1) registers[i]<= 32'b0;
-    end
     
     always@(posedge clk) begin
-        if (reg_we && W_reg_addr != 32'h0) begin
+        if (reg_we && W_reg_addr != `NopRegAddr) begin
             registers[W_reg_addr] <= W_data;
         end
     end
     
     always @(*) begin
-        if(!rst) begin
-            reg1_data <= 32'h0;
-        end else if (reg1_addr == 32'h0) begin
-            reg1_data <= 32'h0;
-        end else if (reg1_addr)
+        if (!rst) begin
+            reg1_data <= `ZeroWord;
+            end else if (reg1_addr == `NopRegAddr) begin
+            reg1_data <= `ZeroWord;
+            end else if (reg1_addr == W_reg_addr && reg_we && re1) begin //forwarding
+            reg1_data <= W_data;
+            end else if (re1) begin
+            reg1_data <= registers[reg1_addr];
+            end else begin
+            reg1_data <= `ZeroWord;
+        end
+    end
+    
+    always @(*) begin
+        if (!rst) begin
+            reg2_data <= `ZeroWord;
+            end else if (reg2_addr == `ZeroWord) begin
+            reg2_data <= `ZeroWord;
+            end else if (reg2_addr == W_reg_addr && reg_we && re2) begin //forwarding
+            reg2_data <= W_data;
+            end else if (re1) begin
+            reg2_data <= registers[reg2_addr];
+            end else begin
+            reg2_data <= `ZeroWord;
+        end
     end
     
 endmodule
