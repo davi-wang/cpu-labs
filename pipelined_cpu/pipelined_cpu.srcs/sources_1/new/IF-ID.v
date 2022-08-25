@@ -17,10 +17,12 @@ module IF_ID (
         if(!rst) begin
             id_pc <= `ZeroWord;
             insc_o <= `ZeroWord;
-        end else if (stall[1] == 1'b1) begin
-            id_pc <= `ZeroWord;
-            insc_o <= `ZeroWord;
-        end else if (stall[1] == 1'b0) begin
+        end 
+        // else if (stall[1] == 1'b1) begin
+        //     id_pc <= `ZeroWord;
+        //     insc_o <= `ZeroWord;
+        // end 
+        else /*if (stall[1] == 1'b0)*/ begin
             id_pc <= if_pc;
             insc_o <= insc_i;
         end

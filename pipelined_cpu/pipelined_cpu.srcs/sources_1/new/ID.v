@@ -1,6 +1,6 @@
 `include "Header.v"
 `timescale 1ns / 1ps
-module id (input rst,
+module ID (input rst,
            input [3:0] stall,
            input wire[31:0] pc_i,           //pc value
            input wire[31:0] inst_i,         //instruction code
@@ -8,10 +8,10 @@ module id (input rst,
            input wire[31:0] reg2_data_i,
            input wire ex_wreg_i,
            input wire[31:0] ex_wdata_i,
-           input wire[31:0] ex_wd_i,
+           input wire[4:0] ex_wd_i,
            input wire mem_wreg_i,
            input wire[31:0] mem_wdata_i,
-           input wire[31:0] mem_wd_i,
+           input wire[4:0] mem_wd_i,
            output reg branch_flag_o,
            output reg [31:0] branch_target,
            output reg [31:0] link_addr_o,
@@ -177,9 +177,9 @@ module id (input rst,
     always @(*) begin
         if (!rst) begin
             reg1_o <= `ZeroWord;
-            end else if (reg2_read_o && ex_wreg_i && ex_wd_i == reg1_addr_o) begin
+            end else if (reg1_read_o && ex_wreg_i && ex_wd_i == reg1_addr_o) begin
             reg1_o <= ex_wdata_i;
-            end else if (reg2_read_o && ex_wreg_i && mem_wd_i == reg1_addr_o) begin
+            end else if (reg1_read_o && ex_wreg_i && mem_wd_i == reg1_addr_o) begin
             reg1_o <= mem_wdata_i;
             end else if (reg1_read_o == 1'b1) begin
             reg1_o <= reg1_data_i;
@@ -199,7 +199,7 @@ module id (input rst,
             end else if (reg2_read_o && ex_wreg_i && mem_wd_i == reg2_addr_o) begin
             reg2_o <= mem_wdata_i;
             end else if (reg2_read_o == 1'b1) begin
-            reg2_o <= reg1_data_i;
+            reg2_o <= reg2_data_i;
             end else if (reg2_read_o == 1'b0) begin
             reg2_o <= immed;
             end else begin

@@ -63,7 +63,7 @@ module reg_files(input clk,
             reg2_data <= `ZeroWord;
             end else if (reg2_addr == W_reg_addr && reg_we && re2) begin //forwarding
             reg2_data <= W_data;
-            end else if (re1) begin
+            end else if (re2) begin
             reg2_data <= registers[reg2_addr];
             end else begin
             reg2_data <= `ZeroWord;

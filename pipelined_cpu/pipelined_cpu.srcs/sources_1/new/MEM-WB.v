@@ -1,6 +1,6 @@
 `include "Header.v"
 `timescale 1ns / 1ps
-module MEM (
+module MEM_WB (
     input clk,
     input  rst,
     input [4:0] w_reg_addr_mem,

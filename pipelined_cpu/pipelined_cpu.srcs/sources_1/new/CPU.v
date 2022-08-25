@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 module CPU (
     input clk,
     input rst,
@@ -64,9 +65,7 @@ module CPU (
 );
 
     Instruction_mem IM(
-        .clk(clk),
-        .rst(rst),
-        .pc(pc),
+        .addr(pc),
         .ins_out(insc_im)
     );
 
@@ -74,9 +73,8 @@ module CPU (
         .clk(clk),
         .rst(rst),
         .stall(pc_stall),
-        .pc(pc),
         .target(pc_target),
-        .id_pc(id_pc)
+        .pc(pc)
     );
 
     IF_ID IF2ID(
@@ -85,7 +83,8 @@ module CPU (
         .if_pc(pc),
         .insc_i(insc_im),
         .insc_o(insc_id),
-        .stall(IF2ID_stall)
+        .stall(IF2ID_stall),
+        .id_pc(id_pc)
     );
 
     ID ID(
@@ -102,12 +101,14 @@ module CPU (
         .mem_wd_i(mem_wreg_addr),
         .mem_wdata_i(mem_wreg_data),
         .reg1_read_o(id_reg1_re),
-        .reg1_read_o(id_reg2_re),
+        .reg2_read_o(id_reg2_re),
         .reg1_addr_o(id_reg1_addr),
         .reg2_addr_o(id_reg2_addr),
         .alu_op(id_alu_op),
         .wd_o(id_waddr),
-        .wreg_o(id_we)
+        .wreg_o(id_we),
+        .reg1_o(id_data1),
+        .reg2_o(id_data2)
     );
 
 
@@ -128,7 +129,6 @@ module CPU (
 
     EX EX(
         .clk(clk),
-        .rst(rst),
         .in_data1(data1_ex),
         .in_data2(data2_ex),
         .alu_op_i(alu_op_ex),
@@ -142,7 +142,17 @@ module CPU (
     EX_MEM EX_MEM(
         .clk(clk),
         .rst(rst),
-        .w_reg_addr_i(mem_wdata_i),
+        .w_reg_addr_i(ex_wreg_addr),
+        .wreg_i(ex_wreg_o),
+        .wdata_i(ex_wreg_data),
+        .w_reg_addr_o(mem_waddr_i),
+        .wdata_o(mem_wdata_i),
+        .wreg_o(mem_wreg_i)
+    );
+
+    MEM MEM(
+        .rst(rst),
+        .w_reg_addr_i(mem_waddr_i),
         .wreg_i(mem_wreg_i),
         .wdata_i(mem_wdata_i),
         .w_reg_addr_o(mem_wreg_addr),
@@ -150,15 +160,15 @@ module CPU (
         .wreg_o(mem_wreg_o)
     );
 
-    MEM MEM(
+    MEM_WB MEM_WB(
         .clk(clk),
         .rst(rst),
-        .w_reg_addr_i(mem_wreg_addr),
-        .w_reg_i(mem_wreg_o),
-        .wdata_i(mem_wreg_data),
-        .w_reg_addr_o(wb_addr),
-        .wdata_o(wb_data),
-        .wreg_o(wb_wreg)
+        .w_reg_addr_mem(mem_wreg_addr),
+        .wreg_mem(mem_wreg_o),
+        .wdata_mem(mem_wreg_data),
+        .w_reg_addr_wb(wb_addr),
+        .wreg_wb(wb_wreg),
+        .wdata_wb(wb_data)
     );
 
     reg_files regs(

@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="233560fs"></ZoomStartTime>
-      <ZoomEndTime time="345561fs"></ZoomEndTime>
-      <Cursor1Time time="281020fs"></Cursor1Time>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="114001fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="175"></NameColumnWidth>
-      <ValueColumnWidth column_width="86"></ValueColumnWidth>
+      <ValueColumnWidth column_width="76"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="64" />
+   <WVObjectSize size="23" />
    <wvobject fp_name="/sim1/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -28,254 +28,88 @@
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/im/memory" type="array">
-      <obj_property name="ElementShortName">memory[127:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[127:0][7:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/inst_i" type="array">
+      <obj_property name="ElementShortName">inst_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">inst_i[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/memory" type="array">
-      <obj_property name="ElementShortName">memory[64:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[64:0][7:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
+   <wvobject fp_name="/sim1/CPU/ex_wreg_addr" type="array">
+      <obj_property name="ElementShortName">ex_wreg_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_wreg_addr[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers" type="array">
-      <obj_property name="ElementShortName">registers[31:0][31:0]</obj_property>
-      <obj_property name="ObjectShortName">registers[31:0][31:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
+   <wvobject fp_name="/sim1/CPU/ex_wreg_data" type="array">
+      <obj_property name="ElementShortName">ex_wreg_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_wreg_data[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pc/pc" type="array">
-      <obj_property name="ElementShortName">pc[31:0]</obj_property>
-      <obj_property name="ObjectShortName">pc[31:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/mem_wreg_addr" type="array">
+      <obj_property name="ElementShortName">mem_wreg_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wreg_addr[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/im/ins_out" type="array">
-      <obj_property name="ElementShortName">ins_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">ins_out[31:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/mem_wreg_data" type="array">
+      <obj_property name="ElementShortName">mem_wreg_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wreg_data[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pip1/instruction_out" type="array">
-      <obj_property name="ElementShortName">instruction_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">instruction_out[31:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/ex_wd_i" type="array">
+      <obj_property name="ElementShortName">ex_wd_i[4:0]</obj_property>
+      <obj_property name="ObjectShortName">ex_wd_i[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pip1/load_dst_register" type="array">
-      <obj_property name="ElementShortName">load_dst_register[4:0]</obj_property>
-      <obj_property name="ObjectShortName">load_dst_register[4:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/mem_wd_i" type="array">
+      <obj_property name="ElementShortName">mem_wd_i[4:0]</obj_property>
+      <obj_property name="ObjectShortName">mem_wd_i[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pip1/load_dst" type="array">
-      <obj_property name="ElementShortName">load_dst[4:0]</obj_property>
-      <obj_property name="ObjectShortName">load_dst[4:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/EX/wd_i" type="array">
+      <obj_property name="ElementShortName">wd_i[4:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_i[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pip1/rs_f" type="array">
-      <obj_property name="ElementShortName">rs_f[4:0]</obj_property>
-      <obj_property name="ObjectShortName">rs_f[4:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/reg1_addr_o" type="array">
+      <obj_property name="ElementShortName">reg1_addr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1_addr_o[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pip1/rt_f" type="array">
-      <obj_property name="ElementShortName">rt_f[4:0]</obj_property>
-      <obj_property name="ObjectShortName">rt_f[4:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/reg2_addr_o" type="array">
+      <obj_property name="ElementShortName">reg2_addr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2_addr_o[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pip1/pip_pause" type="logic">
-      <obj_property name="ElementShortName">pip_pause</obj_property>
-      <obj_property name="ObjectShortName">pip_pause</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pip1/pip_flush" type="logic">
-      <obj_property name="ElementShortName">pip_flush</obj_property>
-      <obj_property name="ObjectShortName">pip_flush</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/npc/npc" type="array">
-      <obj_property name="ElementShortName">npc[31:0]</obj_property>
-      <obj_property name="ObjectShortName">npc[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/npc/instr_index" type="array">
-      <obj_property name="ElementShortName">instr_index[25:0]</obj_property>
-      <obj_property name="ObjectShortName">instr_index[25:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/npc/jump_ctrl" type="array">
-      <obj_property name="ElementShortName">jump_ctrl[3:0]</obj_property>
-      <obj_property name="ObjectShortName">jump_ctrl[3:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/npc/instr_offset" type="array">
-      <obj_property name="ElementShortName">instr_offset[15:0]</obj_property>
-      <obj_property name="ObjectShortName">instr_offset[15:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/npc/reg1_data" type="array">
+   <wvobject fp_name="/sim1/CPU/regs/reg1_data" type="array">
       <obj_property name="ElementShortName">reg1_data[31:0]</obj_property>
       <obj_property name="ObjectShortName">reg1_data[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/npc/reg2_data" type="array">
+   <wvobject fp_name="/sim1/CPU/regs/reg2_data" type="array">
       <obj_property name="ElementShortName">reg2_data[31:0]</obj_property>
       <obj_property name="ObjectShortName">reg2_data[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/reg_f/W_reg_addr" type="array">
-      <obj_property name="ElementShortName">W_reg_addr[4:0]</obj_property>
-      <obj_property name="ObjectShortName">W_reg_addr[4:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/reg1_addr_o" type="array">
+      <obj_property name="ElementShortName">reg1_addr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1_addr_o[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/reg_f/W_data" type="array">
-      <obj_property name="ElementShortName">W_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">W_data[31:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/reg2_addr_o" type="array">
+      <obj_property name="ElementShortName">reg2_addr_o[4:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2_addr_o[4:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/en_wt_mem" type="logic">
-      <obj_property name="ElementShortName">en_wt_mem</obj_property>
-      <obj_property name="ObjectShortName">en_wt_mem</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/reg1_o" type="array">
+      <obj_property name="ElementShortName">reg1_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1_o[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/reg_f/reg_we" type="logic">
-      <obj_property name="ElementShortName">reg_we</obj_property>
-      <obj_property name="ObjectShortName">reg_we</obj_property>
+   <wvobject fp_name="/sim1/CPU/ID/reg2_o" type="array">
+      <obj_property name="ElementShortName">reg2_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2_o[31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/alu/alu_op" type="array">
-      <obj_property name="ElementShortName">alu_op[4:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_op[4:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/regs/registers[9]" type="array">
+      <obj_property name="ElementShortName">[9][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[9][31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/alu/result" type="array">
-      <obj_property name="ElementShortName">result[31:0]</obj_property>
-      <obj_property name="ObjectShortName">result[31:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/regs/registers[10]" type="array">
+      <obj_property name="ElementShortName">[10][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[10][31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/pip0/instruction_out" type="array">
-      <obj_property name="ElementShortName">instruction_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">instruction_out[31:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/regs/registers[11]" type="array">
+      <obj_property name="ElementShortName">[11][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[11][31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/cu/alu_ctrl" type="array">
-      <obj_property name="ElementShortName">alu_ctrl[4:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_ctrl[4:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/regs/registers[12]" type="array">
+      <obj_property name="ElementShortName">[12][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[12][31:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/w_mux/alu_result" type="array">
-      <obj_property name="ElementShortName">alu_result[31:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_result[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/w_mux/dmem_data" type="array">
-      <obj_property name="ElementShortName">dmem_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">dmem_data[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/w_mux/extended_imm" type="array">
-      <obj_property name="ElementShortName">extended_imm[31:0]</obj_property>
-      <obj_property name="ObjectShortName">extended_imm[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/w_mux/jump_dest" type="array">
-      <obj_property name="ElementShortName">jump_dest[31:0]</obj_property>
-      <obj_property name="ObjectShortName">jump_dest[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/w_mux/mux_ctrl" type="array">
-      <obj_property name="ElementShortName">mux_ctrl[2:0]</obj_property>
-      <obj_property name="ObjectShortName">mux_ctrl[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/w_mux/data_mux_out" type="array">
-      <obj_property name="ElementShortName">data_mux_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_mux_out[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/addr" type="array">
-      <obj_property name="ElementShortName">addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/data_mem_out" type="array">
-      <obj_property name="ElementShortName">data_mem_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_mem_out[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/write_data" type="array">
-      <obj_property name="ElementShortName">write_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_data[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/addr" type="array">
-      <obj_property name="ElementShortName">addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/en_wt_mem" type="logic">
-      <obj_property name="ElementShortName">en_wt_mem</obj_property>
-      <obj_property name="ObjectShortName">en_wt_mem</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/fwd/pipeline2_en_wt_reg_out" type="logic">
-      <obj_property name="ElementShortName">pipeline2_en_wt_reg_out</obj_property>
-      <obj_property name="ObjectShortName">pipeline2_en_wt_reg_out</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/fwd/pipeline2_wt_reg_dst" type="array">
-      <obj_property name="ElementShortName">pipeline2_wt_reg_dst[4:0]</obj_property>
-      <obj_property name="ObjectShortName">pipeline2_wt_reg_dst[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/fwd/pipeline3_en_wt_reg_out" type="logic">
-      <obj_property name="ElementShortName">pipeline3_en_wt_reg_out</obj_property>
-      <obj_property name="ObjectShortName">pipeline3_en_wt_reg_out</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/fwd/pipeline3_wt_reg_dst" type="array">
-      <obj_property name="ElementShortName">pipeline3_wt_reg_dst[4:0]</obj_property>
-      <obj_property name="ObjectShortName">pipeline3_wt_reg_dst[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/fwd/rs" type="array">
-      <obj_property name="ElementShortName">rs[4:0]</obj_property>
-      <obj_property name="ObjectShortName">rs[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/fwd/rt" type="array">
-      <obj_property name="ElementShortName">rt[4:0]</obj_property>
-      <obj_property name="ObjectShortName">rt[4:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/fwd/forwarding_1" type="array">
-      <obj_property name="ElementShortName">forwarding_1[1:0]</obj_property>
-      <obj_property name="ObjectShortName">forwarding_1[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/fwd/forwarding_2" type="array">
-      <obj_property name="ElementShortName">forwarding_2[1:0]</obj_property>
-      <obj_property name="ObjectShortName">forwarding_2[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/reg_data" type="array">
-      <obj_property name="ElementShortName">reg_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">reg_data[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/write_data" type="array">
-      <obj_property name="ElementShortName">write_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_data[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/alu_result" type="array">
-      <obj_property name="ElementShortName">alu_result[31:0]</obj_property>
-      <obj_property name="ObjectShortName">alu_result[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/mux_ctrl" type="array">
-      <obj_property name="ElementShortName">mux_ctrl[1:0]</obj_property>
-      <obj_property name="ObjectShortName">mux_ctrl[1:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/f_mux2/out_mux" type="array">
-      <obj_property name="ElementShortName">out_mux[31:0]</obj_property>
-      <obj_property name="ObjectShortName">out_mux[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/ri_mux/In_reg" type="array">
-      <obj_property name="ElementShortName">In_reg[31:0]</obj_property>
-      <obj_property name="ObjectShortName">In_reg[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/ri_mux/In_imm" type="array">
-      <obj_property name="ElementShortName">In_imm[31:0]</obj_property>
-      <obj_property name="ObjectShortName">In_imm[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/ri_mux/mux_ctrl" type="array">
-      <obj_property name="ElementShortName">mux_ctrl[2:0]</obj_property>
-      <obj_property name="ObjectShortName">mux_ctrl[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/ri_mux/data_mux_out" type="array">
-      <obj_property name="ElementShortName">data_mux_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_mux_out[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/en_wt_mem" type="logic">
-      <obj_property name="ElementShortName">en_wt_mem</obj_property>
-      <obj_property name="ObjectShortName">en_wt_mem</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/addr" type="array">
-      <obj_property name="ElementShortName">addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/write_data" type="array">
-      <obj_property name="ElementShortName">write_data[31:0]</obj_property>
-      <obj_property name="ObjectShortName">write_data[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/extend" type="array">
-      <obj_property name="ElementShortName">extend[2:0]</obj_property>
-      <obj_property name="ObjectShortName">extend[2:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/data_mem_out" type="array">
-      <obj_property name="ElementShortName">data_mem_out[31:0]</obj_property>
-      <obj_property name="ObjectShortName">data_mem_out[31:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/memory" type="array">
-      <obj_property name="ElementShortName">memory[64:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[64:0][7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/head" type="array">
-      <obj_property name="ElementShortName">head[31:0]</obj_property>
-      <obj_property name="ObjectShortName">head[31:0]</obj_property>
+   <wvobject fp_name="/sim1/CPU/regs/registers[13]" type="array">
+      <obj_property name="ElementShortName">[13][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[13][31:0]</obj_property>
    </wvobject>
 </wave_config>

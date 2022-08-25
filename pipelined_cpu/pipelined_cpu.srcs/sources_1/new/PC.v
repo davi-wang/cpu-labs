@@ -12,7 +12,7 @@ module PC(input clk,
     always@(posedge clk or negedge rst) begin
         if (!rst) begin
             pc <= `ZeroWord;
-        end else if(stall[0] != 1'b1) begin
+        end else /*if(stall[0] != 1'b1)*/ begin
             if (flag == 1) begin
                 pc <= target;
                 end else begin
