@@ -6,6 +6,7 @@ module EX(input clk,
                 input [31:0]in_data1,
                 input [31:0]in_data2,
                 input [3:0]alu_op_i,
+                input [2:0]alu_op_sel_i,
                 input [4:0] wd_i,          //write addr of reg
                 input wreg_i,              //write enable
                 output reg [4:0] wd_o,     //write addr of reg

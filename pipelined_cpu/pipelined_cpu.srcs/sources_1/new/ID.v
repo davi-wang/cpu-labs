@@ -1,7 +1,7 @@
 `include "Header.v"
 
 module id (input rst,
-           input stall,
+           input [3:0] stall,
            input wire[31:0] pc_i,        //pc value
            input wire[31:0] inst_i,      //instruction code
            input wire[31:0] reg1_data_i,
@@ -50,6 +50,14 @@ module id (input rst,
             reg2_read_o <= 1'b0;
             valid       <= 1'b1;
             immed       <= `ZeroWord;
+        end else if (stall[2] == 1'b1) begin
+            alu_op      <= 4'h0;
+            wreg_o      <= 1'b0;
+            wd_o        <= `NopRegAddr;
+            reg1_read_o <= 1'b0;
+            reg2_read_o <= 1'b0;
+            valid       <= 1'b1;
+            immed       <= `ZeroWord;
         end
         else begin
             alu_op      <= 4'h0;
@@ -66,6 +74,8 @@ module id (input rst,
             
         end
     end
+
+
     
     //src num1
     always @(*) begin
