@@ -28,18 +28,20 @@ module CPU (
 
 
     //id to id/ex
-    wire [3:0] id_alu_op,
+    wire [4:0] id_alu_op,
     wire [31:0] id_data1,
     wire [31:0] id_data2,
     wire id_we,
     wire [4:0] id_waddr,
+    wire [31:0] link_addr_id,
 
     //id/ex to ex
-    wire [3:0] alu_op_ex,
+    wire [4:0] alu_op_ex,
     wire [31:0] data1_ex,
     wire [31:0] data2_ex,
     wire wreg_ex_in,
     wire [4:0]ex_waddr_in,
+    wire [31:0] link_addr_ex,
 
     //ex out
     wire ex_wreg_o,
@@ -80,7 +82,8 @@ module CPU (
         .rst(rst),
         .stall(stall),
         .target(pc_target),
-        .pc(pc)
+        .pc(pc),
+        .flag(pc_flag)
     );
 
     IF_ID IF2ID(
@@ -114,7 +117,10 @@ module CPU (
         .wreg_o(id_we),
         .reg1_o(id_data1),
         .reg2_o(id_data2),
-        .stallreq(stallreq_id)
+        .stallreq(stallreq_id),
+        .branch_target(pc_target),
+        .branch_flag_o(pc_flag),
+        .link_addr_o(link_addr_id)
     );
 
 
@@ -131,7 +137,9 @@ module CPU (
         .reg1_ex(data1_ex),
         .reg2_ex(data2_ex),
         .wreg_ex(wreg_ex_in),
-        .w_reg_addr_ex(ex_waddr_in)
+        .w_reg_addr_ex(ex_waddr_in),
+        .link_addr_id(link_addr_id),
+        .link_addr_ex(link_addr_ex)
     );
 
     EX EX(
@@ -139,6 +147,7 @@ module CPU (
         .in_data1(data1_ex),
         .in_data2(data2_ex),
         .alu_op_i(alu_op_ex),
+        .link_addr(link_addr_ex),
         .wd_i(ex_waddr_in),
         .wreg_i(wreg_ex_in),
         .wd_o(ex_wreg_addr),

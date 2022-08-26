@@ -27,41 +27,17 @@
 `define ALU_SUBU        5'd4
 `define ALU_AND         5'd5
 `define ALU_OR          5'd6
-`define ALU_XOR         5'd7 
+`define ALU_XOR         5'd7
 `define ALU_NOR         5'd8
 `define ALU_SLT         5'd9
-`define ALU_SLTU        5'd10 
+`define ALU_SLTU        5'd10
 `define ALU_LEFT        5'd11
 `define ALU_LEFTR       5'd12 // c
 `define ALU_RIGHTL      5'd13
 `define ALU_RIGHTLR     5'd14
 `define ALU_RIGHTA      5'd15
 `define ALU_RIGHTAR     5'd16
-
-// extend bits for ALU : extend_alu
-`define EXTEND_ALU_NOP      2'd0      // nop
-`define EXTEND_ALU_HIGH     2'd1      // set high 16 bits
-`define EXTEND_ALU_UNSIGNED 2'd2      // 16 -> 32
-`define EXTEND_ALU_SIGNED   2'd3      // 16 -> 32
-
-// extend bits for load : extend_load
-`define EXTEND_LOAD_NOP      3'd0      // nop
-`define EXTEND_LOAD_8s       3'd1      // 8 -> 32
-`define EXTEND_LOAD_16s      3'd3      // 16 -> 32
-`define EXTEND_LOAD_8u       3'd4      // 8 -> 32
-`define EXTEND_LOAD_16u      3'd5      // 16 -> 32
-
-
-// data source signal : data_src
-`define DATA_SRC_ALU    3'd1     // ALU
-`define DATA_SRC_MEM    3'd2     // from data memory
-`define DATA_SRC_JAL    3'd3     // from (jump_destination + 4)
-`define DATA_SRC_IMM    3'd4     // imm
-
-// write register signal : wt_reg
-`define WT_REG_RT       2'd0      // rt
-`define WT_REG_RD       2'd1      // rd
-`define WT_REG_31       2'd2      // GPR[31] 
+`define ALU_BRANCH  5'd17
 
 // instrcution code
 `define SPECIAL 6'b000000
@@ -74,28 +50,39 @@
 `define EX_XORI 6'b001110
 `define EX_LUI 6'b001111
 
- `define EX_SLL 6'b000000
- `define EX_SLLV 6'b000100
- `define EX_SRL 6'b000010
- `define EX_SRLV 6'b000110
- `define EX_SRA 6'b000011
- `define EX_SRAV 6'b000111
+`define EX_SLL 6'b000000
+`define EX_SLLV 6'b000100
+`define EX_SRL 6'b000010
+`define EX_SRLV 6'b000110
+`define EX_SRA 6'b000011
+`define EX_SRAV 6'b000111
 
- `define EX_ADD 6'b100000
- `define EX_ADDU 6'b100001
- `define EX_SUB 6'b100010
- `define EX_SUBU 6'b100011
- `define EX_SLTU 6'b101010
- `define EX_SLT 6'b101011
- `define EX_SLTI 6'b001010
- `define EX_SLTIU 6'b001011
- `define EX_ADDI 6'b001000
- `define EX_ADDIU 6'b001001
+`define EX_ADD 6'b100000
+`define EX_ADDU 6'b100001
+`define EX_SUB 6'b100010
+`define EX_SUBU 6'b100011
+`define EX_SLTU 6'b101010
+`define EX_SLT 6'b101011
+`define EX_SLTI 6'b001010
+`define EX_SLTIU 6'b001011
+`define EX_ADDI 6'b001000
+`define EX_ADDIU 6'b001001
+
+`define EX_J 6'b000010
+`define EX_JAL 6'b000011
+`define EX_JALR 6'b001001
+`define EX_JR 6'b001000
+`define EX_BEQ 6'b000100
+`define EX_BGEZ 5'b00001
+`define EX_BGTZ 6'b000111
+`define EX_BNE 6'b000101
+`define EX_BLTZ 5'b00000
+`define EX_BLEZ 6'b000110
 
 // `define ALU_RESULT      3'b001
-// `define MEM_DATA        3'b010 
-// `define EXTENDED_IMM    3'b011 
-// `define JUMP_DST        3'b100 
+// `define MEM_DATA        3'b010
+// `define EXTENDED_IMM    3'b011
+// `define JUMP_DST        3'b100
 
 `define RstEnable 1'b0
 `define RstDisable 1'b1
@@ -116,7 +103,7 @@
 
 //op
 `define EXE_MFC0_OP  4'd14
-`define EXE_MTC0_OP  4'd14   
+`define EXE_MTC0_OP  4'd14
 
 //stall
 `define STALL_EXE    2'b10

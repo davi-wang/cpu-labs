@@ -14,13 +14,12 @@ module ID (input rst,
            output reg branch_flag_o,
            output reg [31:0] branch_target,
            output reg [31:0] link_addr_o,
-           output stallreq,
+           output reg stallreq,
            output reg reg1_read_o,
            output reg reg2_read_o,
            output reg[4:0] reg1_addr_o,
            output reg[4:0] reg2_addr_o,
-           output reg[3:0] alu_op,
-           output reg[2:0] alu_sec,
+           output reg[4:0] alu_op,
            output reg[31:0] reg1_o,
            output reg[31:0] reg2_o,
            output reg[4:0] wd_o,
@@ -46,15 +45,15 @@ module ID (input rst,
     
     wire [31:0] sign_ext_00;
     assign sign_ext_00 = {{14{inst_i[15]}}, inst_i[15:0], 2'b00};
-    
+    wire [31:0] j_target;
+    assign j_target    = {pc_i[31:28], inst_i[25:0], 2'b00};
     
     //TODO:DECODE INSTRUCTIONS TO WRITE VALUE TO OUTPUT
     
     //decode instruction
     always @(*) begin
         if (!rst) begin
-            alu_op        <= 4'h0;
-            alu_sec       <= 3'b0;
+            alu_op        <= 5'b00000;
             wreg_o        <= 1'b0;
             wd_o          <= `NopRegAddr;
             reg1_read_o   <= 1'b0;
@@ -66,9 +65,10 @@ module ID (input rst,
             link_addr_o   <= `ZeroWord;
             branch_target <= `ZeroWord;
             branch_flag_o <= 1'b0;
+            stallreq <= 1'b0;
         end
         else begin
-            alu_op        <= 4'h0;
+            alu_op        <= 5'b00000;
             wreg_o        <= 1'b0;
             wd_o          <= inst_i[15:11];
             reg1_read_o   <= 1'b0;
@@ -80,11 +80,37 @@ module ID (input rst,
             branch_flag_o <= 1'b0;
             reg1_addr_o   <= rs;
             reg2_addr_o   <= rt;
+            stallreq <= 1'b0;
             case(op)
                 `SPECIAL: begin
                     case(op2)
                         5'b00000: begin
                             case(op3)
+                                `EX_JR:begin
+                                    wreg_o        <= 1'b0;
+                                    alu_op        <= `ALU_BRANCH;
+                                    reg1_read_o   <= 1'b1;
+                                    reg2_read_o   <= 1'b0;
+                                    branch_flag_o <= 1'b1;
+                                    branch_target <= reg1_o;
+                                    link_addr_o   <= `ZeroWord;
+                                    stallreq <= 1'b1;
+                                    valid         <= 1'b1;
+                                end
+                                
+                                `EX_JALR:begin
+                                    wreg_o        <= 1'b1;
+                                    alu_op        <= `ALU_BRANCH;
+                                    wd_o          <= rd;
+                                    reg1_read_o   <= 1'b1;
+                                    reg2_read_o   <= 1'b0;
+                                    branch_flag_o <= 1'b1;
+                                    branch_target <= reg1_o;
+                                    link_addr_o   <= pc_plus_4;
+                                    stallreq <= 1'b1;
+                                    valid         <= 1'b1;
+                                end
+                                
                                 `EX_OR: begin
                                     wreg_o      <= 1'b1;
                                     alu_op      <= `ALU_OR;
@@ -143,52 +169,52 @@ module ID (input rst,
                                 
                                 `EX_ADD: begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_ADD; 
+                                    alu_op      <= `ALU_ADD;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
                                 end
-
+                                
                                 `EX_ADDU: begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_ADDU; 
+                                    alu_op      <= `ALU_ADDU;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
                                 end
-
+                                
                                 `EX_SUB:begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_SUB; 
+                                    alu_op      <= `ALU_SUB;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
                                 end
-
+                                
                                 `EX_SUBU:begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_SUBU; 
+                                    alu_op      <= `ALU_SUBU;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
                                 end
-
+                                
                                 `EX_SLT:begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_SLT; 
+                                    alu_op      <= `ALU_SLT;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
                                 end
-
+                                
                                 `EX_SLTU:begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_SLTU; 
+                                    alu_op      <= `ALU_SLTU;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
                                 end
-
+                                
                                 default: begin
                                     
                                 end
@@ -201,6 +227,83 @@ module ID (input rst,
                     endcase
                 end
                 
+                `EX_J:begin
+                    wreg_o        <= 1'b0;
+                    alu_op        <= `ALU_BRANCH;
+                    reg1_read_o   <= 1'b0;
+                    reg2_read_o   <= 1'b0;
+                    link_addr_o   <= `ZeroWord;
+                    branch_flag_o <= 1'b1;
+                    branch_target <= j_target;
+                    valid         <= 1'b1;
+                    stallreq <= 1'b1;
+                end
+                
+                `EX_JAL:begin
+                    wreg_o        <= 1'b1;
+                    alu_op        <= `ALU_BRANCH;
+                    reg1_read_o   <= 1'b0;
+                    reg2_read_o   <= 1'b0;
+                    wd_o          <= 5'b11111;
+                    link_addr_o   <= pc_plus_4;
+                    branch_flag_o <= 1'b1;
+                    branch_target <= j_target;
+                    valid         <= 1'b1;
+                    stallreq <= 1'b1;
+                end
+                
+                `EX_BEQ:begin
+                    wreg_o      <= 1'b0;
+                    alu_op      <= `ALU_BRANCH;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b1;
+                    if (reg1_o == reg2_o) begin
+                        stallreq <= 1'b1;
+                        branch_flag_o <= 1'b1;
+                        branch_target <= pc_plus_4 + sign_ext_00;
+                    end
+                    valid <= 1'b1;
+                end
+                
+                `EX_BGTZ:begin
+                    wreg_o      <= 1'b0;
+                    alu_op      <= `ALU_BRANCH;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    if (reg1_o[31] == 1'b0 && reg1_o != `ZeroWord) begin
+                        stallreq <= 1'b1;
+                        branch_flag_o <= 1'b1;
+                        branch_target <= pc_plus_4 + sign_ext_00;
+                    end
+                    valid <= 1'b1;
+                end
+                
+                `EX_BLEZ:begin
+                    wreg_o      <= 1'b0;
+                    alu_op      <= `ALU_BRANCH;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    if (reg1_o[31] == 1'b1 || reg1_o == `ZeroWord) begin
+                        stallreq <= 1'b1;
+                        branch_flag_o <= 1'b1;
+                        branch_target <= pc_plus_4 + sign_ext_00;
+                    end
+                    valid <= 1'b1;
+                end
+                
+                `EX_BNE:begin
+                    wreg_o      <= 1'b0;
+                    alu_op      <= `ALU_BRANCH;
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b1;
+                    if (reg1_o != reg2_o) begin
+                        stallreq <= 1'b1;
+                        branch_flag_o <= 1'b1;
+                        branch_target <= pc_plus_4 + sign_ext_00;
+                    end
+                    valid <= 1'b1;
+                end
+                
                 `EX_ADDI:begin
                     wreg_o      <= 1'b1;
                     alu_op      <= `ALU_ADD;
@@ -210,7 +313,7 @@ module ID (input rst,
                     wd_o        <= rt;
                     valid       <= 1'b1;
                 end
-
+                
                 `EX_ADDIU:begin
                     wreg_o      <= 1'b1;
                     alu_op      <= `ALU_ADDU;
@@ -220,7 +323,7 @@ module ID (input rst,
                     wd_o        <= rt;
                     valid       <= 1'b1;
                 end
-
+                
                 `EX_SLTI:begin
                     wreg_o      <= 1'b1;
                     alu_op      <= `ALU_SLT;
@@ -230,7 +333,7 @@ module ID (input rst,
                     wd_o        <= rt;
                     valid       <= 1'b1;
                 end
-
+                
                 `EX_SLTIU:begin
                     wreg_o      <= 1'b1;
                     alu_op      <= `ALU_SLTU;
@@ -240,7 +343,7 @@ module ID (input rst,
                     wd_o        <= rt;
                     valid       <= 1'b1;
                 end
-
+                
                 `EX_ORI: begin
                     wreg_o      <= 1'b1;
                     alu_op      <= `ALU_OR;
@@ -277,6 +380,39 @@ module ID (input rst,
                     wd_o        <= rt;
                     valid       <= 1'b1;
                 end
+                
+                6'b000001:begin
+                    case(op4)
+                        `EX_BGEZ: begin
+                            wreg_o      <= 1'b0;
+                            alu_op      <= `ALU_BRANCH;
+                            reg1_read_o <= 1'b1;
+                            reg2_read_o <= 1'b0;
+                            if (reg1_o[31] == 1'b0) begin
+                                stallreq <= 1'b1;
+                                branch_flag_o <= 1'b1;
+                                branch_target <= pc_plus_4 + sign_ext_00;
+                            end
+                            valid <= 1'b1;
+                        end
+                        
+                        `EX_BLTZ: begin
+                            wreg_o      <= 1'b0;
+                            alu_op      <= `ALU_BRANCH;
+                            reg1_read_o <= 1'b1;
+                            reg2_read_o <= 1'b0;
+                            if (reg1_o == 1'b1 ) begin
+                                stallreq <= 1'b1;
+                                branch_flag_o <= 1'b1;
+                                branch_target <= pc_plus_4 + sign_ext_00;
+                            end
+                            valid <= 1'b1;
+                        end
+                        
+                    endcase
+                end
+                
+                
                 default:begin
                 end
             endcase
