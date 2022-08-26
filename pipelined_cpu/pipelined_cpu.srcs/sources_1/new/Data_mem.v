@@ -15,11 +15,6 @@ wire [31:0] write;
 wire [31:0] mask;
 wire [4:0] shift;
 
-assign data_mem_out = (extend == `EXTEND_LOAD_8s) ? ((addr[1:0] == 2'b00) ? out[7:0] :
-                                                    (addr[1:0] == 2'b01) ? out[15:8] :
-                                                    (addr[1:0] == 2'b10) ? out[23:16] : out[31:24]) :
-                      (extend == `EXTEND_LOAD_16s) ? ((addr[1] == 0) ? out[15:0] : out[31:16]) :
-                       out;
 
 assign mask = (extend == `EXTEND_LOAD_8s) ? 32'h000000ff :
               (extend == `EXTEND_LOAD_16s) ? 32'h0000ffff : 32'hffffffff;
@@ -27,6 +22,8 @@ assign mask = (extend == `EXTEND_LOAD_8s) ? 32'h000000ff :
 assign shift = (addr[1:0] == 2'b00) ? 5'd0 :
                (addr[1:0] == 2'b01) ? 5'd8 :
                (addr[1:0] == 2'b10) ? 5'd16 : 5'd24;
+
+assign data_mem_out = (mask << shift) & out;
 
 assign write = ((mask & write_data) << shift) | (~(mask << shift) & out);
 
