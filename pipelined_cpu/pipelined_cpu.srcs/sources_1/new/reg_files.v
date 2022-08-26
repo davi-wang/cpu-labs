@@ -36,11 +36,14 @@ module reg_files(
     integer i;
     reg [31:0] registers [31:0];
     
-    initial begin
-        for(i=0;i<32;i=i+1) registers[i]<=32'b0;
-    end
+    // initial begin
+    //     for (i=0;i<32;i=i+1) registers[i]<=32'b0;
+    // end
     
-    always@(negedge clk)begin           
+    always@(negedge clk or negedge rst)begin
+        if (rst == 0) begin
+            for (i=0; i<32; i=i+1) registers[i] <= 32'b0;
+        end      
         if (reg_we) registers[W_reg_addr] <= W_data;
     end
     

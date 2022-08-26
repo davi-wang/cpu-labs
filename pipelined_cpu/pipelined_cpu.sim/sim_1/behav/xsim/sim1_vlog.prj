@@ -1,5 +1,7 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  \
+"../../../../pipelined_cpu.srcs/sources_1/ip/data_mem/sim/data_mem.v" \
+"../../../../pipelined_cpu.srcs/sources_1/ip/ins_mem/sim/ins_mem.v" \
 "../../../../pipelined_cpu.srcs/sources_1/new/ALU_Unit.v" \
 "../../../../pipelined_cpu.srcs/sources_1/new/CU.v" \
 "../../../../pipelined_cpu.srcs/sources_1/new/Data_mem.v" \

@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="100000fs"></ZoomStartTime>
-      <ZoomEndTime time="341808fs"></ZoomEndTime>
-      <Cursor1Time time="304474fs"></Cursor1Time>
+      <ZoomStartTime time="232220fs"></ZoomStartTime>
+      <ZoomEndTime time="348221fs"></ZoomEndTime>
+      <Cursor1Time time="1000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="175"></NameColumnWidth>
-      <ValueColumnWidth column_width="81"></ValueColumnWidth>
+      <NameColumnWidth column_width="169"></NameColumnWidth>
+      <ValueColumnWidth column_width="72"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="13" />
+   <WVObjectSize size="43" />
    <wvobject fp_name="/sim1/clock" type="logic">
       <obj_property name="ElementShortName">clock</obj_property>
       <obj_property name="ObjectShortName">clock</obj_property>
@@ -28,23 +28,37 @@
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/im/memory" type="array">
-      <obj_property name="ElementShortName">memory[127:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[127:0][7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/dm/memory" type="array">
-      <obj_property name="ElementShortName">memory[64:0][7:0]</obj_property>
-      <obj_property name="ObjectShortName">memory[64:0][7:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
-   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers" type="array">
-      <obj_property name="ElementShortName">registers[31:0][31:0]</obj_property>
-      <obj_property name="ObjectShortName">registers[31:0][31:0]</obj_property>
-      <obj_property name="isExpanded"></obj_property>
-   </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/pc/pc" type="array">
       <obj_property name="ElementShortName">pc[31:0]</obj_property>
       <obj_property name="ObjectShortName">pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers[15]" type="array">
+      <obj_property name="ElementShortName">[15][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[15][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers[14]" type="array">
+      <obj_property name="ElementShortName">[14][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[14][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers[13]" type="array">
+      <obj_property name="ElementShortName">[13][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[13][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers[12]" type="array">
+      <obj_property name="ElementShortName">[12][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[12][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers[11]" type="array">
+      <obj_property name="ElementShortName">[11][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[11][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers[10]" type="array">
+      <obj_property name="ElementShortName">[10][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[10][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/registers[9]" type="array">
+      <obj_property name="ElementShortName">[9][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[9][31:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/sim1/TOP_MOD/pip2/In_reg2_data" type="array">
       <obj_property name="ElementShortName">In_reg2_data[31:0]</obj_property>
@@ -73,5 +87,109 @@
    <wvobject fp_name="/sim1/TOP_MOD/reg_f/reg2_addr" type="array">
       <obj_property name="ElementShortName">reg2_addr[4:0]</obj_property>
       <obj_property name="ObjectShortName">reg2_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/cu/rs_f" type="array">
+      <obj_property name="ElementShortName">rs_f[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rs_f[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/cu/rt_f" type="array">
+      <obj_property name="ElementShortName">rt_f[4:0]</obj_property>
+      <obj_property name="ObjectShortName">rt_f[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/pip0/instruction" type="array">
+      <obj_property name="ElementShortName">instruction[31:0]</obj_property>
+      <obj_property name="ObjectShortName">instruction[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/pc" type="array">
+      <obj_property name="ElementShortName">pc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">pc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/jump_ctrl" type="array">
+      <obj_property name="ElementShortName">jump_ctrl[3:0]</obj_property>
+      <obj_property name="ObjectShortName">jump_ctrl[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/instr_index" type="array">
+      <obj_property name="ElementShortName">instr_index[25:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_index[25:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/instr_offset" type="array">
+      <obj_property name="ElementShortName">instr_offset[15:0]</obj_property>
+      <obj_property name="ObjectShortName">instr_offset[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/reg1_data" type="array">
+      <obj_property name="ElementShortName">reg1_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg1_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/reg2_data" type="array">
+      <obj_property name="ElementShortName">reg2_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">reg2_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/npc" type="array">
+      <obj_property name="ElementShortName">npc[31:0]</obj_property>
+      <obj_property name="ObjectShortName">npc[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/des_inst_addr" type="array">
+      <obj_property name="ElementShortName">des_inst_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">des_inst_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/npc/pip_flush" type="logic">
+      <obj_property name="ElementShortName">pip_flush</obj_property>
+      <obj_property name="ObjectShortName">pip_flush</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/W_data" type="array">
+      <obj_property name="ElementShortName">W_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">W_data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/reg_f/W_reg_addr" type="array">
+      <obj_property name="ElementShortName">W_reg_addr[4:0]</obj_property>
+      <obj_property name="ObjectShortName">W_reg_addr[4:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/dm/inst/ram_data[3]" type="array">
+      <obj_property name="ElementShortName">[3][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[3][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/dm/inst/ram_data[2]" type="array">
+      <obj_property name="ElementShortName">[2][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[2][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/dm/inst/ram_data[1]" type="array">
+      <obj_property name="ElementShortName">[1][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[1][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/dm/inst/ram_data[0]" type="array">
+      <obj_property name="ElementShortName">[0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">[0][31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/dm/we" type="logic">
+      <obj_property name="ElementShortName">we</obj_property>
+      <obj_property name="ObjectShortName">we</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/dm/a" type="array">
+      <obj_property name="ElementShortName">a[7:0]</obj_property>
+      <obj_property name="ObjectShortName">a[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/dm/spo" type="array">
+      <obj_property name="ElementShortName">spo[31:0]</obj_property>
+      <obj_property name="ObjectShortName">spo[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/addr" type="array">
+      <obj_property name="ElementShortName">addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/extend" type="array">
+      <obj_property name="ElementShortName">extend[2:0]</obj_property>
+      <obj_property name="ObjectShortName">extend[2:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/write" type="array">
+      <obj_property name="ElementShortName">write[31:0]</obj_property>
+      <obj_property name="ObjectShortName">write[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/mask" type="array">
+      <obj_property name="ElementShortName">mask[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mask[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sim1/TOP_MOD/dm/shift" type="array">
+      <obj_property name="ElementShortName">shift[4:0]</obj_property>
+      <obj_property name="ObjectShortName">shift[4:0]</obj_property>
    </wvobject>
 </wave_config>
