@@ -23,7 +23,8 @@ module ID (input rst,
            output reg[31:0] reg1_o,
            output reg[31:0] reg2_o,
            output reg[4:0] wd_o,
-           output reg wreg_o);
+           output reg wreg_o,
+           output [31:0] insc_id);
     
     wire[5:0] op  = inst_i[31:26];
     wire[4:0] op2 = inst_i[10:6];
@@ -47,8 +48,7 @@ module ID (input rst,
     assign sign_ext_00 = {{14{inst_i[15]}}, inst_i[15:0], 2'b00};
     wire [31:0] j_target;
     assign j_target    = {pc_i[31:28], inst_i[25:0], 2'b00};
-    
-    //TODO:DECODE INSTRUCTIONS TO WRITE VALUE TO OUTPUT
+    assign insc_id = inst_i;
     
     //decode instruction
     always @(*) begin
@@ -225,6 +225,77 @@ module ID (input rst,
                             
                         end
                     endcase
+                end
+                `EX_LB:begin
+                    wreg_o <= 1'b1;
+                    alu_op <= `ALU_MEM;  //TODO
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    wd_o <= rt;
+                    valid <= 1'b1;
+                end
+
+                `EX_LBU:begin
+                    wreg_o <= 1'b1;
+                    alu_op <= `ALU_MEM;  //TODO
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    wd_o <= rt;
+                    valid <= 1'b1;
+                end
+
+                `EX_LH:begin
+                    wreg_o <= 1'b1;
+                    alu_op <= `ALU_MEM;  //TODO
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    wd_o <= rt;
+                    valid <= 1'b1;
+                end
+
+                `EX_LHU:begin
+                    wreg_o <= 1'b1;
+                    alu_op <= `ALU_MEM;  //TODO
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    wd_o <= rt;
+                    valid <= 1'b1;
+                end
+
+                `EX_LW:begin
+                    wreg_o <= 1'b1;
+                    alu_op <= `ALU_MEM;  //TODO
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    wd_o <= rt;
+                    valid <= 1'b1;
+                end
+
+                `EX_SB:begin
+                    wreg_o <= 1'b1;
+                    alu_op <= `ALU_MEM;  //TODO
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    wd_o <= rt;
+                    valid <= 1'b1;
+                end
+
+                `EX_SH:begin
+                    wreg_o <= 1'b1;
+                    alu_op <= `ALU_MEM;  //TODO
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    wd_o <= rt;
+                    valid <= 1'b1;
+                end
+
+                `EX_SW:begin
+                    wreg_o <= 1'b1;
+                    alu_op <= `ALU_MEM;  //TODO
+                    reg1_read_o <= 1'b1;
+                    reg2_read_o <= 1'b0;
+                    wd_o <= rt;
+                    valid <= 1'b1;
                 end
                 
                 `EX_J:begin

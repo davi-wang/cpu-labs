@@ -37,7 +37,8 @@
 `define ALU_RIGHTLR     5'd14
 `define ALU_RIGHTA      5'd15
 `define ALU_RIGHTAR     5'd16
-`define ALU_BRANCH  5'd17
+`define ALU_BRANCH      5'd17
+`define ALU_MEM         5'd18
 
 // instrcution code
 `define SPECIAL 6'b000000
@@ -78,6 +79,15 @@
 `define EX_BNE 6'b000101
 `define EX_BLTZ 5'b00000
 `define EX_BLEZ 6'b000110
+
+`define EX_LB 6'b100000
+`define EX_LBU 6'b100100
+`define EX_LH 6'b100001
+`define EX_LHU 6'b100101
+`define EX_LW 6'b100011
+`define EX_SB 6'b101000
+`define EX_SH 6'b101001
+`define EX_SW 6'b101011
 
 // `define ALU_RESULT      3'b001
 // `define MEM_DATA        3'b010

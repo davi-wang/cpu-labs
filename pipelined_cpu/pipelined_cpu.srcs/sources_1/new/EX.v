@@ -3,6 +3,7 @@
 
 module EX(input clk,
                 input reset,
+                input [31:0] insc_i,
                 input [31:0]in_data1,
                 input [31:0]in_data2,
                 input [31:0]link_addr,
@@ -11,10 +12,15 @@ module EX(input clk,
                 input wreg_i,              //write enable
                 output reg [4:0] wd_o,     //write addr of reg
                 output reg wreg_o,         //write enalbe
-                output reg[31:0] wdata_o); //result
+                output reg[31:0] wdata_o,
+                output [31:0] wmem_addr_o,
+                output [4:0] alu_op_o,
+                output [31:0] wmem_data);
     
     reg [32:0]mid_result;
-    
+    assign alu_op_o  = alu_op_i;
+    assign wmem_addr_o  = in_data1 + {{16{insc_i[15]}}, insc_i[15:0]};
+
     always@(*) begin
         if (!reset) begin
             mid_result[32] <= 0;
@@ -42,6 +48,7 @@ module EX(input clk,
                 `ALU_RIGHTL: mid_result[31:0]  <= in_data2 >> in_data1[4:0];
                 `ALU_RIGHTA: mid_result[31:0]  <= $signed(in_data2) >> in_data1[4:0];
                 `ALU_BRANCH: mid_result[31:0] <= link_addr;
+                `ALU_MEM: mid_result[31:0] <= 32'd0;
                 `ALU_DEFAULT: mid_result[31:0] <= 32'd0;
             endcase
         end
