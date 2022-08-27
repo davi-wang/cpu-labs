@@ -9,14 +9,14 @@ module EX_MEM (
     input wreg_i,
     input [31:0] wdata_i,
     input [31:0] wmem_addr_i,
-    input wmem_i,
+    input [4:0] alu_op_ex_o,
     input [31:0] wmme_data_i,
 
     output reg[4:0] w_reg_addr_o,
     output reg wreg_o,
     output reg[31:0] wdata_o,
     output reg [31:0] wmem_addr_o,
-    output reg wmem_o,
+    output reg [4:0] alu_op_mem,
     output reg [31:0] wmme_data_o
 );
 
@@ -26,14 +26,14 @@ module EX_MEM (
             wreg_o <= 1'b0;
             wdata_o <= `ZeroWord;
             wmem_addr_o <= `ZeroWord;
-            wmem_o <= 1'b0;
+            alu_op_mem <= 1'b00000;
             wmme_data_o <= `ZeroWord;
         end else begin
             w_reg_addr_o <= w_reg_addr_i;
             wreg_o <= wreg_i;
             wdata_o <= wdata_i;
             wmem_addr_o <= wmem_addr_i;
-            wmem_o <= wmem_i;
+            alu_op_mem <= alu_op_ex_o;
             wmme_data_o <= wmme_data_i;
         end
     end

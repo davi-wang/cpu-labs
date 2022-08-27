@@ -34,6 +34,7 @@ module CPU (
     wire id_we,
     wire [4:0] id_waddr,
     wire [31:0] link_addr_id,
+    wire [31:0] insc_id_o,
 
     //id/ex to ex
     wire [4:0] alu_op_ex,
@@ -42,16 +43,23 @@ module CPU (
     wire wreg_ex_in,
     wire [4:0]ex_waddr_in,
     wire [31:0] link_addr_ex,
+    wire [31:0] insc_ex,
 
     //ex out
     wire ex_wreg_o,
     wire [4:0] ex_wreg_addr,
     wire [31:0] ex_wreg_data,
+    wire [31:0] ex_wmem_addr,
+    wire [4:0] alu_op_ex_o,
+    wire [31:0] ex_wmem_data,
 
     //ex-mem
     wire mem_wreg_i,
     wire [4:0] mem_waddr_i,
-    wire [31:0] mem_wdata_i, 
+    wire [31:0] mem_wdata_i,
+    wire [31:0] mem_wmem_addr,
+    wire [31:0] mem_wmem_data,
+    wire [4:0] alu_op_mem, 
 
 
     //mem
@@ -120,7 +128,8 @@ module CPU (
         .stallreq(stallreq_id),
         .branch_target(pc_target),
         .branch_flag_o(pc_flag),
-        .link_addr_o(link_addr_id)
+        .link_addr_o(link_addr_id),
+        .insc_id(insc_id_o)
     );
 
 
@@ -139,7 +148,9 @@ module CPU (
         .wreg_ex(wreg_ex_in),
         .w_reg_addr_ex(ex_waddr_in),
         .link_addr_id(link_addr_id),
-        .link_addr_ex(link_addr_ex)
+        .link_addr_ex(link_addr_ex),
+        .insc_id(insc_id_o),
+        .insc_ex(insc_ex)
     );
 
     EX EX(
@@ -152,7 +163,10 @@ module CPU (
         .wreg_i(wreg_ex_in),
         .wd_o(ex_wreg_addr),
         .wreg_o(ex_wreg_o),
-        .wdata_o(ex_wreg_data)
+        .wdata_o(ex_wreg_data),
+        .wmem_addr_o(ex_wmem_addr),
+        .alu_op_o(alu_op_ex_o),
+        .wmem_data(ex_wmem_data)
     );
 
     EX_MEM EX_MEM(
