@@ -40,7 +40,7 @@ module MEM (
             case(alu_op_i)
                 `ALU_LB:begin
                     wmem_o <= 1'b0;
-                    wmem_addr_o <= wmem_addr_i;
+                    wmem_addr_o <= {wmem_addr_i[31:2], 2'b0};
                     case(wmem_addr_i[1:0])
                         2'b00: begin
                             wdata_o <= {{24{dmem_data_i[7]}}, dmem_data_i[7:0]};
@@ -63,7 +63,7 @@ module MEM (
 
                 `ALU_LBU:begin
                     wmem_o <= 1'b0;
-                    wmem_addr_o <= wmem_addr_i;
+                    wmem_addr_o <= {wmem_addr_i[31:2], 2'b0};
                     case(wmem_addr_i[1:0])
                         2'b00: begin
                             wdata_o <= {{24{1'b0}}, dmem_data_i[7:0]};
@@ -89,7 +89,7 @@ module MEM (
                 
                 `ALU_LH:begin
                     wmem_o <= 1'b0;
-                    wmem_addr_o <= wmem_addr_i;
+                    wmem_addr_o <= {wmem_addr_i[31:2], 2'b0};
                     case(wmem_addr_i[1:0])
                         2'b00: begin
                             wdata_o <= {{16{dmem_data_i[15]}}, dmem_data_i[15:0]};
@@ -107,7 +107,7 @@ module MEM (
 
                 `ALU_LHU:begin
                     wmem_o <= 1'b0;
-                    wmem_addr_o <= wmem_addr_i;
+                    wmem_addr_o <= {wmem_addr_i[31:2], 2'b0};
                     case(wmem_addr_i[1:0])
                         2'b00: begin
                             wdata_o <= {{16{1'b0}}, dmem_data_i[15:0]};
@@ -125,15 +125,15 @@ module MEM (
 
                 `ALU_LW:begin
                     wmem_o <= 1'b0;
-                    wmem_addr_o <= wmem_addr_i;
+                    wmem_addr_o <= {wmem_addr_i[31:2], 2'b0};
                     wdata_o <= dmem_data_i;
                     mem_sec <= 4'b1111;
                 end
 
                 `ALU_SB:begin
-                    wmem_addr_o <= wmem_addr_i;
+                    wmem_addr_o <= {wmem_addr_i[31:2], 2'b0};
                     wmem_o <= 1'b1;
-                    case(wmem_addr_o[1:0])
+                    case(wmem_addr_i[1:0])
                         2'b00:begin
                             wmem_data_o <= {dmem_data_i[31:8], wmem_data_i[7:0]};
                             mem_sec <= 4'b0001;
@@ -157,9 +157,9 @@ module MEM (
                 end
 
                 `ALU_SH:begin
-                    wmem_addr_o <= wmem_addr_i;
+                   wmem_addr_o <= {wmem_addr_i[31:2], 2'b0};
                     wmem_o <= 1'b1;
-                    case(wmem_addr_o[1:0])
+                    case(wmem_addr_i[1:0])
                         2'b00:begin
                             wmem_data_o <= {dmem_data_i[31:16], wmem_data_i[15:0]};
                             mem_sec <= 4'b0011;
