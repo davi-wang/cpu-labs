@@ -11,6 +11,7 @@ module ID (input rst,
            input wire mem_wreg_i,
            input wire[31:0] mem_wdata_i,
            input wire[4:0] mem_wd_i,
+           input wire[4:0] alu_op_f_ex,
            output reg branch_flag_o,
            output reg [31:0] branch_target,
            output reg [31:0] link_addr_o,
@@ -47,8 +48,18 @@ module ID (input rst,
     wire [31:0] sign_ext_00;
     assign sign_ext_00 = {{14{inst_i[15]}}, inst_i[15:0], 2'b00};
     wire [31:0] j_target;
-    assign j_target    = {pc_i[31:28], inst_i[25:0], 2'b00};
-    assign insc_id = inst_i;
+    assign j_target = {pc_i[31:28], inst_i[25:0], 2'b00};
+    assign insc_id  = inst_i;
+    
+    assign last_load = (alu_op_f_ex == `EX_LB ||
+    alu_op_f_ex == `EX_LBU ||
+    alu_op_f_ex == `EX_LH ||
+    alu_op_f_ex == `EX_LHU ||
+    alu_op_f_ex == `EX_LW ||
+    alu_op_f_ex == `EX_SB ||
+    alu_op_f_ex == `EX_SW ||
+    alu_op_f_ex == `EX_SH)?1'b1:1'b0;
+    
     
     //decode instruction
     always @(*) begin
@@ -65,12 +76,12 @@ module ID (input rst,
             link_addr_o   <= `ZeroWord;
             branch_target <= `ZeroWord;
             branch_flag_o <= 1'b0;
-            stallreq <= 1'b0;
+            stallreq      <= 1'b0;
         end
         else begin
             alu_op        <= 5'b00000;
             wreg_o        <= 1'b0;
-            wd_o          <= inst_i[15:11];
+            wd_o          <= rd;
             reg1_read_o   <= 1'b0;
             reg2_read_o   <= 1'b0;
             valid         <= 1'b0;
@@ -80,7 +91,7 @@ module ID (input rst,
             branch_flag_o <= 1'b0;
             reg1_addr_o   <= rs;
             reg2_addr_o   <= rt;
-            stallreq <= 1'b0;
+            stallreq      <= 1'b0;
             case(op)
                 `SPECIAL: begin
                     case(op2)
@@ -94,7 +105,7 @@ module ID (input rst,
                                     branch_flag_o <= 1'b1;
                                     branch_target <= reg1_o;
                                     link_addr_o   <= `ZeroWord;
-                                    stallreq <= 1'b1;
+                                    stallreq      <= 1'b1;
                                     valid         <= 1'b1;
                                 end
                                 
@@ -107,7 +118,7 @@ module ID (input rst,
                                     branch_flag_o <= 1'b1;
                                     branch_target <= reg1_o;
                                     link_addr_o   <= pc_plus_4;
-                                    stallreq <= 1'b1;
+                                    stallreq      <= 1'b1;
                                     valid         <= 1'b1;
                                 end
                                 
@@ -145,7 +156,7 @@ module ID (input rst,
                                 
                                 `EX_SLLV: begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_LEFT; //TODO
+                                    alu_op      <= `ALU_LEFT;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
@@ -153,7 +164,7 @@ module ID (input rst,
                                 
                                 `EX_SRLV:begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_RIGHTL; //TODO
+                                    alu_op      <= `ALU_RIGHTL;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
@@ -161,7 +172,7 @@ module ID (input rst,
                                 
                                 `EX_SRAV: begin
                                     wreg_o      <= 1'b1;
-                                    alu_op      <= `ALU_RIGHTA; //TODO
+                                    alu_op      <= `ALU_RIGHTA;
                                     reg1_read_o <= 1'b1;
                                     reg2_read_o <= 1'b1;
                                     valid       <= 1'b1;
@@ -227,75 +238,75 @@ module ID (input rst,
                     endcase
                 end
                 `EX_LB:begin
-                    wreg_o <= 1'b1;
-                    alu_op <= `ALU_MEM;  //TODO
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_LB;
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
-                    wd_o <= rt;
-                    valid <= 1'b1;
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
                 end
-
+                
                 `EX_LBU:begin
-                    wreg_o <= 1'b1;
-                    alu_op <= `ALU_MEM;  //TODO
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_LBU;
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
-                    wd_o <= rt;
-                    valid <= 1'b1;
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
                 end
-
+                
                 `EX_LH:begin
-                    wreg_o <= 1'b1;
-                    alu_op <= `ALU_MEM;  //TODO
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_LH;
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
-                    wd_o <= rt;
-                    valid <= 1'b1;
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
                 end
-
+                
                 `EX_LHU:begin
-                    wreg_o <= 1'b1;
-                    alu_op <= `ALU_MEM;  //TODO
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_LHU;
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
-                    wd_o <= rt;
-                    valid <= 1'b1;
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
                 end
-
+                
                 `EX_LW:begin
-                    wreg_o <= 1'b1;
-                    alu_op <= `ALU_MEM;  //TODO
+                    wreg_o      <= 1'b1;
+                    alu_op      <= `ALU_LW;
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
-                    wd_o <= rt;
-                    valid <= 1'b1;
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
                 end
-
+                
                 `EX_SB:begin
-                    wreg_o <= 1'b1;
-                    alu_op <= `ALU_MEM;  //TODO
+                    wreg_o      <= 1'b0;
+                    alu_op      <= `ALU_SB;
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
-                    wd_o <= rt;
-                    valid <= 1'b1;
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
                 end
-
+                
                 `EX_SH:begin
-                    wreg_o <= 1'b1;
-                    alu_op <= `ALU_MEM;  //TODO
+                    wreg_o      <= 1'b0;
+                    alu_op      <= `ALU_SH;
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
-                    wd_o <= rt;
-                    valid <= 1'b1;
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
                 end
-
+                
                 `EX_SW:begin
-                    wreg_o <= 1'b1;
-                    alu_op <= `ALU_MEM;  //TODO
+                    wreg_o      <= 1'b0;
+                    alu_op      <= `ALU_SW;
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
-                    wd_o <= rt;
-                    valid <= 1'b1;
+                    wd_o        <= rt;
+                    valid       <= 1'b1;
                 end
                 
                 `EX_J:begin
@@ -307,7 +318,7 @@ module ID (input rst,
                     branch_flag_o <= 1'b1;
                     branch_target <= j_target;
                     valid         <= 1'b1;
-                    stallreq <= 1'b1;
+                    stallreq      <= 1'b1;
                 end
                 
                 `EX_JAL:begin
@@ -320,7 +331,7 @@ module ID (input rst,
                     branch_flag_o <= 1'b1;
                     branch_target <= j_target;
                     valid         <= 1'b1;
-                    stallreq <= 1'b1;
+                    stallreq      <= 1'b1;
                 end
                 
                 `EX_BEQ:begin
@@ -329,7 +340,7 @@ module ID (input rst,
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b1;
                     if (reg1_o == reg2_o) begin
-                        stallreq <= 1'b1;
+                        stallreq      <= 1'b1;
                         branch_flag_o <= 1'b1;
                         branch_target <= pc_plus_4 + sign_ext_00;
                     end
@@ -342,7 +353,7 @@ module ID (input rst,
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
                     if (reg1_o[31] == 1'b0 && reg1_o != `ZeroWord) begin
-                        stallreq <= 1'b1;
+                        stallreq      <= 1'b1;
                         branch_flag_o <= 1'b1;
                         branch_target <= pc_plus_4 + sign_ext_00;
                     end
@@ -355,7 +366,7 @@ module ID (input rst,
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
                     if (reg1_o[31] == 1'b1 || reg1_o == `ZeroWord) begin
-                        stallreq <= 1'b1;
+                        stallreq      <= 1'b1;
                         branch_flag_o <= 1'b1;
                         branch_target <= pc_plus_4 + sign_ext_00;
                     end
@@ -368,7 +379,7 @@ module ID (input rst,
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b1;
                     if (reg1_o != reg2_o) begin
-                        stallreq <= 1'b1;
+                        stallreq      <= 1'b1;
                         branch_flag_o <= 1'b1;
                         branch_target <= pc_plus_4 + sign_ext_00;
                     end
@@ -460,7 +471,7 @@ module ID (input rst,
                             reg1_read_o <= 1'b1;
                             reg2_read_o <= 1'b0;
                             if (reg1_o[31] == 1'b0) begin
-                                stallreq <= 1'b1;
+                                stallreq      <= 1'b1;
                                 branch_flag_o <= 1'b1;
                                 branch_target <= pc_plus_4 + sign_ext_00;
                             end
@@ -472,8 +483,8 @@ module ID (input rst,
                             alu_op      <= `ALU_BRANCH;
                             reg1_read_o <= 1'b1;
                             reg2_read_o <= 1'b0;
-                            if (reg1_o == 1'b1 ) begin
-                                stallreq <= 1'b1;
+                            if (reg1_o == 1'b1) begin
+                                stallreq      <= 1'b1;
                                 branch_flag_o <= 1'b1;
                                 branch_target <= pc_plus_4 + sign_ext_00;
                             end
@@ -491,7 +502,7 @@ module ID (input rst,
                 case(op3)
                     `EX_SLL:begin
                         wreg_o      <= 1'b1;
-                        alu_op      <= `ALU_OR; //TODO
+                        alu_op      <= `ALU_LEFT;
                         reg1_read_o <= 1'b1;
                         reg2_read_o <= 1'b0;
                         immed[4:0]  <= inst_i[10:6];
@@ -500,7 +511,7 @@ module ID (input rst,
                     end
                     `EX_SRL:begin
                         wreg_o      <= 1'b1;
-                        alu_op      <= `ALU_OR; //TODO
+                        alu_op      <= `ALU_RIGHTL;
                         reg1_read_o <= 1'b1;
                         reg2_read_o <= 1'b0;
                         immed[4:0]  <= inst_i[10:6];
@@ -509,7 +520,7 @@ module ID (input rst,
                     end
                     `EX_SRA:begin
                         wreg_o      <= 1'b1;
-                        alu_op      <= `ALU_OR; //TODO
+                        alu_op      <= `ALU_RIGHTA;
                         reg1_read_o <= 1'b1;
                         reg2_read_o <= 1'b0;
                         immed[4:0]  <= inst_i[10:6];
@@ -529,6 +540,8 @@ module ID (input rst,
     always @(*) begin
         if (!rst) begin
             reg1_o <= `ZeroWord;
+            end else if (last_load && reg1_read_o <= 1'b1 && reg1_addr_o == ex_wd_i) begin
+            stallreq <= 1'b1;
             end else if (reg1_read_o && ex_wreg_i && ex_wd_i == reg1_addr_o) begin
             reg1_o <= ex_wdata_i;
             end else if (reg1_read_o && ex_wreg_i && mem_wd_i == reg1_addr_o) begin
@@ -546,6 +559,8 @@ module ID (input rst,
     always @(*) begin
         if (!rst) begin
             reg2_o <= `ZeroWord;
+            end else if (last_load && reg2_read_o <= 1'b1 && reg2_addr_o == ex_wd_i) begin
+            stallreq <= 1'b1;
             end else if (reg2_read_o && ex_wreg_i && ex_wd_i == reg2_addr_o) begin
             reg2_o <= ex_wdata_i;
             end else if (reg2_read_o && ex_wreg_i && mem_wd_i == reg2_addr_o) begin

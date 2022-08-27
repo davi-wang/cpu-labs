@@ -5,22 +5,8 @@
 `define ZeroWord 32'h00000000
 `define NopRegAddr 5'b00000
 
-// jump control signal : jump
-`define JUMP_PAUSE      4'd0     // PAUSE
-`define JUMP_SEQ        4'd1     // PC + 4
-`define JUMP_BEQ        4'd2     // {PC + 4 + offset}
-`define JUMP_BNE        4'd3     // {PC + 4 + offset}
-`define JUMP_BLEZ       4'd4     // {PC + 4 + offset}
-`define JUMP_BLTZ       4'd5     // {PC + 4 + offset}
-`define JUMP_BGEZ       4'd6     // {PC + 4 + offset}
-`define JUMP_BGTZ       4'd7     // {PC + 4 + offset}
-`define JUMP_J          4'd8     // {PC[31:28], instr_index, 2'b00}
-`define JUMP_JAL        4'd9     // {PC[31:28], instr_index, 2'b00}
-`define JUMP_JR         4'd10    // register
-`define JUMP_JALR       4'd11    // register
-
 // ALU control signal : alu_ctrl
-`define ALU_DEFAULT     5'd0    // nop op
+`define ALU_NOP     5'd0    // nop op
 `define ALU_ADD         5'd1
 `define ALU_ADDU        5'd2
 `define ALU_SUB         5'd3
@@ -39,6 +25,15 @@
 `define ALU_RIGHTAR     5'd16
 `define ALU_BRANCH      5'd17
 `define ALU_MEM         5'd18
+`define ALU_LB          5'd19
+`define ALU_LBU         5'd20
+`define ALU_LH          5'd21
+`define ALU_LHU         5'd22
+`define ALU_LW          5'd23
+`define ALU_SB          5'd24
+`define ALU_SH          5'd25
+`define ALU_SW          5'd26
+
 
 // instrcution code
 `define SPECIAL 6'b000000
@@ -88,11 +83,6 @@
 `define EX_SB 6'b101000
 `define EX_SH 6'b101001
 `define EX_SW 6'b101011
-
-// `define ALU_RESULT      3'b001
-// `define MEM_DATA        3'b010
-// `define EXTENDED_IMM    3'b011
-// `define JUMP_DST        3'b100
 
 `define RstEnable 1'b0
 `define RstDisable 1'b1
