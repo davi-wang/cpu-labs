@@ -1,37 +1,7 @@
 # Hardware-Labs
 
-#### 介绍
-小学期mips指令CPU项目
+## gmem
 
-#### 软件架构
-软件架构说明
+模块内部的存储容量为 $160 \times 120 \times 12$. RGB 分别为 4 bits，每个像素占 12 bits，共有 19200 个像素.
 
-
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+写入显示数据的方法：使用 SW 命令向地址 `gmem_base` + `pixel_offset` 中加载一个字的 RGB 十六进制数，建议将基址事先存入一个固定的寄存器. 其中 `gmem_base` **暂定**为 `0x20000`，偏移量应被 4 整除，十六进制数例如 0xFFC0CB，其中 FF 代表 R = 255. 模块内部并不储存来自 SW 指令的 32 位数据，之所以要使用 16 进制数，是因为 12 位颜色非常不直观，十六进制 RGB 更容易阅读，VGA 控制器内部会自动完成格式转换.
