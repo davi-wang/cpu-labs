@@ -2,17 +2,28 @@
 
 
 module Computer(
-    input clk,
-    input rst
+    input I_clk,
+    input I_rst_n,
+
+    output [3:0] O_r,
+    output [3:0] O_g,
+    output [3:0] O_b,
+    output O_hsync,
+    output O_vsync
     );
 
 
 // wire definition
 // CPU
-wire[9:0]  cpu_pc;
-wire[31:0] cpu_dmem_waddr;
-wire[31:0] cpu_dmem_we;
+wire[31:0]  cpu_pc;
+wire[31:0] cpu_dmem_waddr, vaddr;
 wire[31:0] cpu_dmem_wdata;
+// 内存空间分配
+wire cpu_we;
+wire dmem_we, gmem_we;
+assign dmem_we = cpu_dmem_waddr[17] ? 1'b0 : cpu_we;
+assign gmem_we = cpu_dmem_waddr[17] ? cpu_we : 1'b0;
+assign vaddr = cpu_dmem_waddr;
 
 // Data RAM
 wire[31:0] ram_data;
@@ -20,24 +31,21 @@ wire[31:0] ram_data;
 // Instruction ROM
 wire[31:0] rom_data;
 
-
-// CPU
-//CPU cpu(
-//    .clk(clk),
-//    .rst(rst),
-//    .insc(rom_data),
-//    .dmem_rdata(ram_data),
-
-//    .pc(cpu_pc),
-//    .dmem_waddr(cpu_dmem_waddr),
-//    .dmem_we(cpu_dmem_we),
-//    .dmem_wdata(cpu_dmem_wdata)
-//);
+mycpu cpu0(
+    .clk(I_clk),
+    .rstn(I_rst_n),
+    .inst_rom_addr(cpu_pc),
+    .inst_rom_rdata(rom_data),
+    .data_ram_wen(cpu_we),
+    .data_ram_wdata(cpu_dmem_wdata),
+    .data_ram_addr(cpu_dmem_waddr),
+    .data_ram_rdata(ram_data)
+);
 
 // RAM for CPU
 RAM data_memory(
-    .clk(clk),
-    .en_wt_mem(cpu_dmem_we),
+    .clk(I_clk),
+    .en_wt_mem(dmem_we),
     .addr(cpu_dmem_waddr),
     .write_data(cpu_dmem_wdata),
 
@@ -45,9 +53,21 @@ RAM data_memory(
 );
 
 ROM instruction_memory(
-    .addr(cpu_pc),
-
+    .addr(cpu_pc[11:2]),
     .ins_out(rom_data)
+);
+
+vgahwd vga0(
+    .clk(I_clk),
+    .rstn(I_rst_n),
+    .waddr(vaddr),
+    .wdata(cpu_dmem_wdata),
+    .we(gmem_we),
+    . red(O_r),
+    . green(O_g),
+    . blue(O_b),
+    . hsync(O_hsync),
+    . vsync(O_vsync)
 );
 
 endmodule

@@ -1,10 +1,9 @@
 -- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
--- Date        : Sat Aug 27 16:08:41 2022
--- Host        : LAPTOP-QS82KPJ1 running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode synth_stub
---               {c:/Users/xhm2001/Desktop/senior1/hardware/hardware/hardware-labs/Computer Sytem/Computer
+-- Date        : Sun Aug 28 09:33:47 2022
+-- Host        : LAPTOP-FNQMD2JI running 64-bit major release  (build 9200)
+-- Command     : write_vhdl -force -mode synth_stub {E:/repos/hardware-labs/Computer Sytem/Computer
 --               Sytem.srcs/sources_1/ip/Instruction_memory/Instruction_memory_stub.vhdl}
 -- Design      : Instruction_memory
 -- Purpose     : Stub declaration of top-level module interface

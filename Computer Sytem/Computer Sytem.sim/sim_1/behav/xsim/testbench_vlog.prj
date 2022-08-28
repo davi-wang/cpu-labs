@@ -1,0 +1,20 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../Computer Sytem.srcs/sources_1/ip/Instruction_memory/sim/Instruction_memory.v" \
+"../../../../Computer Sytem.srcs/sources_1/ip/Data_memory/sim/Data_memory.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/Computer.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/RAM.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/ROM.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/processor/alu.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/processor/bru.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/processor/cpu.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/processor/cu.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/processor/regfile.v" \
+"../../../../Computer Sytem.srcs/sources_1/new/vga.v" \
+"../../../../Computer Sytem.srcs/sim_1/new/testbench.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

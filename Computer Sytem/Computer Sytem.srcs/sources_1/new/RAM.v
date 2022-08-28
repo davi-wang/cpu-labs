@@ -10,7 +10,7 @@ module RAM(
     );
 
 Data_memory dm(
-    .a(addr),
+    .a(addr[11:2]),
     .d(write_data),
     .clk(clk),
     .we(en_wt_mem),

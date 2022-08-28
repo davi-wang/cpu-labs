@@ -1,0 +1,87 @@
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+-------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
+| Date         : Sun Aug 28 17:57:00 2022
+| Host         : LAPTOP-FNQMD2JI running 64-bit major release  (build 9200)
+| Command      : report_control_sets -verbose -file Computer_control_sets_placed.rpt
+| Design       : Computer
+| Device       : xc7a35t
+-------------------------------------------------------------------------------------
+
+Control Set Information
+
+Table of Contents
+-----------------
+1. Summary
+2. Histogram
+3. Flip-Flop Distribution
+4. Detailed Control Set Information
+
+1. Summary
+----------
+
++----------------------------------------------------------+-------+
+|                          Status                          | Count |
++----------------------------------------------------------+-------+
+| Total control sets                                       |     9 |
+|    Minimum number of control sets                        |     9 |
+|    Addition due to synthesis replication                 |     0 |
+|    Addition due to physical synthesis replication        |     0 |
+| Unused register locations in slices containing registers |    21 |
++----------------------------------------------------------+-------+
+* Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
+** Run report_qor_suggestions for automated merging and remapping suggestions
+
+
+2. Histogram
+------------
+
++--------------------+-------+
+|       Fanout       | Count |
++--------------------+-------+
+| Total control sets |     9 |
+| >= 0 to < 4        |     1 |
+| >= 4 to < 6        |     0 |
+| >= 6 to < 8        |     0 |
+| >= 8 to < 10       |     0 |
+| >= 10 to < 12      |     2 |
+| >= 12 to < 14      |     1 |
+| >= 14 to < 16      |     0 |
+| >= 16              |     5 |
++--------------------+-------+
+* Control sets can be remapped at either synth_design or opt_design
+
+
+3. Flip-Flop Distribution
+-------------------------
+
++--------------+-----------------------+------------------------+-----------------+--------------+
+| Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
++--------------+-----------------------+------------------------+-----------------+--------------+
+| No           | No                    | No                     |              14 |            6 |
+| No           | No                    | Yes                    |              11 |            5 |
+| No           | Yes                   | No                     |               0 |            0 |
+| Yes          | No                    | No                     |              10 |            7 |
+| Yes          | No                    | Yes                    |               0 |            0 |
+| Yes          | Yes                   | No                     |               0 |            0 |
++--------------+-----------------------+------------------------+-----------------+--------------+
+
+
+4. Detailed Control Set Information
+-----------------------------------
+
++------------------+--------------------------------------------------------------------------------------------------+----------------------------------+------------------+----------------+
+|   Clock Signal   |                                           Enable Signal                                          |         Set/Reset Signal         | Slice Load Count | Bel Load Count |
++------------------+--------------------------------------------------------------------------------------------------+----------------------------------+------------------+----------------+
+|  I_clk_IBUF_BUFG |                                                                                                  |                                  |                1 |              2 |
+|  vga_clk         | vga0/vcount                                                                                      |                                  |                7 |             10 |
+|  I_clk_IBUF_BUFG |                                                                                                  | cpu0/program_counter[11]_i_2_n_0 |                5 |             11 |
+|  vga_clk         |                                                                                                  |                                  |                5 |             12 |
+|  I_clk_IBUF_BUFG | instruction_memory/we                                                                            |                                  |               12 |             96 |
+|  I_clk_IBUF_BUFG | data_memory/dm/U0/synth_options.dist_mem_inst/gen_sp_ram.spram_inst/ram_reg_0_255_0_0_i_1_n_0    |                                  |               32 |            128 |
+|  I_clk_IBUF_BUFG | data_memory/dm/U0/synth_options.dist_mem_inst/gen_sp_ram.spram_inst/ram_reg_256_511_0_0_i_1_n_0  |                                  |               32 |            128 |
+|  I_clk_IBUF_BUFG | data_memory/dm/U0/synth_options.dist_mem_inst/gen_sp_ram.spram_inst/ram_reg_512_767_0_0_i_1_n_0  |                                  |               32 |            128 |
+|  I_clk_IBUF_BUFG | data_memory/dm/U0/synth_options.dist_mem_inst/gen_sp_ram.spram_inst/ram_reg_768_1023_0_0_i_1_n_0 |                                  |               32 |            128 |
++------------------+--------------------------------------------------------------------------------------------------+----------------------------------+------------------+----------------+
+
+
