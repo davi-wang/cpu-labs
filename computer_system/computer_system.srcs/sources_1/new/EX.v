@@ -10,9 +10,9 @@ module EX(input clk,
           input [`AluBus]alu_op_i,
           input [`RegBus] wd_i,          //write addr of reg
           input wreg_i,              //write enable
-          output reg [`RegBus] wd_o,     //write addr of reg
+          output reg [`RegAddrBus] wd_o,     //write addr of reg
           output reg wreg_o,         //write enalbe
-          output reg[`RegBus] wdata_o,
+          output reg[`RegAddrBus] wdata_o,
           output [`AddrBus] wmem_addr_o,
           output [`AluBus] alu_op_o,
           output [`RegBus] wmem_data);

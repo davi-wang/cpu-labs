@@ -15,7 +15,7 @@ module ID_EX (
     input [`InscBus] insc_id,
 
     output reg [`InscBus] insc_ex,
-    output reg [`RegAddrBus] alu_op_ex,
+    output reg [`AluBus] alu_op_ex,
     output reg [`RegBus] reg1_ex,
     output reg [`RegBus] reg2_ex,
     output reg wreg_ex,
