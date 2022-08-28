@@ -23,17 +23,17 @@
 
 module reg_files(input clk,
                  input rst,
-                 input wire [4:0] reg1_addr,
-                 input wire [4:0] reg2_addr,
-                 input wire [31:0] W_data,
-                 input wire [4:0] W_reg_addr,
+                 input wire [`RegAddrBus] reg1_addr,
+                 input wire [`RegAddrBus] reg2_addr,
+                 input wire [`RegBus] W_data,
+                 input wire [`RegAddrBus] W_reg_addr,
                  input wire reg_we,
                  input re1,
                  input re2,
-                 output reg [31:0] reg1_data,
-                 output reg [31:0] reg2_data);
+                 output reg [`RegBus] reg1_data,
+                 output reg [`RegBus] reg2_data);
     integer i;
-    reg [31:0] registers [31:0];
+    reg [`RegBus] registers [31:0];
     
     
     always@(posedge clk) begin
@@ -45,6 +45,9 @@ module reg_files(input clk,
     always @(*) begin
         if (!rst) begin
             reg1_data <= `ZeroWord;
+            for(i = 0;i < 32; i=i+1)begin
+                registers[i] <= `ZeroWord;
+            end
             end else if (reg1_addr == `NopRegAddr) begin
             reg1_data <= `ZeroWord;
             end else if (reg1_addr == W_reg_addr && reg_we && re1) begin //forwarding

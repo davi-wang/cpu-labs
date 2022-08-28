@@ -3,13 +3,13 @@
 module MEM_WB (
     input clk,
     input  rst,
-    input [4:0] w_reg_addr_mem,
+    input [`RegAddrBus] w_reg_addr_mem,
     input wreg_mem,
-    input [31:0] wdata_mem,
+    input [`RegBus] wdata_mem,
 
-    output reg[4:0] w_reg_addr_wb,
+    output reg[`RegAddrBus] w_reg_addr_wb,
     output reg wreg_wb,
-    output reg[31:0] wdata_wb
+    output reg[`RegBus] wdata_wb
 );
 
     always @(posedge clk) begin

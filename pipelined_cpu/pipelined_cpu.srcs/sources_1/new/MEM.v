@@ -2,21 +2,21 @@
 `timescale 1ns / 1ps
 module MEM (
     input  rst,
-    input [4:0] w_reg_addr_i,
+    input [`RegAddrBus] w_reg_addr_i,
     input wreg_i,
-    input [31:0] wdata_i,
-    input [4:0] alu_op_i,
-    input [31:0] wmem_addr_i,
-    input [31:0] wmem_data_i,
-    input [31:0] dmem_data_i,
+    input [`RegBus] wdata_i,
+    input [`AluBus] alu_op_i,
+    input [`AddrBus] wmem_addr_i,
+    input [`RegBus] wmem_data_i,
+    input [`RegBus] dmem_data_i,
 
-    output reg [31:0] wmem_addr_o,
+    output reg [`AddrBus] wmem_addr_o,
     output reg wmem_o,
-    output reg [31:0] wmem_data_o,
+    output reg [`RegBus] wmem_data_o,
     output reg [3:0] mem_sec,
-    output reg[4:0] w_reg_addr_o,
+    output reg[`RegAddrBus] w_reg_addr_o,
     output reg wreg_o,
-    output reg[31:0] wdata_o
+    output reg[`RegBus] wdata_o
 );
 
     always @(*) begin

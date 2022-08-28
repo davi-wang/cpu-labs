@@ -1,31 +1,31 @@
 `include "Header.v"
 `timescale 1ns / 1ps
 module ID (input rst,
-           input wire[31:0] pc_i,           //pc value
-           input wire[31:0] inst_i,         //instruction code
-           input wire[31:0] reg1_data_i,
-           input wire[31:0] reg2_data_i,
+           input wire[`AddrBus] pc_i,           //pc value
+           input wire[`InscBus] inst_i,         //instruction code
+           input wire[`RegBus] reg1_data_i,
+           input wire[`RegBus] reg2_data_i,
            input wire ex_wreg_i,
-           input wire[31:0] ex_wdata_i,
-           input wire[4:0] ex_wd_i,
+           input wire[`RegBus] ex_wdata_i,
+           input wire[`RegAddrBus] ex_wd_i,
            input wire mem_wreg_i,
-           input wire[31:0] mem_wdata_i,
-           input wire[4:0] mem_wd_i,
-           input wire[4:0] alu_op_f_ex,
+           input wire[`RegBus] mem_wdata_i,
+           input wire[`RegAddrBus] mem_wd_i,
+           input wire[`AluBus] alu_op_f_ex,
            output reg branch_flag_o,
-           output reg [31:0] branch_target,
-           output reg [31:0] link_addr_o,
-           output reg stallreq,
+           output reg [`AddrBus] branch_target,
+           output reg [`AddrBus] link_addr_o,
+           output [1:0] stallreq_o,
            output reg reg1_read_o,
            output reg reg2_read_o,
-           output reg[4:0] reg1_addr_o,
-           output reg[4:0] reg2_addr_o,
-           output reg[4:0] alu_op,
-           output reg[31:0] reg1_o,
-           output reg[31:0] reg2_o,
-           output reg[4:0] wd_o,
+           output reg[`RegAddrBus] reg1_addr_o,
+           output reg[`RegAddrBus] reg2_addr_o,
+           output reg[`AluBus] alu_op,
+           output reg[`RegBus] reg1_o,
+           output reg[`RegBus] reg2_o,
+           output reg[`RegAddrBus] wd_o,
            output reg wreg_o,
-           output [31:0] insc_id);
+           output [`InscBus] insc_id);
     
     wire[5:0] op  = inst_i[31:26];
     wire[4:0] op2 = inst_i[10:6];
@@ -36,6 +36,11 @@ module ID (input rst,
     wire[4:0] rt = inst_i[20:16];
     wire[4:0] rd = inst_i[15:11];
     
+    reg[1:0] reg1waitload;
+    reg[1:0] reg2waitload;
+    reg [1:0] stallreq;
+    wire [1:0] stallreg_o;
+
     reg valid;
     reg [31:0] immed;
     
@@ -51,14 +56,11 @@ module ID (input rst,
     assign j_target = {pc_i[31:28], inst_i[25:0], 2'b00};
     assign insc_id  = inst_i;
     
-    assign last_load = (alu_op_f_ex == `EX_LB ||
-    alu_op_f_ex == `EX_LBU ||
-    alu_op_f_ex == `EX_LH ||
-    alu_op_f_ex == `EX_LHU ||
-    alu_op_f_ex == `EX_LW ||
-    alu_op_f_ex == `EX_SB ||
-    alu_op_f_ex == `EX_SW ||
-    alu_op_f_ex == `EX_SH)?1'b1:1'b0;
+    assign last_load = (alu_op_f_ex == `ALU_LB ||
+    alu_op_f_ex == `ALU_LBU ||
+    alu_op_f_ex == `ALU_LH ||
+    alu_op_f_ex == `ALU_LHU ||
+    alu_op_f_ex == `ALU_LW )?1'b1:1'b0;
     
     
     //decode instruction
@@ -76,7 +78,7 @@ module ID (input rst,
             link_addr_o   <= `ZeroWord;
             branch_target <= `ZeroWord;
             branch_flag_o <= 1'b0;
-            stallreq      <= 1'b0;
+            stallreq      <= 2'b0;
         end
         else begin
             alu_op        <= 5'b00000;
@@ -91,7 +93,7 @@ module ID (input rst,
             branch_flag_o <= 1'b0;
             reg1_addr_o   <= rs;
             reg2_addr_o   <= rt;
-            stallreq      <= 1'b0;
+            stallreq      <= 2'b0;
             case(op)
                 `SPECIAL: begin
                     case(op2)
@@ -105,7 +107,7 @@ module ID (input rst,
                                     branch_flag_o <= 1'b1;
                                     branch_target <= reg1_o;
                                     link_addr_o   <= `ZeroWord;
-                                    stallreq      <= 1'b1;
+                                    stallreq      <= 2'b01;
                                     valid         <= 1'b1;
                                 end
                                 
@@ -118,7 +120,7 @@ module ID (input rst,
                                     branch_flag_o <= 1'b1;
                                     branch_target <= reg1_o;
                                     link_addr_o   <= pc_plus_4;
-                                    stallreq      <= 1'b1;
+                                    stallreq      <= 2'b01;
                                     valid         <= 1'b1;
                                 end
                                 
@@ -286,7 +288,7 @@ module ID (input rst,
                     wreg_o      <= 1'b0;
                     alu_op      <= `ALU_SB;
                     reg1_read_o <= 1'b1;
-                    reg2_read_o <= 1'b0;
+                    reg2_read_o <= 1'b1;
                     wd_o        <= rt;
                     valid       <= 1'b1;
                 end
@@ -295,7 +297,7 @@ module ID (input rst,
                     wreg_o      <= 1'b0;
                     alu_op      <= `ALU_SH;
                     reg1_read_o <= 1'b1;
-                    reg2_read_o <= 1'b0;
+                    reg2_read_o <= 1'b1;
                     wd_o        <= rt;
                     valid       <= 1'b1;
                 end
@@ -304,7 +306,7 @@ module ID (input rst,
                     wreg_o      <= 1'b0;
                     alu_op      <= `ALU_SW;
                     reg1_read_o <= 1'b1;
-                    reg2_read_o <= 1'b0;
+                    reg2_read_o <= 1'b1;
                     wd_o        <= rt;
                     valid       <= 1'b1;
                 end
@@ -318,7 +320,7 @@ module ID (input rst,
                     branch_flag_o <= 1'b1;
                     branch_target <= j_target;
                     valid         <= 1'b1;
-                    stallreq      <= 1'b1;
+                    stallreq      <= 2'b01;
                 end
                 
                 `EX_JAL:begin
@@ -331,7 +333,7 @@ module ID (input rst,
                     branch_flag_o <= 1'b1;
                     branch_target <= j_target;
                     valid         <= 1'b1;
-                    stallreq      <= 1'b1;
+                    stallreq      <= 2'b01;
                 end
                 
                 `EX_BEQ:begin
@@ -340,7 +342,7 @@ module ID (input rst,
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b1;
                     if (reg1_o == reg2_o) begin
-                        stallreq      <= 1'b1;
+                        stallreq      <= 2'b01;
                         branch_flag_o <= 1'b1;
                         branch_target <= pc_plus_4 + sign_ext_00;
                     end
@@ -353,7 +355,7 @@ module ID (input rst,
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
                     if (reg1_o[31] == 1'b0 && reg1_o != `ZeroWord) begin
-                        stallreq      <= 1'b1;
+                        stallreq      <= 2'b01;
                         branch_flag_o <= 1'b1;
                         branch_target <= pc_plus_4 + sign_ext_00;
                     end
@@ -366,7 +368,7 @@ module ID (input rst,
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b0;
                     if (reg1_o[31] == 1'b1 || reg1_o == `ZeroWord) begin
-                        stallreq      <= 1'b1;
+                        stallreq      <= 2'b01;
                         branch_flag_o <= 1'b1;
                         branch_target <= pc_plus_4 + sign_ext_00;
                     end
@@ -379,7 +381,7 @@ module ID (input rst,
                     reg1_read_o <= 1'b1;
                     reg2_read_o <= 1'b1;
                     if (reg1_o != reg2_o) begin
-                        stallreq      <= 1'b1;
+                        stallreq      <= 2'b01;
                         branch_flag_o <= 1'b1;
                         branch_target <= pc_plus_4 + sign_ext_00;
                     end
@@ -471,7 +473,7 @@ module ID (input rst,
                             reg1_read_o <= 1'b1;
                             reg2_read_o <= 1'b0;
                             if (reg1_o[31] == 1'b0) begin
-                                stallreq      <= 1'b1;
+                                stallreq      <= 2'b01;
                                 branch_flag_o <= 1'b1;
                                 branch_target <= pc_plus_4 + sign_ext_00;
                             end
@@ -483,8 +485,8 @@ module ID (input rst,
                             alu_op      <= `ALU_BRANCH;
                             reg1_read_o <= 1'b1;
                             reg2_read_o <= 1'b0;
-                            if (reg1_o == 1'b1) begin
-                                stallreq      <= 1'b1;
+                            if (reg1_o[31] == 1'b1) begin
+                                stallreq      <= 2'b01;
                                 branch_flag_o <= 1'b1;
                                 branch_target <= pc_plus_4 + sign_ext_00;
                             end
@@ -503,8 +505,8 @@ module ID (input rst,
                     `EX_SLL:begin
                         wreg_o      <= 1'b1;
                         alu_op      <= `ALU_LEFT;
-                        reg1_read_o <= 1'b1;
-                        reg2_read_o <= 1'b0;
+                        reg1_read_o <= 1'b0;
+                        reg2_read_o <= 1'b1;
                         immed[4:0]  <= inst_i[10:6];
                         wd_o        <= rd;
                         valid       <= 1'b1;
@@ -512,8 +514,8 @@ module ID (input rst,
                     `EX_SRL:begin
                         wreg_o      <= 1'b1;
                         alu_op      <= `ALU_RIGHTL;
-                        reg1_read_o <= 1'b1;
-                        reg2_read_o <= 1'b0;
+                        reg1_read_o <= 1'b0;
+                        reg2_read_o <= 1'b1;
                         immed[4:0]  <= inst_i[10:6];
                         wd_o        <= rd;
                         valid       <= 1'b1;
@@ -521,8 +523,8 @@ module ID (input rst,
                     `EX_SRA:begin
                         wreg_o      <= 1'b1;
                         alu_op      <= `ALU_RIGHTA;
-                        reg1_read_o <= 1'b1;
-                        reg2_read_o <= 1'b0;
+                        reg1_read_o <= 1'b0;
+                        reg2_read_o <= 1'b1;
                         immed[4:0]  <= inst_i[10:6];
                         wd_o        <= rd;
                         valid       <= 1'b1;
@@ -538,13 +540,14 @@ module ID (input rst,
     
     //src num1
     always @(*) begin
+        reg1waitload <= 2'b00;
         if (!rst) begin
             reg1_o <= `ZeroWord;
-            end else if (last_load && reg1_read_o <= 1'b1 && reg1_addr_o == ex_wd_i) begin
-            stallreq <= 1'b1;
+            end else if (last_load && reg1_read_o == 1'b1 && reg1_addr_o == ex_wd_i) begin
+            reg1waitload <= 2'b11;
             end else if (reg1_read_o && ex_wreg_i && ex_wd_i == reg1_addr_o) begin
             reg1_o <= ex_wdata_i;
-            end else if (reg1_read_o && ex_wreg_i && mem_wd_i == reg1_addr_o) begin
+            end else if (reg1_read_o && mem_wreg_i && mem_wd_i == reg1_addr_o) begin
             reg1_o <= mem_wdata_i;
             end else if (reg1_read_o == 1'b1) begin
             reg1_o <= reg1_data_i;
@@ -557,13 +560,14 @@ module ID (input rst,
     
     //src num2
     always @(*) begin
+        reg2waitload <= 2'b00;
         if (!rst) begin
             reg2_o <= `ZeroWord;
-            end else if (last_load && reg2_read_o <= 1'b1 && reg2_addr_o == ex_wd_i) begin
-            stallreq <= 1'b1;
+            end else if (last_load && reg2_read_o == 1'b1 && reg2_addr_o == ex_wd_i) begin
+            reg2waitload <= 2'b11;
             end else if (reg2_read_o && ex_wreg_i && ex_wd_i == reg2_addr_o) begin
             reg2_o <= ex_wdata_i;
-            end else if (reg2_read_o && ex_wreg_i && mem_wd_i == reg2_addr_o) begin
+            end else if (reg2_read_o && mem_wreg_i && mem_wd_i == reg2_addr_o) begin
             reg2_o <= mem_wdata_i;
             end else if (reg2_read_o == 1'b1) begin
             reg2_o <= reg2_data_i;
@@ -574,4 +578,6 @@ module ID (input rst,
         end
     end
     
+    assign stallreq_o = stallreq | reg1waitload | reg2waitload;
+
 endmodule

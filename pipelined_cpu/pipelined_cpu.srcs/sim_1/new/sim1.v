@@ -29,21 +29,21 @@ module sim1();
         .clk(clk),
         .en_wt_mem(dmem_we),
         .memr_data(dmem_data_in),
-        .memr_data(dmem_data),
+        .memw_data(dmem_data),
         .addr(dmem_addr)
     );
     
     initial begin
         
         //    $readmemb("../../../../../test_code/test_jump_data_2.txt",  TOP_MOD.dm.memory);
-        $readmemh("../../../../../test_code/databytes.txt", IM.memory);
-        $readmemh("../../../../../test_code/textbytes.txt", DM.memory);
+        $readmemh("../../../../../test_code/textbytes.txt", IM.memory);
+        $readmemh("../../../../../test_code/databytes.txt", DM.memory);
         // $readmemh("C:/Users/xhm2001/Desktop/senior1/hardware/mips/data.txt",  TOP_MOD.dm.memory);
         // $readmemh("C:/Users/xhm2001/Desktop/senior1/hardware/mips/ins.txt", TOP_MOD.im.memory);
         
         rst     = 0;
         clk   = 0;
-        #20 rst = 1;
+    #20 rst =1;
     end
     
     always

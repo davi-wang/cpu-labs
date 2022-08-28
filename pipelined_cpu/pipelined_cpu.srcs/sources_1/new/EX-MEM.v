@@ -5,19 +5,19 @@ module EX_MEM (
     input  clk,
     input  rst,
     input [3:0]stall,
-    input [4:0] w_reg_addr_i,
+    input [`RegAddrBus] w_reg_addr_i,
     input wreg_i,
-    input [31:0] wdata_i,
-    input [31:0] wmem_addr_i,
-    input [4:0] alu_op_ex_o,
-    input [31:0] wmme_data_i,
+    input [`RegBus] wdata_i,
+    input [`AddrBus] wmem_addr_i,
+    input [`AluBus] alu_op_ex_o,
+    input [`RegBus] wmme_data_i,
 
-    output reg[4:0] w_reg_addr_o,
+    output reg[`RegAddrBus] w_reg_addr_o,
     output reg wreg_o,
-    output reg[31:0] wdata_o,
-    output reg [31:0] wmem_addr_o,
-    output reg [4:0] alu_op_mem,
-    output reg [31:0] wmme_data_o
+    output reg[`RegBus] wdata_o,
+    output reg [`AddrBus] wmem_addr_o,
+    output reg [`AluBus] alu_op_mem,
+    output reg [`RegBus] wmme_data_o
 );
 
     always @(posedge clk ) begin

@@ -1,5 +1,10 @@
 `timescale 1ns / 1ps
-
+`define AddrBus 31:0
+`define InscBus 31:0
+`define RegBus 31:0
+`define RegAddrBus 4:0
+`define RegWidth 32
+`define AluBus 4:0
 
 //NOP
 `define ZeroWord 32'h00000000
@@ -57,8 +62,8 @@
 `define EX_ADDU 6'b100001
 `define EX_SUB 6'b100010
 `define EX_SUBU 6'b100011
-`define EX_SLTU 6'b101010
-`define EX_SLT 6'b101011
+`define EX_SLTU 6'b101011
+`define EX_SLT 6'b101010
 `define EX_SLTI 6'b001010
 `define EX_SLTIU 6'b001011
 `define EX_ADDI 6'b001000
@@ -87,13 +92,10 @@
 `define RstEnable 1'b0
 `define RstDisable 1'b1
 
-`define RegBus 31:0
-`define RegAddrBus 4:0
-`define RegWidth 32
+//cp0 REG
 `define InterruptNotAssert 1'b0
 `define InterruptAssert 1'b1
 
-//cp0 REG
 `define CP0_REG_COUNT 5'b01001
 `define CP0_REG_COMPARE 5'b01011
 `define CP0_REG_STATUS 5'b01100

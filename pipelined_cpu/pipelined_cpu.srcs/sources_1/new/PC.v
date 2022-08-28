@@ -4,17 +4,17 @@
 
 module PC(input clk,
           input rst,
-          input [31:0] target,
+          input [`AddrBus] target,
           input [3:0]stall,
           input flag,
-          output reg [31:0]pc);
+          output reg [`AddrBus]pc);
     
     always@(posedge clk or negedge rst) begin
         if (!rst) begin
             pc <= `ZeroWord;
         end else if(stall[0] == 1'b0) begin
             if (flag == 1) begin
-                pc <= target;
+                pc <= {24'h000000, target[11:0]};   //TODO DELETE 
                 end else begin
                 pc <= pc + 4;
             end

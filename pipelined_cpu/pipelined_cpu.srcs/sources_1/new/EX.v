@@ -3,19 +3,19 @@
 
 module EX(input clk,
           input reset,
-          input [31:0] insc_i,
-          input [31:0]in_data1,
-          input [31:0]in_data2,
-          input [31:0]link_addr,
-          input [4:0]alu_op_i,
-          input [4:0] wd_i,          //write addr of reg
+          input [`InscBus] insc_i,
+          input [`RegBus]in_data1,
+          input [`RegBus]in_data2,
+          input [`AddrBus]link_addr,
+          input [`AluBus]alu_op_i,
+          input [`RegBus] wd_i,          //write addr of reg
           input wreg_i,              //write enable
-          output reg [4:0] wd_o,     //write addr of reg
+          output reg [`RegBus] wd_o,     //write addr of reg
           output reg wreg_o,         //write enalbe
-          output reg[31:0] wdata_o,
-          output [31:0] wmem_addr_o,
-          output [4:0] alu_op_o,
-          output [31:0] wmem_data);
+          output reg[`RegBus] wdata_o,
+          output [`AddrBus] wmem_addr_o,
+          output [`AluBus] alu_op_o,
+          output [`RegBus] wmem_data);
     
     reg [32:0]mid_result;
     assign alu_op_o    = alu_op_i;

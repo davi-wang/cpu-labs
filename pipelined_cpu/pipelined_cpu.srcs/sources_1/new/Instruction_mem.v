@@ -6,10 +6,11 @@ module Instruction_mem(
     output wire[31:0] ins_out
     );
 
-reg[7:0] memory[127:0];
-wire[31:0] head;
+reg[7:0] memory[1023:0];
 
-assign head = addr;
+wire [11:0] head;
+
+assign head = addr[11:0];
 assign ins_out = {memory[head+3], memory[head+2], memory[head+1], memory[head]};
 
 endmodule
