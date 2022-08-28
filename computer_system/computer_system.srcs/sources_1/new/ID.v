@@ -39,7 +39,6 @@ module ID (input rst,
     reg[1:0] reg1waitload;
     reg[1:0] reg2waitload;
     reg [1:0] stallreq;
-    wire [1:0] stallreg_o;
 
     reg valid;
     reg [31:0] immed;
