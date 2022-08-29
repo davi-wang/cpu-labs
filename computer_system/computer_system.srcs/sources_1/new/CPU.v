@@ -130,6 +130,7 @@ module CPU (input clk,
     );
     
     EX EX(
+    .reset(rst),
     .clk(clk),
     .in_data1(data1_ex),
     .in_data2(data2_ex),

@@ -12,7 +12,7 @@ module EX(input clk,
           input wreg_i,              //write enable
           output reg [`RegAddrBus] wd_o,     //write addr of reg
           output reg wreg_o,         //write enalbe
-          output reg[`RegAddrBus] wdata_o,
+          output reg[`RegBus] wdata_o,
           output [`AddrBus] wmem_addr_o,
           output [`AluBus] alu_op_o,
           output [`RegBus] wmem_data);
@@ -24,7 +24,7 @@ module EX(input clk,
     
     always@(*) begin
         if (!reset) begin
-            mid_result[32] <= 0;
+            mid_result[32] <= `ZeroWord;
             end else begin
             case(alu_op_i)
                 `ALU_ADD:begin
