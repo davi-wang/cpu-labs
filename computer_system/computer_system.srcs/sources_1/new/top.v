@@ -34,15 +34,25 @@ module Computer(
     wire[31:0] rom_data;
 
     // cpu
-    mycpu cpu0(
+    // CPU cpu0(
+    //     .clk(I_clk),
+    //     .rstn(I_rst_n),
+    //     .inst_rom_addr(cpu_pc),
+    //     .inst_rom_rdata(rom_data),
+    //     .data_ram_wen(cpu_we),
+    //     .data_ram_wdata(cpu_dmem_wdata),
+    //     .data_ram_addr(cpu_dmem_waddr),
+    //     .data_ram_rdata(ram_data)
+    // );
+    CPU cpu0(
         .clk(I_clk),
-        .rstn(I_rst_n),
-        .inst_rom_addr(cpu_pc),
-        .inst_rom_rdata(rom_data),
-        .data_ram_wen(cpu_we),
-        .data_ram_wdata(cpu_dmem_wdata),
-        .data_ram_addr(cpu_dmem_waddr),
-        .data_ram_rdata(ram_data)
+        .rst(I_rst_n),
+        .pc(cpu_pc),
+        .insc(rom_data),
+        .dmem_we(cpu_we),
+        .dmem_wdata(cpu_dmem_wdata),
+        .dmem_waddr(cpu_dmem_waddr),
+        .dmem_rdata(ram_data)
     );
 
     // RAM for CPU

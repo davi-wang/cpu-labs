@@ -73,7 +73,7 @@ module CPU (input clk,
     .clk(clk),
     .rst(rst),
     .if_pc(pc),
-    .insc_i(insc_im),
+    .insc_i(insc),
     .insc_o(insc_id),
     .stall(stall),
     .id_pc(id_pc)
@@ -175,10 +175,10 @@ module CPU (input clk,
     .alu_op_i(alu_op_mem),
     .wmem_addr_i(mem_wmem_addr),
     .wmem_data_i(mem_wmem_data),
-    .dmem_data_i(dmem_data_in),
-    .wmem_addr_o(dmem_addr),
+    .dmem_data_i(dmem_rdata),
+    .wmem_addr_o(dmem_waddr),
     .wmem_o(dmem_we),
-    .wmem_data_o(dmem_data)
+    .wmem_data_o(dmem_wdata)
     );
     
     MEM_WB MEM_WB(
