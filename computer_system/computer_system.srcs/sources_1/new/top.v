@@ -5,13 +5,24 @@ module Computer(
     input I_clk,
     input I_rst_n,
 
+    input I_on,
+    input I_down,
+    input I_left,
+    input I_right,
+
     // vga ports
     output [3:0] O_r,
     output [3:0] O_g,
     output [3:0] O_b,
     output O_hsync,
-    output O_vsync
-    
+    output O_vsync,
+
+    //button ports
+    input mid_btn_key,
+    input left_btn_key,
+    input right_btn_key,
+    input up_btn_key,
+    input down_btn_key
     );
 
 
@@ -27,6 +38,7 @@ module Computer(
     assign gmem_we = cpu_dmem_waddr[17] ? cpu_we : 1'b0;
     assign vaddr = cpu_dmem_waddr;
 
+    wire [31:0]but_addr;
     // Data RAM
     wire[31:0] ram_data;
 
@@ -82,5 +94,23 @@ module Computer(
         . hsync(O_hsync),
         . vsync(O_vsync)
     );
+
+
+    Buttons button(
+        .clk(I_clk),
+        .rst(I_rst_n),
+
+
+        .confreg_addr(),
+        .confreg_read_data(),
+
+        .mid_btn_key(mid_btn_key),
+        .left_btn_key(left_btn_key),
+        .right_btn_key(right_btn_key),
+        .up_btn_key(up_btn_key),
+        .down_btn_key(down_btn_key)
+    );
+
+
 
 endmodule
