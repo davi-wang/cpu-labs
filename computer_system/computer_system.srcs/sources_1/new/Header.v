@@ -111,3 +111,11 @@
 `define STALL_EXE    2'b10
 `define STALL_MEM    2'b10
 `define STALL_DEFAULT    2'b00
+
+
+// button activate
+`define UP_BUTTON    4'b0001
+`define DOWN_BUTTON    4'b0010
+`define LEFT_BUTTON    4'b0100
+`define RIGHT_BUTTON    4'b1000
+`define DEFAULT_BUTTON    4'b0000
