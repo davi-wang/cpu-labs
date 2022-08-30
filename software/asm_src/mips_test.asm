@@ -6,7 +6,7 @@ block_height:       .word   0x14         # height of the block
 screen_width:   .word   160    # width of the screen
 screen_height:  .word   120    # height of the screen
 
-image_background_base:  .word   0x1200
+image_background_base:  .word   0x2000
 image_tank_base:        .word   0x1000
 
 abs_map:           .word    1, 0, 0, 0, 0, 0, 0, 0,
@@ -24,7 +24,7 @@ main:
     addi $t1, $0, 0     # location x = 0
     addi $t2, $0, 0     # location y = 0
 
-    addi $sp, $0, 0xf000    # stack pointer
+    addi $sp, $0, 0x0fff    # stack pointer
     
     jal WRITE_ABS_MAP
 
@@ -219,10 +219,10 @@ WRITE_BLOCK:
     # select the background image
     beq $a0, 0, IMAGE_BACKGROUND
 IMAGE_TANK:
-    lw $t0, image_background_base      # base address of the background
+    lw $t0, image_tank_base             # base address of the background
     j IMAGE_SELECT_END
 IMAGE_BACKGROUND:
-    lw $t0, image_tank_base      # base address of the background
+    lw $t0, image_background_base       # base address of the background
 IMAGE_SELECT_END:
     # end of select the background image
 

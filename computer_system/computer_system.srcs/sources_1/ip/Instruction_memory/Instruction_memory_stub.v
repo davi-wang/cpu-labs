@@ -1,10 +1,10 @@
 // Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-// Date        : Mon Aug 29 14:47:04 2022
-// Host        : LAPTOP-FNQMD2JI running 64-bit major release  (build 9200)
+// Date        : Tue Aug 30 16:59:23 2022
+// Host        : LAPTOP-QS82KPJ1 running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
-//               E:/repos/hardware-labs/computer_system/computer_system.srcs/sources_1/ip/Instruction_memory/Instruction_memory_stub.v
+//               C:/Users/xhm2001/Desktop/senior1/hardware/hardware/hardware-labs/computer_system/computer_system.srcs/sources_1/ip/Instruction_memory/Instruction_memory_stub.v
 // Design      : Instruction_memory
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a35tcsg324-1
@@ -15,7 +15,7 @@
 // Please paste the declaration into a Verilog source file or add the file as an additional source.
 (* x_core_info = "dist_mem_gen_v8_0_13,Vivado 2019.2" *)
 module Instruction_memory(a, spo)
-/* synthesis syn_black_box black_box_pad_pin="a[9:0],spo[31:0]" */;
-  input [9:0]a;
+/* synthesis syn_black_box black_box_pad_pin="a[8:0],spo[31:0]" */;
+  input [8:0]a;
   output [31:0]spo;
 endmodule
