@@ -93,6 +93,27 @@ module ID (input rst,
             reg1_addr_o   <= rs;
             reg2_addr_o   <= rt;
             stallreq      <= 2'b0;
+
+            if(inst_i[31:21] == 11'b01000000000 &&                  //mf0c
+                inst_i[10:0] == 11'b00000000000) begin
+                    alu_op <= `ALU_MFC0;
+                    wd_o <= rt;
+                    wreg_o <= 1'b1;
+                    valid <= 1'b1;
+                    reg1_read_o <= 1'b0;
+                    reg2_read_o <= 1'b0;
+                end
+            else if(inst_i[31:21] == 11'b01000000100 &&            //mtc0
+                inst_i[10:0] == 11'b00000000000) begin
+                    alu_op <= `ALU_MTC0;
+                    wreg_o <= 1'b0;
+                    valid <= 1'b1;
+                    reg1_read_o <= 1'b1;
+                    reg1_addr_o <= rt;
+                    reg2_read_o <= 1'b0;
+                end
+
+
             case(op)
                 `SPECIAL: begin
                     case(op2)

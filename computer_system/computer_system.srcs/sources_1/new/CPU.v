@@ -52,7 +52,30 @@ module CPU (input clk,
             wire [`RegBus] mem_wreg_data,
             wire wb_wreg,
             wire [`RegAddrBus] wb_addr,
-            wire [`RegBus] wb_data);
+            wire [`RegBus] wb_data,
+            
+            //for cp0
+            wire [`RegBus] cp0_rdata,
+            wire [`RegAddrBus] cp0_raddr,
+            wire [`RegBus] cp0_wdata_ex,
+            wire [`RegAddrBus] cp0_waddr_ex,
+            wire cp0_wreg_ex,
+
+            wire [`RegBus] cp0_wdata_mem_in,
+            wire [`RegAddrBus] cp0_waddr_mem_in,
+            wire cp0_wreg_mem_in, 
+
+            wire [`RegBus] cp0_wdata_mem_out,
+            wire [`RegAddrBus] cp0_waddr_mem_out,
+            wire cp0_wreg_mem_out, 
+
+            wire [`RegBus] cp0_wdata_wb,
+            wire [`RegAddrBus] cp0_waddr_wb,
+            wire cp0_wreg_wb
+            );
+
+
+            
     
     CU CU(
     .rst(rst),
@@ -144,7 +167,18 @@ module CPU (input clk,
     .wmem_addr_o(ex_wmem_addr),
     .alu_op_o(alu_op_ex_o),
     .wmem_data(ex_wmem_data),
-    .insc_i(insc_ex)
+    .insc_i(insc_ex),
+    .mem_cp0_wdata_in(cp0_wdata_mem_out),
+    .mem_cp0_waddr_in(cp0_waddr_mem_out),
+    .mem_cp0_wreg(cp0_wreg_mem_out),
+    .wb_cp0_wdata_in(cp0_wdata_wb),
+    .wb_cp0_waddr_in(cp0_waddr_wb),
+    .wb_cp0_wreg(cp0_wreg_wb),
+    .cp0_raddr_out(cp0_raddr),
+    .cp0_rdata_in(cp0_rdata),
+    .cp0_waddr_ex(cp0_waddr_ex),
+    .cp0_wdata_ex(cp0_wdata_ex),
+    .cp0_wreg_ex(cp0_wreg_ex)
     );
     
     EX_MEM EX_MEM(
@@ -162,7 +196,13 @@ module CPU (input clk,
     .wmme_data_i(ex_wmem_data),
     .wmem_addr_o(mem_wmem_addr),
     .alu_op_mem(alu_op_mem),
-    .wmme_data_o(mem_wmem_data)
+    .wmme_data_o(mem_wmem_data),
+    .cp0_wdata_ex(cp0_wdata_ex),
+    .cp0_waddr_ex(cp0_waddr_ex),
+    .cp0_wreg_ex(cp0_wreg_ex),
+    .cp0_waddr_mem(cp0_waddr_mem_in),
+    .cp0_wdata_mem(cp0_wdata_mem_in),
+    .cp0_wreg_mem(cp0_wreg_mem_in)
     );
 
     MEM MEM(
@@ -179,7 +219,13 @@ module CPU (input clk,
     .dmem_data_i(dmem_rdata),
     .wmem_addr_o(dmem_waddr),
     .wmem_o(dmem_we),
-    .wmem_data_o(dmem_wdata)
+    .wmem_data_o(dmem_wdata),
+    .cp0_waddr_i(cp0_waddr_mem_in),
+    .cp0_wdata_i(cp0_wdata_mem_in),
+    .cp0_wreg_i(cp0_wreg_mem_in),
+    .cp0_waddr_o(cp0_waddr_mem_out),
+    .cp0_wdata_o(cp0_wdata_mem_out),
+    .cp0_wreg_o(cp0_wreg_mem_out)
     );
     
     MEM_WB MEM_WB(
@@ -190,7 +236,13 @@ module CPU (input clk,
     .wdata_mem(mem_wreg_data),
     .w_reg_addr_wb(wb_addr),
     .wreg_wb(wb_wreg),
-    .wdata_wb(wb_data)
+    .wdata_wb(wb_data),
+    .cp0_wdata_mem(cp0_wdata_mem_out),
+    .cp0_waddr_mem(cp0_waddr_mem_out),
+    .cp0_wreg_mem(cp0_wreg_mem_out),
+    .cp0_wdata_wb(cp0_wdata_wb),
+    .cp0_waddr_wb(cp0_waddr_wb),
+    .cp0_wreg_wb(cp0_wreg_wb)
     );
     
     reg_files regs(
@@ -205,5 +257,15 @@ module CPU (input clk,
     .re2(id_reg2_re),
     .reg1_data(reg1_data_id_in),
     .reg2_data(reg2_data_id_in)
+    );
+
+    CP0 CP0(
+        .clk(clk),
+        .rst(rst),
+        .raddr_i(cp0_raddr),
+        .data_o(cp0_rdata),
+        .data_i(cp0_wdata_wb),
+        .waddr_i(cp0_waddr_wb),
+        .we_i(cp0_wreg_wb)
     );
 endmodule

@@ -38,7 +38,8 @@
 `define ALU_SB          5'd24
 `define ALU_SH          5'd25
 `define ALU_SW          5'd26
-
+`define ALU_MFC0        5'd27
+`define ALU_MTC0        5'd28
 
 // instrcution code
 `define SPECIAL 6'b000000

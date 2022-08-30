@@ -12,6 +12,14 @@ module EX_MEM (
     input [`AluBus] alu_op_ex_o,
     input [`RegBus] wmme_data_i,
 
+    input [`RegBus] cp0_wdata_ex,
+    input [`RegAddrBus] cp0_waddr_ex,
+    input cp0_wreg_ex,
+
+    output reg [`RegBus] cp0_wdata_mem,
+    output reg [`RegAddrBus] cp0_waddr_mem,
+    output reg cp0_wreg_mem,
+
     output reg[`RegAddrBus] w_reg_addr_o,
     output reg wreg_o,
     output reg[`RegBus] wdata_o,
@@ -28,6 +36,9 @@ module EX_MEM (
             wmem_addr_o <= `ZeroWord;
             alu_op_mem <= 1'b00000;
             wmme_data_o <= `ZeroWord;
+            cp0_wreg_mem <= 1'b0;
+            cp0_waddr_mem <= `NopRegAddr;
+            cp0_wdata_mem <= `ZeroWord;
         end else begin
             w_reg_addr_o <= w_reg_addr_i;
             wreg_o <= wreg_i;
@@ -35,6 +46,9 @@ module EX_MEM (
             wmem_addr_o <= wmem_addr_i;
             alu_op_mem <= alu_op_ex_o;
             wmme_data_o <= wmme_data_i;
+            cp0_wreg_mem <= cp0_wreg_ex;
+            cp0_waddr_mem <= cp0_waddr_ex;
+            cp0_wdata_mem <= cp0_wdata_ex;
         end
     end
     

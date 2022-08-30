@@ -9,7 +9,13 @@ module MEM (
     input [`AddrBus] wmem_addr_i,
     input [`RegBus] wmem_data_i,
     input [`RegBus] dmem_data_i,
+    input [`RegBus] cp0_wdata_i,
+    input [`RegAddrBus] cp0_waddr_i,
+    input cp0_wreg_i,
 
+    output reg [`RegBus] cp0_wdata_o,
+    output reg [`RegAddrBus] cp0_waddr_o,
+    output reg cp0_wreg_o,
     output reg [`AddrBus] wmem_addr_o,
     output reg wmem_o,
     output reg [`RegBus] wmem_data_o,
@@ -28,6 +34,9 @@ module MEM (
             wmem_o <= 1'b0;
             wmem_data_o <= `ZeroWord;
             mem_sec <= 4'b0000;
+            cp0_waddr_o <= `NopRegAddr;
+            cp0_wdata_o <= `ZeroWord;
+            cp0_wreg_o <= 1'b0;
         end else begin
             w_reg_addr_o <= w_reg_addr_i;
             wreg_o <= wreg_i;
@@ -36,7 +45,9 @@ module MEM (
             wmem_o <= 1'b0;
             wmem_data_o <= `ZeroWord;
             mem_sec <= 4'b0000;
-
+            cp0_waddr_o <= cp0_waddr_i;
+            cp0_wdata_o <= cp0_wdata_i;
+            cp0_wreg_o <= cp0_wreg_i;
             case(alu_op_i)
                 `ALU_LB:begin
                     wmem_o <= 1'b0;
