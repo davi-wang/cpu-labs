@@ -9,7 +9,7 @@ img_background_path = r'D:\Files\Resource\C++\1.Hello World\background.txt'
 seg_base_data =          0x0000
 seg_base_tank =          0x1000
 seg_base_background =    0x2000
-seg_base_stack =         0x0fff
+seg_base_stack =         0x0ff0
 
 
 def generate_ram():

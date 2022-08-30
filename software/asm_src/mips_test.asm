@@ -24,75 +24,59 @@ main:
     addi $t1, $0, 0     # location x = 0
     addi $t2, $0, 0     # location y = 0
 
-    addi $sp, $0, 0x0fff    # stack pointer
+    addi $sp, $0, 0x0ff0    # stack pointer
     
     jal WRITE_ABS_MAP
 
 
     # scan the button
+    # if pressed -> change
     lui $s3, 0xbfaf
 	ori $s3, $s3, 0x8018
     lw $s0, ($s3) # up
+    beq $s0, 1, SCAN_PRESS_UP
 
     lui $s3, 0xbfaf
 	ori $s3, $s3, 0x801c
-    lw $s1, ($s3) # down
+    lw $s0, ($s3) # down
+    beq $s0, 1, SCAN_PRESS_DOWN
 
     lui $s3, 0xbfaf
 	ori $s3, $s3, 0x8010
-    lw $s2, ($s3) # left
+    lw $s0, ($s3) # left
+    beq $s0, 1, SCAN_PRESS_LEFT
 
     lui $s3, 0xbfaf
 	ori $s3, $s3, 0x8014
-    lw $s3, ($s3) # right
+    lw $s0, ($s3) # right
+    beq $s0, 1, SCAN_PRESS_RIGHT
 
-    # if pressed -> change
-    beq $s0, 1, SCAN_PRESS_UP
-    beq $s1, 1, SCAN_PRESS_DOWN
-    beq $s2, 1, SCAN_PRESS_LEFT
-    beq $s3, 1, SCAN_PRESS_RIGHT
     j SCAN_PRESS_END
 
 SCAN_PRESS_UP:
-    beq $t1, 0, REFRESH_VGA
+    beq $t1, 0, WAIT_FOR_UP
     sub $t1, $t1, 1
-    lui $s3, 0xbfaf
-	ori $s3, $s3, 0x8018
-WAIT_FOR_UP:
-    lw $s0, ($s3) # up
-    beq $s0, 1, WAIT_FOR_UP
-    j REFRESH_VGA
+    j WAIT_FOR_UP
 
 SCAN_PRESS_DOWN:
-    beq $t1, 5, REFRESH_VGA
+    beq $t1, 5, WAIT_FOR_UP
     add $t1, $t1, 1
-    lui $s3, 0xbfaf
-	ori $s3, $s3, 0x801c
-WAIT_FOR_DOWN:
-    lw $s0, ($s3) # DOWN
-    beq $s0, 1, WAIT_FOR_DOWN
-    j REFRESH_VGA
+    j WAIT_FOR_UP
 
 SCAN_PRESS_LEFT:
-    beq $t2, 0, REFRESH_VGA
+    beq $t2, 0, WAIT_FOR_UP
     sub $t2, $t2, 1
-    lui $s3, 0xbfaf
-	ori $s3, $s3, 0x8010
-WAIT_FOR_LEFT:
-    lw $s0, ($s3) # LEFT
-    beq $s0, 1, WAIT_FOR_LEFT
-    j REFRESH_VGA
+    j WAIT_FOR_UP
 
 SCAN_PRESS_RIGHT:
-    beq $t2, 7, REFRESH_VGA
+    beq $t2, 7, WAIT_FOR_UP
     add $t2, $t2, 1
-    lui $s3, 0xbfaf
-	ori $s3, $s3, 0x8014
-WAIT_FOR_RIGHT:
-    lw $s0, ($s3) # RIGHT
-    beq $s0, 1, WAIT_FOR_RIGHT
 
-REFRESH_VGA:
+    # wait for button up
+WAIT_FOR_UP:
+    lw $s0, ($s3)
+    beq $s0, 1, WAIT_FOR_UP
+
     # loop: refresh abs map
     lui $t3, 0  # row = 0
 LOOP_REFRESH_ABS_MAP:
@@ -143,6 +127,7 @@ LOOP_WAIT:
 
 ##########################
 # function: WRITE_ABS_MAP
+##########################
 WRITE_ABS_MAP:
 
     # preserve registers
@@ -155,8 +140,7 @@ WRITE_ABS_MAP:
     sw $ra, 20($sp)         # return address
 
     addi $t0, $0, 6 # row size
-    addi $t1, $0, 8 # column size * 4
-    # lw $t4, abs_map_base  # abs_map_base
+    addi $t1, $0, 8 # column size
 
     # loop: write blocks one by one
     lui $t2, 0  # row = 0
@@ -168,7 +152,6 @@ LOOP_WRITE_ALL_BLOCKS:
         sll $a0, $t2, 3
         add $a0, $a0, $t3
         sll $a0, $a0, 2
-        # add $a1, $t4, $a0
         lw $a0, abs_map($a0)
         
         # write a block
@@ -196,11 +179,12 @@ LOOP_WRITE_ALL_BLOCKS_END:
 
     jr $ra
 
-
+##########################
 # function: WRITE_BLOCK
 # $a0 WRITE_BLOCK_image_select:     select the image to show
 # $a1 WRITE_BLOCK_row:              indicate the row
 # $a2 WRITE_BLOCK_column:           indicate the column
+##########################
 WRITE_BLOCK:
     # preserve registers
     addi $sp, $sp, -44      
@@ -227,13 +211,13 @@ IMAGE_SELECT_END:
     # end of select the background image
 
     # load addresses
-    lw $t5, block_write_base      # base address of the block in VGA
-    lw $t8, block_width           # width of the block
-    lw $t9, block_height          # height of the block
-    lw $t7, screen_width    # width of the screen
+    lw $t5, block_write_base        # base address of the block in VGA
+    lw $t8, block_width             # width of the block
+    lw $t9, block_height            # height of the block
+    lw $t7, screen_width            # width of the screen
     sll $t8, $t8, 2
 
-    # cal the VGA address to $t5 : $t5 + 20*(a1*screen_width + a2)*4
+    # cal the VGA address to $t5 : $t5 + 20*(row*screen_width + col)*4
     move $t4, $a2
     move $a0, $t7
     jal MUL         # row * screen_width
@@ -241,6 +225,8 @@ IMAGE_SELECT_END:
     addi $a1, $0, 80
     jal MUL         # 80*(row*screen_width + column)
     add $t5, $v0, $t5
+    
+    sll $t7, $t7, 2
 
     # loop: write data to VGA
     lui $t3, 0  # row 0
@@ -249,14 +235,15 @@ LOOP_BLOCK:
     lui $t1, 0  # column 0
     LOOP_ROW:
         beq $t1, $t8, LOOP_ROW_END
-        add $t2, $t5, $t1  # write address
         add $t4, $t0, $t1  # read address
+        add $t2, $t5, $t1  # write address
         lw $t6, ($t4)
         sw $t6, ($t2)
         addiu $t1, $t1, 4
         j LOOP_ROW
     LOOP_ROW_END:
 
+    # modify read&write base address
     add $t5, $t5, $t7   # write_base += screem_width
     add $t0, $t0, $t8   # read_base += block_width
     addiu $t3, $t3, 1   # row += 1
@@ -281,10 +268,12 @@ LOOP_BLOCK_END:
     jr $ra
 
 
+##########################
 # function: MUL
 # $a0 num1
 # $a1 num2
 # ret: v0 = num1*num2
+##########################
 MUL:
     lui $v0, 0
 MUL_LOOP:
