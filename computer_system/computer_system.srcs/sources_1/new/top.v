@@ -96,20 +96,20 @@ module Computer(
     );
 
 
-    Buttons button(
-        .clk(I_clk),
-        .rst(I_rst_n),
+    // Buttons button(
+    //     .clk(I_clk),
+    //     .rst(I_rst_n),
 
 
-        .confreg_addr(),
-        .confreg_read_data(),
+    //     .confreg_addr(),
+    //     .confreg_read_data(),
 
-        .mid_btn_key(mid_btn_key),
-        .left_btn_key(left_btn_key),
-        .right_btn_key(right_btn_key),
-        .up_btn_key(up_btn_key),
-        .down_btn_key(down_btn_key)
-    );
+    //     .mid_btn_key(mid_btn_key),
+    //     .left_btn_key(left_btn_key),
+    //     .right_btn_key(right_btn_key),
+    //     .up_btn_key(up_btn_key),
+    //     .down_btn_key(down_btn_key)
+    // );
 
 
 
