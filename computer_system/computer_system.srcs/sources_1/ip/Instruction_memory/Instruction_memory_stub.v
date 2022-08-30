@@ -1,7 +1,7 @@
 // Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2019.2 (win64) Build 2708876 Wed Nov  6 21:40:23 MST 2019
-// Date        : Sun Aug 28 20:24:03 2022
+// Date        : Mon Aug 29 14:47:04 2022
 // Host        : LAPTOP-FNQMD2JI running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub
 //               E:/repos/hardware-labs/computer_system/computer_system.srcs/sources_1/ip/Instruction_memory/Instruction_memory_stub.v

@@ -36,18 +36,23 @@ module reg_files(input clk,
     reg [`RegBus] registers [31:0];
     
     
-    always@(posedge clk) begin
-        if (reg_we && W_reg_addr != `NopRegAddr) begin
-            registers[W_reg_addr] <= W_data;
+    always@(posedge clk) begin        
+        if (!rst) begin   
+            for(i = 0;i < 32; i=i+1)begin
+                registers[i] <= `ZeroWord;
+            end
+        end
+        else begin
+            if (reg_we && W_reg_addr != `NopRegAddr) begin
+                registers[W_reg_addr] <= W_data;
+            end
         end
     end
     
     always @(*) begin
         if (!rst) begin
             reg1_data <= `ZeroWord;
-            for(i = 0;i < 32; i=i+1)begin
-                registers[i] <= `ZeroWord;
-            end
+
             end else if (reg1_addr == `NopRegAddr) begin
             reg1_data <= `ZeroWord;
             end else if (reg1_addr == W_reg_addr && reg_we && re1) begin //forwarding

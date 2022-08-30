@@ -3,11 +3,13 @@
 
 module testbench();
     reg rstn, clk;
+    reg m, l, ri, u, d;
     initial begin
         rstn = 1'b1;
         clk = 1'b0;
-        #50 rstn = 1'b0;
-        #100 rstn = 1'b1;
+        m = 1'b1;
+        #10 rstn = 1'b0;
+        #20 rstn = 1'b1;
     end
 
     wire [3:0] r, g, b;
@@ -22,6 +24,11 @@ module testbench();
         .O_g(g),
         .O_b(b),
         .O_hsync(h),
-        .O_vsync(v)
+        .O_vsync(v),
+        .I_mid_btn(m),
+        .I_left_btn(l),
+        .I_right_btn(ri),
+        .I_up_btn(u),
+        .I_down_btn(d)
     );
 endmodule

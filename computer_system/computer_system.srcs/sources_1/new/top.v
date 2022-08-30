@@ -5,11 +5,6 @@ module Computer(
     input I_clk,
     input I_rst_n,
 
-    input I_on,
-    input I_down,
-    input I_left,
-    input I_right,
-
     // vga ports
     output [3:0] O_r,
     output [3:0] O_g,
@@ -18,32 +13,35 @@ module Computer(
     output O_vsync,
 
     //button ports
-    input mid_btn_key,
-    input left_btn_key,
-    input right_btn_key,
-    input up_btn_key,
-    input down_btn_key
+    input I_mid_btn,
+    input I_left_btn,
+    input I_right_btn,
+    input I_up_btn,
+    input I_down_btn
     );
 
+    // CPU output
+    wire [31:0] cpu_pc;
+    wire [31:0] cpu_dmem_waddr;
+    wire [31:0] cpu_dmem_wdata;
 
-    // wire definition
-    // CPU
-    wire[31:0]  cpu_pc;
-    wire[31:0] cpu_dmem_waddr, vaddr;
-    wire[31:0] cpu_dmem_wdata;
-    // 内存空间分配
+    // 数据RAM 或 显存 写使能
     wire cpu_we;
     wire dmem_we, gmem_we;
     assign dmem_we = cpu_dmem_waddr[17] ? 1'b0 : cpu_we;
     assign gmem_we = cpu_dmem_waddr[17] ? cpu_we : 1'b0;
-    assign vaddr = cpu_dmem_waddr;
 
-    wire [31:0]but_addr;
-    // Data RAM
+    // 数据 RAM
     wire[31:0] ram_data;
-
-    // Instruction ROM
+    // 指令 ROM
     wire[31:0] rom_data;
+    // 外设输入
+    wire [31:0] confreg_data;
+    // CPU 读数据线 由地址决定是读 数据RAM 或 外设
+    wire [31:0] cpu_ram_data;
+    assign is_confreg_addr = cpu_dmem_waddr[31:16] == 16'hbfaf ? 1'b1 : 1'b0;
+    assign cpu_ram_data = is_confreg_addr ? confreg_data : ram_data;
+
 
     // cpu
     // CPU cpu0(
@@ -64,7 +62,7 @@ module Computer(
         .dmem_we(cpu_we),
         .dmem_wdata(cpu_dmem_wdata),
         .dmem_waddr(cpu_dmem_waddr),
-        .dmem_rdata(ram_data)
+        .dmem_rdata(cpu_ram_data)
     );
 
     // RAM for CPU
@@ -85,7 +83,7 @@ module Computer(
     vgahwd vga0(
         .clk(I_clk),
         .rstn(I_rst_n),
-        .waddr(vaddr),
+        .waddr(cpu_dmem_waddr),
         .wdata(cpu_dmem_wdata),
         .we(gmem_we),
         . red(O_r),
@@ -95,22 +93,18 @@ module Computer(
         . vsync(O_vsync)
     );
 
-
-    Buttons button(
+    button_input button(
         .clk(I_clk),
-        .rst(I_rst_n),
+        .nrst(I_rst_n),
 
+        .confreg_addr(cpu_dmem_waddr),
+        .confreg_read_data(confreg_data),
 
-        .confreg_addr(),
-        .confreg_read_data(),
-
-        .mid_btn_key(mid_btn_key),
-        .left_btn_key(left_btn_key),
-        .right_btn_key(right_btn_key),
-        .up_btn_key(up_btn_key),
-        .down_btn_key(down_btn_key)
+        .mid_btn_key(I_mid_btn),
+        .left_btn_key(I_left_btn),
+        .right_btn_key(I_right_btn),
+        .up_btn_key(I_up_btn),
+        .down_btn_key(I_down_btn)
     );
-
-
 
 endmodule
