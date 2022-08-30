@@ -1,33 +1,22 @@
 .data
-	block_write_base: .word 0x00080     # base addresses of the block in VGA
-    block_width:      .word 0x14         # width of the block
-    block_height:     .word 0x14         # height of the block
-	color:      .word 0xa0f0f0
-	gmemend:    .word 0x12c00
-	
-	screen_width: .word 0x40    # width of the screen
-	screen_height: .word 0x30   # height of the screen
+block_write_base:   .word   0x0020000     # base addresses of the block in VGA
+block_width:        .word   0x14         # width of the block
+block_height:       .word   0x14         # height of the block
 
-    img0: .word 1, 2, 3, 4, 5, 6, 7, 8, 9
-    img1: .word 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19
+screen_width:   .word   160    # width of the screen
+screen_height:  .word   120    # height of the screen
 
-    image_background_base:  .word 0x40
-    image_tank_base:        .word 0x1c
+image_background_base:  .word   0x1200
+image_tank_base:        .word   0x1000
 
-    abs_map:           .word 0x70  # map: 6 * 8
-    # map:                    .word 1, 0, 1, 0, 1  # map: 6 * 8
+abs_map:           .word    1, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0
 
 .text
-
-main:
-addi $a0, $0, 1
-addi $a1, $0, 2
-addi $a2, $0, 3
-
-jal WRITE_ABS_MAP
-
-j END
-
 
 # function: main
 main:
@@ -36,39 +25,72 @@ main:
     addi $t2, $0, 0     # location y = 0
 
     addi $sp, $0, 0xf000    # stack pointer
+    
+    jal WRITE_ABS_MAP
+
 
     # scan the button
-    lw $s0, button0 # up
-    lw $s1, button1 # down
-    lw $s2, button2 # left
-    lw $s3, button3 # right
-    # lw $s4, button4
+    lui $s3, 0xbfaf
+	ori $s3, $s3, 0x8018
+    lw $s0, ($s3) # up
+
+    lui $s3, 0xbfaf
+	ori $s3, $s3, 0x801c
+    lw $s1, ($s3) # down
+
+    lui $s3, 0xbfaf
+	ori $s3, $s3, 0x8010
+    lw $s2, ($s3) # left
+
+    lui $s3, 0xbfaf
+	ori $s3, $s3, 0x8014
+    lw $s3, ($s3) # right
 
     # if pressed -> change
-    beq $s0, 0, SCAN_PRESS_UP
-    beq $s1, 0, SCAN_PRESS_DOWN
-    beq $s2, 0, SCAN_PRESS_LEFT
-    beq $s3, 0, SCAN_PRESS_RIGHT
+    beq $s0, 1, SCAN_PRESS_UP
+    beq $s1, 1, SCAN_PRESS_DOWN
+    beq $s2, 1, SCAN_PRESS_LEFT
+    beq $s3, 1, SCAN_PRESS_RIGHT
     j SCAN_PRESS_END
 
 SCAN_PRESS_UP:
     beq $t1, 0, REFRESH_VGA
     sub $t1, $t1, 1
+    lui $s3, 0xbfaf
+	ori $s3, $s3, 0x8018
+WAIT_FOR_UP:
+    lw $s0, ($s3) # up
+    beq $s0, 1, WAIT_FOR_UP
     j REFRESH_VGA
 
 SCAN_PRESS_DOWN:
     beq $t1, 5, REFRESH_VGA
     add $t1, $t1, 1
+    lui $s3, 0xbfaf
+	ori $s3, $s3, 0x801c
+WAIT_FOR_DOWN:
+    lw $s0, ($s3) # DOWN
+    beq $s0, 1, WAIT_FOR_DOWN
     j REFRESH_VGA
 
 SCAN_PRESS_LEFT:
     beq $t2, 0, REFRESH_VGA
     sub $t2, $t2, 1
+    lui $s3, 0xbfaf
+	ori $s3, $s3, 0x8010
+WAIT_FOR_LEFT:
+    lw $s0, ($s3) # LEFT
+    beq $s0, 1, WAIT_FOR_LEFT
     j REFRESH_VGA
 
 SCAN_PRESS_RIGHT:
     beq $t2, 7, REFRESH_VGA
     add $t2, $t2, 1
+    lui $s3, 0xbfaf
+	ori $s3, $s3, 0x8014
+WAIT_FOR_RIGHT:
+    lw $s0, ($s3) # RIGHT
+    beq $s0, 1, WAIT_FOR_RIGHT
 
 REFRESH_VGA:
     # loop: refresh abs map
@@ -82,18 +104,20 @@ LOOP_REFRESH_ABS_MAP:
         sub $s1, $t2, $t4
         or $s0, $s0, $s1
 
+        # select image (tank/background)
         bne $s0, 0, WRITE_BACKGROUND
     WRITE_TANK:
         addi $a0, $0, 1 # write 1 (a0)
-
         j WRITE_END
     WRITE_BACKGROUND:
-        addi $a0, $0, 0 # write 1 (a0)
-
+        addi $a0, $0, 0 # write 0 (a0)
     WRITE_END:
+
+        # write to the abs map
         sll $a1, $t3, 3
         add $a1, $a1, $t4
-        sw $a0, abs_map_base($a1)
+        sll $a1, $a1, 2
+        sw $a0, abs_map($a1)
         addiu $t4, $t4, 1
         j LOOP_REFRESH_ABS_MAP_ROW
     LOOP_REFRESH_ABS_MAP_ROW_END:
@@ -117,6 +141,7 @@ LOOP_WAIT:
     j main
 
 
+##########################
 # function: WRITE_ABS_MAP
 WRITE_ABS_MAP:
 
@@ -192,7 +217,7 @@ WRITE_BLOCK:
     sw $ra, 40($sp)         # return address
 
     # select the background image
-    bne $a0, 0, IMAGE_BACKGROUND
+    beq $a0, 0, IMAGE_BACKGROUND
 IMAGE_TANK:
     lw $t0, image_background_base      # base address of the background
     j IMAGE_SELECT_END
@@ -224,8 +249,8 @@ LOOP_BLOCK:
     lui $t1, 0  # column 0
     LOOP_ROW:
         beq $t1, $t8, LOOP_ROW_END
-        add $t2, $t5, $t1  # �����ַ
-        add $t4, $t0, $t1  # �����ַ
+        add $t2, $t5, $t1  # write address
+        add $t4, $t0, $t1  # read address
         lw $t6, ($t4)
         sw $t6, ($t2)
         addiu $t1, $t1, 4

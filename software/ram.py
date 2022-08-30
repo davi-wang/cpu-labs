@@ -27,7 +27,7 @@ def generate_ram():
     with open('ram_data.coe', 'w') as f:
         f.write('memory_initialization_radix=16;\nmemory_initialization_vector=\n')
         for i in ram:
-            x = '{:x},\n'.format(i)
+            x = '{:0>8x},\n'.format(i)
             f.write(x)
 
 
