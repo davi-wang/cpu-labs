@@ -5,6 +5,7 @@
 #####branch exception new#####
 pielined_cpu/*
 test_code/*
+software/*
 *.drawio
 *.pdf
 *.txt
