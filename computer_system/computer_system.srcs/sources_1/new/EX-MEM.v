@@ -5,6 +5,9 @@ module EX_MEM (
     input  clk,
     input  rst,
     input [3:0]stall,
+    input flush,
+    input [31:0] ex_current_addr,
+    input [31:0] ex_exception,
     input [`RegAddrBus] w_reg_addr_i,
     input wreg_i,
     input [`RegBus] wdata_i,
@@ -19,7 +22,8 @@ module EX_MEM (
     output reg [`RegBus] cp0_wdata_mem,
     output reg [`RegAddrBus] cp0_waddr_mem,
     output reg cp0_wreg_mem,
-
+    output reg [31:0] mem_current_addr,
+    output reg [31:0] mem_exception,
     output reg[`RegAddrBus] w_reg_addr_o,
     output reg wreg_o,
     output reg[`RegBus] wdata_o,
@@ -34,11 +38,25 @@ module EX_MEM (
             wreg_o <= 1'b0;
             wdata_o <= `ZeroWord;
             wmem_addr_o <= `ZeroWord;
-            alu_op_mem <= 1'b00000;
+            alu_op_mem <= `ALU_NOP;
             wmme_data_o <= `ZeroWord;
             cp0_wreg_mem <= 1'b0;
             cp0_waddr_mem <= `NopRegAddr;
             cp0_wdata_mem <= `ZeroWord;
+            mem_current_addr <= `ZeroWord;
+            mem_exception <= `ZeroWord;
+        end else if(flush == 1'b1)begin
+            w_reg_addr_o <= `NopRegAddr;
+            wreg_o <= 1'b0;
+            wdata_o <= `ZeroWord;
+            wmem_addr_o <= `ZeroWord;
+            alu_op_mem <= `ALU_NOP;
+            wmme_data_o <= `ZeroWord;
+            cp0_wreg_mem <= 1'b0;
+            cp0_waddr_mem <= `NopRegAddr;
+            cp0_wdata_mem <= `ZeroWord;
+            mem_current_addr <= `ZeroWord;
+            mem_exception <= `ZeroWord;
         end else begin
             w_reg_addr_o <= w_reg_addr_i;
             wreg_o <= wreg_i;
@@ -49,6 +67,8 @@ module EX_MEM (
             cp0_wreg_mem <= cp0_wreg_ex;
             cp0_waddr_mem <= cp0_waddr_ex;
             cp0_wdata_mem <= cp0_wdata_ex;
+            mem_current_addr <= ex_current_addr;
+            mem_exception <= ex_exception;
         end
     end
     

@@ -21,7 +21,7 @@ module CPU (input clk,
             wire id_reg2_re,
             wire [`RegAddrBus] id_reg1_addr,
             wire [`RegAddrBus] id_reg2_addr,
-            wire [`RegAddrBus] id_alu_op,
+            wire [`AluBus] id_alu_op,
             wire [`RegBus] id_data1,
             wire [`RegBus] id_data2,
             wire id_we,
@@ -39,7 +39,7 @@ module CPU (input clk,
             wire [`RegAddrBus] ex_wreg_addr,
             wire [`RegBus] ex_wreg_data,
             wire [`AddrBus] ex_wmem_addr,
-            wire [`RegAddrBus] alu_op_ex_o,
+            wire [`AluBus] alu_op_ex_o,
             wire [`RegBus] ex_wmem_data,
             wire mem_wreg_i,
             wire [`RegAddrBus] mem_waddr_i,
@@ -54,6 +54,25 @@ module CPU (input clk,
             wire [`RegAddrBus] wb_addr,
             wire [`RegBus] wb_data,
             
+            wire flush,
+            wire [`RegBus] new_pc,
+
+            wire [31:0] exception_id,
+            wire [31:0] current_addr_id,
+            wire [31:0] exception_ex,
+            wire [31:0] current_addr_ex,
+            wire [31:0] exception_ex_o,
+            wire [31:0] current_addr_ex_o,
+            wire [31:0] exception_mem,
+            wire [31:0] current_addr_mem,
+            wire [31:0] exception_cp0,
+            wire [31:0] current_addr_cp0,
+            wire [31:0] cp0_epc_in_cu,
+            wire [31:0] cp0_status,
+            wire [31:0] cp0_cause,
+            wire [31:0] cp0_epc,
+
+
             //for cp0
             wire [`RegBus] cp0_rdata,
             wire [`RegAddrBus] cp0_raddr,
@@ -80,7 +99,11 @@ module CPU (input clk,
     CU CU(
     .rst(rst),
     .stall(stall),
-    .stallreq_id(stallreq_id)
+    .stallreq_id(stallreq_id),
+    .new_pc(new_pc),
+    .flush(flush),
+    .exception_i(exception_cp0),
+    .cp0_epc_i(cp0_epc_in_cu)
     );
     
     PC PC(
@@ -89,7 +112,9 @@ module CPU (input clk,
     .stall(stall),
     .target(pc_target),
     .pc(pc),
-    .flag(pc_flag)
+    .flag(pc_flag),
+    .new_pc(new_pc),
+    .flush(flush)
     );
     
     IF_ID IF2ID(
@@ -99,7 +124,8 @@ module CPU (input clk,
     .insc_i(insc),
     .insc_o(insc_id),
     .stall(stall),
-    .id_pc(id_pc)
+    .id_pc(id_pc),
+    .flush(flush)
     );
     
     ID ID(
@@ -128,7 +154,9 @@ module CPU (input clk,
     .branch_flag_o(pc_flag),
     .link_addr_o(link_addr_id),
     .insc_id(insc_id_o),
-    .alu_op_f_ex(alu_op_ex_o)
+    .alu_op_f_ex(alu_op_ex_o),
+    .exception_o(exception_id),
+    .current_ins_addr_o(current_addr_id)
     );
     
     
@@ -149,7 +177,12 @@ module CPU (input clk,
     .link_addr_id(link_addr_id),
     .link_addr_ex(link_addr_ex),
     .insc_id(insc_id_o),
-    .insc_ex(insc_ex)
+    .insc_ex(insc_ex),
+    .flush(flush),
+    .id_current_addr(current_addr_id),
+    .id_exception(exception_id),
+    .ex_exception(exception_ex),
+    .ex_current_addr(current_addr_ex)
     );
     
     EX EX(
@@ -178,7 +211,11 @@ module CPU (input clk,
     .cp0_rdata_in(cp0_rdata),
     .cp0_waddr_ex(cp0_waddr_ex),
     .cp0_wdata_ex(cp0_wdata_ex),
-    .cp0_wreg_ex(cp0_wreg_ex)
+    .cp0_wreg_ex(cp0_wreg_ex),
+    .exception_i(exception_ex),
+    .current_address_i(current_addr_ex),
+    .exception_o(exception_ex_o),
+    .current_address_o(current_addr_ex_o)
     );
     
     EX_MEM EX_MEM(
@@ -202,7 +239,12 @@ module CPU (input clk,
     .cp0_wreg_ex(cp0_wreg_ex),
     .cp0_waddr_mem(cp0_waddr_mem_in),
     .cp0_wdata_mem(cp0_wdata_mem_in),
-    .cp0_wreg_mem(cp0_wreg_mem_in)
+    .cp0_wreg_mem(cp0_wreg_mem_in),
+    .flush(flush),
+    .ex_current_addr(current_addr_ex_o),
+    .ex_exception(exception_ex_o),
+    .mem_current_addr(current_addr_mem),
+    .mem_exception(exception_mem)
     );
 
     MEM MEM(
@@ -218,14 +260,25 @@ module CPU (input clk,
     .wmem_data_i(mem_wmem_data),
     .dmem_data_i(dmem_rdata),
     .wmem_addr_o(dmem_waddr),
-    .wmem_o(dmem_we),
+    .wmem_we_o(dmem_we),
     .wmem_data_o(dmem_wdata),
     .cp0_waddr_i(cp0_waddr_mem_in),
     .cp0_wdata_i(cp0_wdata_mem_in),
     .cp0_wreg_i(cp0_wreg_mem_in),
     .cp0_waddr_o(cp0_waddr_mem_out),
     .cp0_wdata_o(cp0_wdata_mem_out),
-    .cp0_wreg_o(cp0_wreg_mem_out)
+    .cp0_wreg_o(cp0_wreg_mem_out),
+    .exception_i(exception_mem),
+    .current_addr_i(current_addr_mem),
+    .exception_o(exception_cp0),
+    .current_addr_o(current_addr_cp0),
+    .cp0_epc_o(cp0_epc_in_cu),
+    .cp0_status_i(cp0_status),
+    .cp0_cause_i(cp0_cause),
+    .cp0_epc_i(cp0_epc),
+    .wb_cp0_waddr(cp0_waddr_wb),
+    .wb_cp0_wreg(cp0_wreg_wb),
+    .wb_cp0_wdata(cp0_wdata_wb)
     );
     
     MEM_WB MEM_WB(
@@ -242,7 +295,8 @@ module CPU (input clk,
     .cp0_wreg_mem(cp0_wreg_mem_out),
     .cp0_wdata_wb(cp0_wdata_wb),
     .cp0_waddr_wb(cp0_waddr_wb),
-    .cp0_wreg_wb(cp0_wreg_wb)
+    .cp0_wreg_wb(cp0_wreg_wb),
+    .flush(flush)
     );
     
     reg_files regs(
@@ -266,6 +320,11 @@ module CPU (input clk,
         .data_o(cp0_rdata),
         .data_i(cp0_wdata_wb),
         .waddr_i(cp0_waddr_wb),
-        .we_i(cp0_wreg_wb)
+        .we_i(cp0_wreg_wb),
+        .status_o(cp0_status),
+        .cause_o(cp0_cause),
+        .epc_o(cp0_epc),
+        .exception_i(exception_cp0),
+        .current_addr_i(current_addr_cp0)
     );
 endmodule

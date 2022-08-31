@@ -4,7 +4,9 @@ module ID_EX (
     
     input clk,
     input rst,
-
+    input flush,
+    input [31:0] id_current_addr,
+    input [31:0] id_exception,
     input [`AluBus] alu_op_id,
     input [`RegBus] reg1_id,
     input [`RegBus] reg2_id,
@@ -13,7 +15,8 @@ module ID_EX (
     input [`RegAddrBus] w_reg_addr_id,
     input [`AddrBus] link_addr_id,
     input [`InscBus] insc_id,
-
+    output reg[31:0] ex_exception,
+    output reg[31:0] ex_current_addr,
     output reg [`InscBus] insc_ex,
     output reg [`AluBus] alu_op_ex,
     output reg [`RegBus] reg1_ex,
@@ -25,21 +28,35 @@ module ID_EX (
     
     always @(posedge clk ) begin
         if(!rst) begin
-            alu_op_ex <= 4'h0;
+            alu_op_ex <= `ALU_NOP;
             reg1_ex <= `ZeroWord;
             reg2_ex <= `ZeroWord;
             wreg_ex <= 1'b0;
-            w_reg_addr_ex <= 5'b0;
+            w_reg_addr_ex <= `NopRegAddr;
             link_addr_ex <= `ZeroWord;
             insc_ex <= `ZeroWord;
+            ex_current_addr <= `ZeroWord;
+            ex_exception <= `ZeroWord;
+        end  else if(flush == 1'b1)begin
+            alu_op_ex <= `ALU_NOP;
+            reg1_ex <= `ZeroWord;
+            reg2_ex <= `ZeroWord;
+            wreg_ex <= 1'b0;
+            w_reg_addr_ex <= `NopRegAddr;
+            link_addr_ex <= `ZeroWord;
+            insc_ex <= `ZeroWord;
+            ex_current_addr <= `ZeroWord;
+            ex_exception <= `ZeroWord;
         end else if(stall[2] == 1'b1 && stall[3] == 1'b0)begin
-            alu_op_ex <= 4'h0;
+            alu_op_ex <= `ALU_NOP;
             reg1_ex <= `ZeroWord;
             reg2_ex <= `ZeroWord;
             wreg_ex <= 1'b0;
             w_reg_addr_ex <= 5'b0;
             link_addr_ex <= `ZeroWord;
             insc_ex <= `ZeroWord;
+            ex_current_addr <= `ZeroWord;
+            ex_exception <= `ZeroWord;
         end else if(stall[2] == 1'b0) begin
             alu_op_ex <= alu_op_id;
             reg1_ex <= reg1_id;
@@ -48,6 +65,8 @@ module ID_EX (
             w_reg_addr_ex <= w_reg_addr_id;
             link_addr_ex <= link_addr_id;
             insc_ex <= insc_id;
+            ex_current_addr <= id_current_addr;
+            ex_exception <= id_exception;
         end
     end
 endmodule

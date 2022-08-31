@@ -2,6 +2,7 @@
 `timescale 1ns / 1ps
 module MEM_WB (input clk,
                input rst,
+               input flush,
                input [`RegAddrBus] w_reg_addr_mem,
                input wreg_mem,
                input [`RegBus] wdata_mem,
@@ -23,7 +24,14 @@ module MEM_WB (input clk,
             cp0_waddr_wb  <= `NopRegAddr;
             cp0_wdata_wb  <= `ZeroWord;
             cp0_wreg_wb   <= 1'b0;
-            end else begin
+            end else if (flush == 1'b1) begin
+            w_reg_addr_wb <= `NopRegAddr;
+            wreg_wb       <= 1'b0;
+            wdata_wb      <= `ZeroWord;
+            cp0_waddr_wb  <= `NopRegAddr;
+            cp0_wdata_wb  <= `ZeroWord;
+            cp0_wreg_wb   <= 1'b0;
+            end  else begin
             w_reg_addr_wb <= w_reg_addr_mem;
             wreg_wb       <= wreg_mem;
             wdata_wb      <= wdata_mem;
