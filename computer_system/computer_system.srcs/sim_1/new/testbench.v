@@ -10,6 +10,7 @@ module testbench();
         m = 1'b1;
         #10 rstn = 1'b0;
         #20 rstn = 1'b1;
+
     end
 
     wire [3:0] r, g, b;

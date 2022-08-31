@@ -59,15 +59,22 @@ module vgahwd
         else clk_counter <= 1'b1;
     end
 
+    // initial begin
+    //     vga_clk = 1'b0;
+    //     clk_counter = 1'b0;
+    //     hcount = 10'b0;
+    //     vcount = 10'b0;
+    // end
+
     // 行列计数器 (扫描信号)
     always @(posedge vga_clk) begin
-        if (hcount == H_END-1) hcount <= 10'd0;
-        else hcount <= hcount + 10'd1;
+        if (hcount == H_END-1) hcount <= 10'b0;
+        else hcount <= hcount + 10'b1;
     end
     always @(posedge vga_clk) begin
         if (hcount == H_END-1) begin
-            if (vcount == V_END-1) vcount <= 10'd0;
-            else vcount <= vcount + 10'd1;
+            if (vcount == V_END-1) vcount <= 10'b0;
+            else vcount <= vcount + 10'b1;
         end
     end
 
@@ -83,12 +90,13 @@ module vgahwd
     // 数据信号 
     // 组合逻辑生成地址 读取显存
     reg [11:0] display_data;
-    wire [4:0] multiplier = 5'd5;   // 160 = 32 * 5
+    wire [4:0] multiplier = 5'b00101;   // 160 = 32 * 5
     wire [9:0] pixel_x, pixel_y;
     wire [14:0] linear_addr; // 显存线性地址 0~19199 
     assign pixel_x = (hcount - H_DATA_BEGIN) >> 2;
     assign pixel_y = (vcount - V_DATA_BEGIN) >> 2;
     assign linear_addr = ((pixel_y * multiplier) << 5) + {5'b0, pixel_x};
+
     always @(posedge vga_clk) begin
         display_data <= gmem[linear_addr];
     end
