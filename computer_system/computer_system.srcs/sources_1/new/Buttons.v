@@ -43,10 +43,10 @@ module button_input(
 
     // eliminate jitter
     reg         mid_btn_key_flag;
-    reg [4:0]  mid_btn_key_count;
+    reg [13:0]  mid_btn_key_count;
     wire mid_btn_key_start = !mid_btn_key_r && mid_btn_key;
     wire mid_btn_key_end   = mid_btn_key_r && !mid_btn_key;
-    wire mid_btn_key_sample= mid_btn_key_count[4];
+    wire mid_btn_key_sample= mid_btn_key_count[13];
 
     always @ (posedge clk) begin
         if (rst == `RST_ENABLE) begin
@@ -80,10 +80,10 @@ module button_input(
 
     // eliminate jitter
     reg         left_btn_key_flag;
-    reg [4:0]  left_btn_key_count;
+    reg [13:0]  left_btn_key_count;
     wire left_btn_key_start = !left_btn_key_r && left_btn_key;
     wire left_btn_key_end   = left_btn_key_r && !left_btn_key;
-    wire left_btn_key_sample= left_btn_key_count[4];
+    wire left_btn_key_sample= left_btn_key_count[13];
 
     always @ (posedge clk) begin
         if (rst == `RST_ENABLE) begin
@@ -117,10 +117,10 @@ module button_input(
 
     // eliminate jitter
     reg         right_btn_key_flag;
-    reg [4:0]  right_btn_key_count;
+    reg [13:0]  right_btn_key_count;
     wire right_btn_key_start = !right_btn_key_r && right_btn_key;
     wire right_btn_key_end   = right_btn_key_r && !right_btn_key;
-    wire right_btn_key_sample= right_btn_key_count[4];
+    wire right_btn_key_sample= right_btn_key_count[13];
 
     always @ (posedge clk) begin
         if (rst == `RST_ENABLE) begin
@@ -154,10 +154,10 @@ module button_input(
 
     // eliminate jitter
     reg         up_btn_key_flag;
-    reg [4:0]  up_btn_key_count;
+    reg [13:0]  up_btn_key_count;
     wire up_btn_key_start = !up_btn_key_r && up_btn_key;
     wire up_btn_key_end   = up_btn_key_r && !up_btn_key;
-    wire up_btn_key_sample= up_btn_key_count[4];
+    wire up_btn_key_sample= up_btn_key_count[13];
 
     always @ (posedge clk) begin
         if (rst == `RST_ENABLE) begin
@@ -191,10 +191,10 @@ module button_input(
 
     // eliminate jitter
     reg         down_btn_key_flag;
-    reg [4:0]  down_btn_key_count;
+    reg [13:0]  down_btn_key_count;
     wire down_btn_key_start = !down_btn_key_r && down_btn_key;
     wire down_btn_key_end   = down_btn_key_r && !down_btn_key;
-    wire down_btn_key_sample= down_btn_key_count[4];
+    wire down_btn_key_sample= down_btn_key_count[13];
 
     always @ (posedge clk) begin
         if (rst == `RST_ENABLE) begin

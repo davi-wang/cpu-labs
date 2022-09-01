@@ -36,11 +36,11 @@ module reg_files(input clk,
     reg [`RegBus] registers [31:0];
     
     
-    always@(posedge clk) begin        
-        if (!rst) begin   
-            for(i = 0;i < 32; i=i+1)begin
-                registers[i] <= `ZeroWord;
-            end
+    always@(posedge clk or negedge rst) begin   
+        if (!rst) begin  
+               for(i = 0;i < 32; i=i+1)begin
+                    registers[i] <= `ZeroWord;
+                end   
         end
         else begin
             if (reg_we && W_reg_addr != `NopRegAddr) begin

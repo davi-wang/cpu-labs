@@ -54,8 +54,16 @@ module Computer(
     //     .data_ram_addr(cpu_dmem_waddr),
     //     .data_ram_rdata(ram_data)
     // );
+    reg clk;
+    always@(posedge I_clk or negedge I_rst_n)begin
+
+        if(!I_rst_n) clk <= 0;
+        else begin
+            clk <= ~clk;
+        end
+    end
     CPU cpu0(
-        .clk(I_clk),
+        .clk(clk),
         .rst(I_rst_n),
         .pc(cpu_pc),
         .insc(rom_data),
@@ -67,7 +75,7 @@ module Computer(
 
     // RAM for CPU
     RAM data_memory(
-        .clk(I_clk),
+        .clk(clk),
         .en_wt_mem(dmem_we),
         .addr(cpu_dmem_waddr),
         .write_data(cpu_dmem_wdata),
@@ -81,7 +89,7 @@ module Computer(
     );
 
     vgahwd vga0(
-        .clk(I_clk),
+        .clk(clk),
         .rstn(I_rst_n),
         .waddr(cpu_dmem_waddr),
         .wdata(cpu_dmem_wdata),
@@ -94,7 +102,7 @@ module Computer(
     );
 
     button_input button(
-        .clk(I_clk),
+        .clk(clk),
         .nrst(I_rst_n),
 
         .confreg_addr(cpu_dmem_waddr),

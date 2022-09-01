@@ -7,9 +7,10 @@ module testbench();
     initial begin
         rstn = 1'b1;
         clk = 1'b0;
-        m = 1'b1;
+        ri   = 1'b0;
         #10 rstn = 1'b0;
-        #20 rstn = 1'b1;
+        #100 rstn = 1'b1;
+        #500 ri   = 1'b1;
 
     end
 
