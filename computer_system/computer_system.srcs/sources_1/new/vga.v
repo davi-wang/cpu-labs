@@ -105,19 +105,19 @@ module vgahwd
     assign green = data_active ? display_data[7:4]  : 4'b0;
     assign blue  = data_active ? display_data[3:0]  : 4'b0;
 
-    ila_vga detect(
-        .clk(vga_clk),
-        .probe0(hcount),
-        .probe1(vcount),
-        .probe2(rstn),
-        .probe3(linear_addr),
-        .probe4(red),
-        .probe5(green),
-        .probe6(blue),
-        .probe7(hsync),
-        .probe8(vsync)
+    // ila_vga detect(
+    //     .clk(vga_clk),
+    //     .probe0(hcount),
+    //     .probe1(vcount),
+    //     .probe2(rstn),
+    //     .probe3(linear_addr),
+    //     .probe4(red),
+    //     .probe5(green),
+    //     .probe6(blue),
+    //     .probe7(hsync),
+    //     .probe8(vsync)
 
-    );
+    // );
 
     // assign red   = data_active ? gmem[linear_addr][11:8] : 4'b0;
     // assign green = data_active ? gmem[linear_addr][7:4]  : 4'b0;
