@@ -8,6 +8,7 @@ module CPU (input clk,
             output [`AddrBus] dmem_waddr,
             output dmem_we,
             output [`RegBus] dmem_wdata,
+            output timer_int,
             //output [3:0] dmem_sec,
             wire [3:0]stall,
             wire [1:0] stallreq_id,
@@ -325,6 +326,8 @@ module CPU (input clk,
         .cause_o(cp0_cause),
         .epc_o(cp0_epc),
         .exception_i(exception_cp0),
-        .current_addr_i(current_addr_cp0)
+        .current_addr_i(current_addr_cp0),
+        .int_i({5'b00000, timer_int}),
+        .timer_int_o(timer_int)
     );
 endmodule

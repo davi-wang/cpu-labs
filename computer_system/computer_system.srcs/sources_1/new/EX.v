@@ -38,7 +38,7 @@ module EX(input clk,
     assign wmem_data   = in_data2;
     reg overflow;
     reg trap;
-    assign exception_o       = {exception_i[31:12], overflow, trap, exception_i[9:8], 2'b00};
+    assign exception_o       = {exception_i[31:12], overflow, trap, exception_i[9:8], 8'b00};
     assign current_address_o = current_address_i;
     
     wire [31:0] in_data2_mux;

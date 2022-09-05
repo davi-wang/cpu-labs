@@ -19,19 +19,19 @@ module CU(input wire rst,
             stall <= 4'b0000;
             case (exception_i)
                 32'h00000001: begin
-                    new_pc <= 32'h00000020;
+                    new_pc <= 32'h00000040;
                 end 
                 32'h00000008: begin
-                    new_pc <= 32'h00000020;
+                    new_pc <= 32'h00000008;
                 end
                 32'h0000000a: begin
-                    new_pc <= 32'h00000020;
+                    new_pc <= 32'h00000040;
                 end
                 32'h0000000d: begin
-                    new_pc <= 32'h00000020;
+                    new_pc <= 32'h00000040;
                 end
                 32'h0000000e: begin
-                    new_pc <= 32'h00000020;
+                    new_pc <= 32'h00000040;
                 end
                 32'h0000000c: begin
                     new_pc <= cp0_epc_i;
@@ -53,6 +53,7 @@ module CU(input wire rst,
         end
         else begin
             stall <= 4'b0000;
+            flush <= 1'b0;
         end
     end
     

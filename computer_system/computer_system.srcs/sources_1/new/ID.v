@@ -66,7 +66,7 @@ module ID (input rst,
     alu_op_f_ex == `ALU_LHU ||
     alu_op_f_ex == `ALU_LW )?1'b1:1'b0;
     
-    assign exception_o        = {19'b0,is_eret,2'b0,valid,is_syscall,8'b0};
+    assign exception_o        = {19'b0,is_eret,2'b0,~valid,is_syscall,8'b0};
     assign current_ins_addr_o = pc_i;
     
     //decode instruction
