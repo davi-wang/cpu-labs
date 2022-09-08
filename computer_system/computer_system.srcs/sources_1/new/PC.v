@@ -15,10 +15,10 @@ module PC(input clk,
         if (!rst) begin
             pc <= `ZeroWord;
             end else if (flush == 1'b1) begin
-            pc <= new_pc;
+            pc <= {24'h000000, new_pc[11:0]};
             end else if (stall[0] == 1'b0) begin
             if (flag == 1) begin
-                pc <= {24'h000000, target[11:0]};   //TODO DELETE
+                pc <= {24'h000000, target[11:0]};
                 end else begin
                 pc <= pc + 4;
             end
