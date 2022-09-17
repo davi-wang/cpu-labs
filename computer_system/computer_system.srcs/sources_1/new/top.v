@@ -105,7 +105,6 @@ module Computer(
         .clk(clk),
         .nrst(I_rst_n),
 
-<<<<<<< HEAD
         .confreg_addr(cpu_dmem_waddr),
         .confreg_read_data(confreg_data),
 
@@ -115,21 +114,5 @@ module Computer(
         .up_btn_key(I_up_btn),
         .down_btn_key(I_down_btn)
     );
-=======
-    // Buttons button(
-    //     .clk(I_clk),
-    //     .rst(I_rst_n),
-
-
-    //     .confreg_addr(),
-    //     .confreg_read_data(),
-
-    //     .mid_btn_key(mid_btn_key),
-    //     .left_btn_key(left_btn_key),
-    //     .right_btn_key(right_btn_key),
-    //     .up_btn_key(up_btn_key),
-    //     .down_btn_key(down_btn_key)
-    // );
->>>>>>> exception-new
 
 endmodule
