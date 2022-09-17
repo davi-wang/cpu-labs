@@ -8,6 +8,8 @@ module CP0 (input wire clk,
             input wire [`RegAddrBus] raddr_i,
             input wire [`RegBus] data_i,
             input wire[5:0] int_i,
+            input [31:0] exception_i,
+            input [31:0] current_addr_i,
             output reg [`RegBus] data_o,
             output reg [`RegBus] count_o,
             output reg [`RegBus] compare_o,
@@ -52,7 +54,55 @@ module CP0 (input wire clk,
                     end
                 endcase
             end
-            
+
+            case(exception_i)
+                32'h00000001: begin                        //out interrupt
+                    epc_o <= current_addr_i;
+                    status_o[1] <= 1'b1;
+                    cause_o[6:2] <= 5'b00000;
+                end
+
+                32'h00000008: begin                        //system call
+                    if(status_o[1] == 1'b0) begin
+                        epc_o <= current_addr_i;
+                    end
+                    status_o[1] <= 1'b1;
+                    cause_o[6:2] <= 5'b01000;
+                end
+
+                32'h0000000a: begin                        //invalid ins
+                    if(status_o[1] == 1'b0) begin
+                        epc_o <= current_addr_i;
+                    end
+                    status_o[1] <= 1'b1;
+                    cause_o[6:2] <= 5'b01010;
+                end
+
+                32'h0000000d: begin                        //trap
+                    if(status_o[1] == 1'b0) begin
+                        epc_o <= current_addr_i;
+                    end
+                    status_o[1] <= 1'b1;
+                    cause_o[6:2] <= 5'b01101;
+                end
+                
+                32'h0000000c: begin                        //ov
+                    if(status_o[1] == 1'b0) begin
+                        epc_o <= current_addr_i;
+                    end
+                    status_o[1] <= 1'b1;
+                    cause_o[6:2] <= 5'b01100;
+                end
+
+                32'h0000000e: begin                        //eret
+                    status_o[1] <= 1'b0;
+                end
+                
+                default:begin
+                    
+                end
+
+            endcase
         end
         
     end

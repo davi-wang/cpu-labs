@@ -1,3 +1,14 @@
-!/.gitignore
-!/computer_system.srcs
-!/computer_system.xpr
+!computer_system/*
+!computer_system/*
+
+
+#####branch exception new#####
+pielined_cpu/*
+test_code/*
+software/*
+*.drawio
+*.pdf
+*.txt
+*.wcfg
+*.md
+*.jar
